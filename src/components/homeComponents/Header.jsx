@@ -3,7 +3,7 @@ import { ChevronDownIcon, MagnifyingGlassIcon, UserIcon, MapPinIcon } from '@her
 import { getCurrentLocation, getCityFromCoordinates, storeLocationData, getStoredLocationData } from '../../utils/geolocation';
 import CitySelectionPopup from './CitySelectionPopup';
 
-const Header = ({ selectedCity, onCityChange }) => {
+const Header = ({ selectedCity, onCityChange, setCurrentPage }) => {
   const [isCityPopupOpen, setIsCityPopupOpen] = useState(false);
 
   // Listen for session storage changes
@@ -89,7 +89,10 @@ const Header = ({ selectedCity, onCityChange }) => {
           {/* Left Group: Logo + Search Bar */}
           <div className="flex items-center space-x-6">
             {/* Logo */}
-            <h1 className="text-xl font-bold text-white cursor-pointer hover:text-pink-500 transition-colors">
+            <h1 
+              className="text-xl font-bold text-white cursor-pointer hover:text-pink-500 transition-colors"
+              onClick={() => setCurrentPage('home')}
+            >
               BikeDoot
             </h1>
 
@@ -106,8 +109,33 @@ const Header = ({ selectedCity, onCityChange }) => {
             </div>
           </div>
 
-          {/* Right Group: City Selection + Login */}
+          {/* Right Group: Navigation + City Selection + Login */}
           <div className="flex items-center space-x-4">
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center space-x-6">
+              <a 
+                href="#" 
+                onClick={() => setCurrentPage('home')}
+                className="text-white hover:text-pink-500 transition-colors duration-200 font-medium"
+              >
+                Home
+              </a>
+              <a 
+                href="#" 
+                onClick={() => setCurrentPage('about')}
+                className="text-white hover:text-pink-500 transition-colors duration-200 font-medium"
+              >
+                About
+              </a>
+              <a 
+                href="#" 
+                onClick={() => setCurrentPage('contact')}
+                className="text-white hover:text-pink-500 transition-colors duration-200 font-medium"
+              >
+                Contact
+              </a>
+            </div>
+
             {/* City Selection */}
             <div className="hidden md:flex">
               <button

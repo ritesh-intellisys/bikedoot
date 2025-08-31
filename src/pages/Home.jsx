@@ -149,6 +149,7 @@ const Home = ({ setCurrentPage }) => {
       <Header 
         selectedCity={selectedCity} 
         onCityChange={setSelectedCity} 
+        setCurrentPage={setCurrentPage}
       />
 
       {/* Main Content */}

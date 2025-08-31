@@ -229,15 +229,15 @@ const AboutUs = ({ setCurrentPage }) => {
           </div>
           
           <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-            <li><a href="#" onClick={() => setCurrentPage('home')}>Home</a></li>
             <li><a href="#" onClick={() => alert("Bikes Clicked!")}>Bikes</a></li>
             <li><a href="#" onClick={() => alert("Accessories Clicked!")}>Accessories</a></li>
             <li><a href="#" onClick={() => alert("Services Clicked!")}>Services</a></li>
-            <li><a href="#" onClick={() => alert("About Clicked!")}>About</a></li>
-            <li><a href="#" onClick={() => alert("Contact Clicked!")}>Contact</a></li>
           </ul>
 
           <div className="header-actions">
+            <a href="#" onClick={() => setCurrentPage('home')}>Home</a>
+            <a href="#" onClick={() => setCurrentPage('about')}>About</a>
+            <a href="#" onClick={() => setCurrentPage('contact')}>Contact</a>
             <a href="#"><FontAwesomeIcon icon={faSearch} /></a>
             <a href="#"><FontAwesomeIcon icon={faBicycle} /></a>
             <a href="#"><FontAwesomeIcon icon={faUsers} /></a>
