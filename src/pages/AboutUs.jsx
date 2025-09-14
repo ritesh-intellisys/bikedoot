@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './AboutUs.css';
+import Header from '../components/homeComponents/Header';
+import ScrollToTop from '../components/ScrollToTop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faBicycle,
@@ -32,6 +34,7 @@ import {
 const AboutUs = ({ setCurrentPage }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [selectedCity, setSelectedCity] = useState('Mumbai');
   const statsSectionRef = useRef(null);
   const teamSectionRef = useRef(null);
   const valuesSectionRef = useRef(null);
@@ -217,33 +220,13 @@ const AboutUs = ({ setCurrentPage }) => {
     <div className="bikedoot-about">
 
       {/* Header */}
-      <header className={isScrolled ? 'scrolled' : ''}>
-        <div className="container header-container">
-          <a href="#" className="logo" onClick={() => setCurrentPage('home')}>
-            <FontAwesomeIcon icon={faBicycle} />
-            Bike<span>Doot</span>
-          </a>
-          
-          <div className="menu-toggle" onClick={toggleMenu}>
-            <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
-          </div>
-          
-          <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-            <li><a href="#" onClick={() => alert("Bikes Clicked!")}>Bikes</a></li>
-            <li><a href="#" onClick={() => alert("Accessories Clicked!")}>Accessories</a></li>
-            <li><a href="#" onClick={() => alert("Services Clicked!")}>Services</a></li>
-          </ul>
-
-          <div className="header-actions">
-            <a href="#" onClick={() => setCurrentPage('home')}>Home</a>
-            <a href="#" onClick={() => setCurrentPage('about')}>About</a>
-            <a href="#" onClick={() => setCurrentPage('contact')}>Contact</a>
-            <a href="#"><FontAwesomeIcon icon={faSearch} /></a>
-            <a href="#"><FontAwesomeIcon icon={faBicycle} /></a>
-            <a href="#"><FontAwesomeIcon icon={faUsers} /></a>
-          </div>
-        </div>
-      </header>
+      <Header 
+        selectedCity={selectedCity} 
+        onCityChange={setSelectedCity} 
+        setCurrentPage={setCurrentPage}
+        scrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onBackToMain={() => setCurrentPage('home')}
+      />
 
       {/* Hero Section */}
       <section className="about-hero">
@@ -254,14 +237,15 @@ const AboutUs = ({ setCurrentPage }) => {
           <div className="floating-element">🌙</div>
         </div>
         <div className="container">
-          <div className="hero-content">
-            <h1>Redefining Cycling Culture</h1>
-            <p>At BikeDoot, we're passionate about creating exceptional cycling experiences through innovation, quality, and community.</p>
-            <div className="hero-buttons">
-              <a href="#" className="btn">Explore Our Story</a>
-              <a href="#" className="btn btn-secondary">Meet The Team</a>
-            </div>
-          </div>
+        <div className="hero-content">
+  <h1>Redefining Vehicle Care</h1>
+  <p>At BikeDoot, we make vehicle ownership simpler with online garages, roadside assistance, trusted servicing, and EV support—all in one place.</p>
+  <div className="hero-buttons">
+    <a href="#" className="btn">Explore Our Services</a>
+    <a href="#" className="btn btn-secondary">Find a Garage</a>
+  </div>
+</div>
+
         </div>
       </section>
 
@@ -325,13 +309,14 @@ const AboutUs = ({ setCurrentPage }) => {
       <section className="mission-section">
         <div className="container">
           <div className="mission-content">
-            <div className="mission-text">
-              <h2>Our <span>Mission</span></h2>
-              <p>At BikeDoot, we believe that cycling is more than just a mode of transportation—it's a lifestyle, a community, and a way to connect with the world around us.</p>
-              <p>Our mission is to empower cyclists of all levels with high-quality bikes, accessories, and services that enhance their riding experience while fostering a sustainable and inclusive cycling culture.</p>
-              <p>Through innovation, education, and community engagement, we strive to make cycling accessible and enjoyable for everyone.</p>
-              <a href="#" className="btn">Learn More</a>
-            </div>
+          <div className="mission-text">
+  <h2>Our <span>Mission</span></h2>
+  <p>At BikeDoot, we’re redefining how people take care of their vehicles with our online garage platform.</p>
+  <p>Our mission is to make it easy for users to find the nearest garage, access trusted partner garages, get reliable roadside assistance, and book all types of vehicle servicing, including EV maintenance.</p>
+  <p>We also provide a safe and convenient space to buy and sell vehicles—making BikeDoot your one-stop solution for smarter, hassle-free vehicle care.</p>
+  <a href="#" className="btn">Learn More</a>
+</div>
+
             <div className="mission-image">
               <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80" alt="BikeDoot Mission" />
             </div>
@@ -459,6 +444,9 @@ const AboutUs = ({ setCurrentPage }) => {
           </div>
         </div>
       </footer>
+      
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 };

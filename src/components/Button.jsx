@@ -10,7 +10,7 @@ const Button = ({
   const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black'
   
   const variants = {
-    primary: 'bg-gradient-to-r from-pink-700 to-pink-800 hover:from-pink-800 hover:to-pink-900 text-white focus:ring-pink-600 shadow-lg',
+    primary: 'bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white focus:ring-red-600 shadow-lg',
     secondary: 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
     outline: 'border border-cyan-400 bg-transparent hover:bg-cyan-400 text-cyan-400 hover:text-black focus:ring-cyan-500',
     danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',

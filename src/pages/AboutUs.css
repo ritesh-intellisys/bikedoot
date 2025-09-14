@@ -92,24 +92,7 @@
   box-shadow: 0 8px 25px rgba(0, 217, 255, 0.4);
 }
 
-/* Header */
-.bikedoot-about header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: 20px 0;
-  transition: var(--transition);
-  background: transparent;
-}
-
-.bikedoot-about header.scrolled {
-  background: rgba(10, 10, 10, 0.95);
-  padding: 15px 0;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-}
+/* Header - Removed conflicting styles to use Header component */
 
 .header-container {
   display: flex;
@@ -198,7 +181,6 @@
   justify-content: center;
   text-align: center;
   color: white;
-  padding-top: 80px;
   position: relative;
   overflow: hidden;
 }

@@ -90,7 +90,7 @@ const GarageListing = ({ selectedCity, filterData, onGarageClick }) => {
       <div className="py-20 px-4 bg-black">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto"></div>
             <p className="text-gray-400 mt-4">Loading garages...</p>
           </div>
         </div>
@@ -125,7 +125,7 @@ const GarageListing = ({ selectedCity, filterData, onGarageClick }) => {
                 <p className="text-gray-400 text-lg">No garages found matching your criteria.</p>
                 <button
                   onClick={() => setFilters(null)}
-                  className="mt-4 bg-gradient-to-r from-pink-700 to-pink-800 hover:from-pink-800 hover:to-pink-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="mt-4 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   Clear Filters
                 </button>

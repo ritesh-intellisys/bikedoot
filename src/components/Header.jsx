@@ -6,7 +6,7 @@ const Header = ({ currentPage, setCurrentPage }) => {
   }
 
   const isActive = (page) => {
-    return currentPage === page ? 'text-pink-500' : 'text-white hover:text-pink-400'
+    return currentPage === page ? 'text-red-500' : 'text-white hover:text-red-400'
   }
 
   return (
@@ -15,7 +15,7 @@ const Header = ({ currentPage, setCurrentPage }) => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <h1 
-              className="text-xl font-bold text-white cursor-pointer hover:text-pink-400 transition-colors"
+              className="text-xl font-bold text-white cursor-pointer hover:text-red-400 transition-colors"
               onClick={() => handleNavClick('home')}
             >
               BikeDoot
@@ -60,7 +60,7 @@ const Header = ({ currentPage, setCurrentPage }) => {
             </button>
           </nav>
           <div className="md:hidden">
-            <button className="text-white hover:text-pink-400 p-2">
+            <button className="text-white hover:text-red-400 p-2">
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>

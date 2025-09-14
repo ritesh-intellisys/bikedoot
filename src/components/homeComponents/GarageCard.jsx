@@ -18,7 +18,7 @@ const GarageCard = ({ garage, onClick, isExpanded = false }) => {
   return (
     <div
       className={`bg-gray-800 rounded-xl overflow-hidden hover:bg-gray-700 transition-all cursor-pointer ${
-        isExpanded ? 'ring-2 ring-pink-500' : ''
+        isExpanded ? 'ring-2 ring-red-500' : ''
       }`}
       onClick={() => onClick(garage)}
     >
@@ -89,7 +89,7 @@ const GarageCard = ({ garage, onClick, isExpanded = false }) => {
           </div>
         )}
         
-                        <button className="w-full bg-gradient-to-r from-pink-700 to-pink-800 hover:from-pink-800 hover:to-pink-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mt-3">
+                        <button className="w-full bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mt-3">
           {isExpanded ? 'Book Now' : 'View Details'}
         </button>
       </div>

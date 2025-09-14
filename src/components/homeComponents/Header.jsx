@@ -3,7 +3,7 @@ import { ChevronDownIcon, MagnifyingGlassIcon, UserIcon, MapPinIcon } from '@her
 import { getCurrentLocation, getCityFromCoordinates, storeLocationData, getStoredLocationData } from '../../utils/geolocation';
 import CitySelectionPopup from './CitySelectionPopup';
 
-const Header = ({ selectedCity, onCityChange, setCurrentPage }) => {
+const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBackToMain, isDetectingLocation }) => {
   const [isCityPopupOpen, setIsCityPopupOpen] = useState(false);
 
   // Listen for session storage changes
@@ -90,8 +90,16 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage }) => {
           <div className="flex items-center space-x-6">
             {/* Logo */}
             <h1 
-              className="text-xl font-bold text-white cursor-pointer hover:text-pink-500 transition-colors"
-              onClick={() => setCurrentPage('home')}
+              className="text-xl font-bold text-white cursor-pointer hover:text-red-500 transition-colors"
+              onClick={() => {
+                setCurrentPage('home');
+                if (onBackToMain) {
+                  onBackToMain();
+                }
+                if (scrollToTop) {
+                  scrollToTop();
+                }
+              }}
             >
               BikeDoot
             </h1>
@@ -103,7 +111,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage }) => {
                 <input
                   type="text"
                   placeholder="Search for garages, services..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-600"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600"
                 />
               </div>
             </div>
@@ -115,22 +123,27 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage }) => {
             <div className="hidden md:flex items-center space-x-6">
               <a 
                 href="#" 
-                onClick={() => setCurrentPage('home')}
-                className="text-white hover:text-pink-500 transition-colors duration-200 font-medium"
+                onClick={() => {
+                  setCurrentPage('home');
+                  if (onBackToMain) {
+                    onBackToMain();
+                  }
+                }}
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium"
               >
                 Home
               </a>
               <a 
                 href="#" 
                 onClick={() => setCurrentPage('about')}
-                className="text-white hover:text-pink-500 transition-colors duration-200 font-medium"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium"
               >
                 About
               </a>
               <a 
                 href="#" 
                 onClick={() => setCurrentPage('contact')}
-                className="text-white hover:text-pink-500 transition-colors duration-200 font-medium"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium"
               >
                 Contact
               </a>
@@ -140,22 +153,29 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage }) => {
             <div className="hidden md:flex">
               <button
                 onClick={() => setIsCityPopupOpen(true)}
-                className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                disabled={isDetectingLocation}
+                className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <MapPinIcon className="w-4 h-4 text-pink-500" />
-                <span>{selectedCity || 'Select City'}</span>
-                <ChevronDownIcon className="w-4 h-4" />
+                <MapPinIcon className="w-4 h-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} />
+                <span>
+                  {isDetectingLocation ? 'Detecting...' : (selectedCity || 'Select City')}
+                </span>
+                {isDetectingLocation ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2" style={{ borderColor: '#ff3864', borderTopColor: '#cc1e3a' }}></div>
+                ) : (
+                  <ChevronDownIcon className="w-4 h-4" />
+                )}
               </button>
             </div>
 
             {/* User Menu */}
-            <button className="text-white hover:text-pink-500 transition-colors duration-200">
+            <button className="text-white hover:text-red-500 transition-colors duration-200">
               <UserIcon className="w-6 h-6" />
             </button>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">
-              <button className="text-white hover:text-pink-500 p-2">
+              <button className="text-white hover:text-red-500 p-2">
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -172,13 +192,16 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage }) => {
            className="flex items-center justify-between w-full bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
          >
            <div className="flex items-center space-x-2">
-             <MapPinIcon className="w-4 h-4 text-pink-500" />
+             <MapPinIcon className="w-4 h-4 text-red-500" />
              <span>{selectedCity || 'Select City'}</span>
            </div>
            <ChevronDownIcon className="w-4 h-4" />
          </button>
                </div>
       </header>
+
+      {/* Spacer to prevent content from hiding behind fixed header */}
+      <div className="h-16"></div>
 
       {/* City Selection Popup */}
       <CitySelectionPopup

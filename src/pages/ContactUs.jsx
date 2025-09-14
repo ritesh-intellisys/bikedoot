@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ContactUs.css';
+import Header from '../components/homeComponents/Header';
+import ScrollToTop from '../components/ScrollToTop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBicycle, faMapMarkerAlt, faPhone, faEnvelope, faClock, faSearch,
@@ -14,6 +16,7 @@ import {
 const ContactUs = ({ setCurrentPage }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [selectedCity, setSelectedCity] = useState('Mumbai');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -127,33 +130,13 @@ const ContactUs = ({ setCurrentPage }) => {
   return (
     <div className="bikedoot-contact">
       {/* Header */}
-      <header className={isScrolled ? 'scrolled' : ''}>
-        <div className="container header-container">
-          <a href="#" className="logo" onClick={() => setCurrentPage('home')}>
-            <FontAwesomeIcon icon={faBicycle} />
-            Bike<span>Doot</span>
-          </a>
-          
-          <div className="menu-toggle" onClick={toggleMenu}>
-            <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
-          </div>
-          
-          <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-            <li><a href="#" onClick={() => alert("Bikes Clicked!")}>Bikes</a></li>
-            <li><a href="#" onClick={() => alert("Accessories Clicked!")}>Accessories</a></li>
-            <li><a href="#" onClick={() => alert("Services Clicked!")}>Services</a></li>
-          </ul>
-          
-          <div className="header-actions">
-            <a href="#" onClick={() => setCurrentPage('home')}>Home</a>
-            <a href="#" onClick={() => setCurrentPage('about')}>About</a>
-            <a href="#" onClick={() => setCurrentPage('contact')}>Contact</a>
-            <a href="#"><FontAwesomeIcon icon={faSearch} /></a>
-            <a href="#"><FontAwesomeIcon icon={faShoppingCart} /></a>
-            <a href="#"><FontAwesomeIcon icon={faUser} /></a>
-          </div>
-        </div>
-      </header>
+      <Header 
+        selectedCity={selectedCity} 
+        onCityChange={setSelectedCity} 
+        setCurrentPage={setCurrentPage}
+        scrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onBackToMain={() => setCurrentPage('home')}
+      />
 
       {/* Hero Section */}
       <section className="contact-hero">
@@ -510,6 +493,9 @@ const ContactUs = ({ setCurrentPage }) => {
           </div>
         </div>
       </footer>
+      
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 };

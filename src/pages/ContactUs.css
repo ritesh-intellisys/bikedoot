@@ -19,24 +19,7 @@
     --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
   
-  /* Header Styles */
-  header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    padding: 20px 0;
-    transition: var(--transition);
-    background: transparent;
-  }
-  
-  header.scrolled {
-    background: rgba(10, 10, 10, 0.95);
-    padding: 15px 0;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-  }
+  /* Header - Removed conflicting styles to use Header component */
   
   .header-container {
     display: flex;
@@ -123,7 +106,6 @@
     align-items: center;
     position: relative;
     overflow: hidden;
-    padding-top: 80px;
   }
   
   .hero-background {

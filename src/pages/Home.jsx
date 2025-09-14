@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faStar, 
@@ -13,8 +13,12 @@ import {
 import Header from '../components/homeComponents/Header';
 import BannerCarousel from '../components/homeComponents/BannerCarousel';
 import ServiceCategories from '../components/homeComponents/ServiceCategories';
-import GarageListing from '../components/homeComponents/GarageListing';
+import TwoWheelerGarages from '../components/garageComponents/TwoWheelerGarages';
+import ThreeWheelerGarages from '../components/garageComponents/ThreeWheelerGarages';
+import FourWheelerGarages from '../components/garageComponents/FourWheelerGarages';
+import SixWheelerGarages from '../components/garageComponents/SixWheelerGarages';
 import Footer from '../components/Footer';
+import ScrollToTop from '../components/ScrollToTop';
 import { fetchLandingPageData } from '../services/landingpage';
 
 const Home = ({ setCurrentPage }) => {
@@ -30,41 +34,93 @@ const Home = ({ setCurrentPage }) => {
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [garages, setGarages] = useState([]);
   const [showGarageListing, setShowGarageListing] = useState(false);
+  const [selectedVehicleType, setSelectedVehicleType] = useState(null);
   const [selectedGarage, setSelectedGarage] = useState(null);
   const [showGarageDetail, setShowGarageDetail] = useState(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
-  // Geolocation setup - exact from original site
+  // Ref for ServiceCategories component to access its modal functions
+  const serviceCategoriesRef = useRef(null);
+
+  // Enhanced geolocation setup with automatic city detection
   useEffect(() => {
     const storedLat = sessionStorage.getItem("latitude");
     const storedLng = sessionStorage.getItem("longitude");
+    const storedCity = sessionStorage.getItem("selectedCity");
 
-    if (storedLat && storedLng) {
+    // If we have stored location and city, use them
+    if (storedLat && storedLng && storedCity) {
       setLocationReady(true);
       return;
     }
 
+    // Start location detection
+    setIsDetectingLocation(true);
+
+    // Function to get city name from coordinates using reverse geocoding
+    const getCityFromCoordinates = async (lat, lng) => {
+      try {
+        // Using a free reverse geocoding service
+        const response = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+        );
+        const data = await response.json();
+        
+        if (data.city) {
+          const cityName = data.city;
+          sessionStorage.setItem("selectedCity", cityName);
+          setSelectedCity(cityName);
+          console.log("Auto-detected city:", cityName);
+        } else if (data.locality) {
+          const cityName = data.locality;
+          sessionStorage.setItem("selectedCity", cityName);
+          setSelectedCity(cityName);
+          console.log("Auto-detected locality:", cityName);
+        }
+      } catch (error) {
+        console.error("Reverse geocoding error:", error);
+        // Fallback to default city
+        sessionStorage.setItem("selectedCity", "Pune");
+        setSelectedCity("Pune");
+      }
+    };
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          sessionStorage.setItem("latitude", coords.latitude);
-          sessionStorage.setItem("longitude", coords.longitude);
+        async ({ coords }) => {
+          const { latitude, longitude } = coords;
+          sessionStorage.setItem("latitude", latitude);
+          sessionStorage.setItem("longitude", longitude);
+          
+          // Get city name from coordinates
+          await getCityFromCoordinates(latitude, longitude);
           setLocationReady(true);
+          setIsDetectingLocation(false);
         },
-        (error) => {
+        async (error) => {
           console.error("Geolocation error:", error);
-          // Set fallback coordinates
+          // Set fallback coordinates and city
           sessionStorage.setItem("latitude", "17.74162");
           sessionStorage.setItem("longitude", "73.8567");
+          sessionStorage.setItem("selectedCity", "Pune");
+          setSelectedCity("Pune");
           setLocationReady(true);
+          setIsDetectingLocation(false);
         },
         {
           enableHighAccuracy: true,
-          timeout: 30000,
-          maximumAge: 0,
+          timeout: 10000, // Reduced timeout for faster fallback
+          maximumAge: 300000, // Cache for 5 minutes
         }
       );
     } else {
+      // Browser doesn't support geolocation
+      sessionStorage.setItem("latitude", "17.74162");
+      sessionStorage.setItem("longitude", "73.8567");
+      sessionStorage.setItem("selectedCity", "Pune");
+      setSelectedCity("Pune");
       setLocationReady(true);
+      setIsDetectingLocation(false);
     }
   }, []);
 
@@ -108,14 +164,34 @@ const Home = ({ setCurrentPage }) => {
     return () => clearInterval(interval);
   }, [selectedCity]);
 
+  // Scroll to top when vehicle type changes (garage page opens)
+  useEffect(() => {
+    if (selectedVehicleType) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [selectedVehicleType]);
+
   // Handle service category click
   const handleServiceClick = (serviceType) => {
-    if (serviceType === 'two-wheeler' || serviceType === 'four-wheeler' || serviceType === 'six-wheeler') {
+    if (serviceType === 'two-wheeler' || serviceType === 'three-wheeler' || serviceType === 'four-wheeler' || serviceType === 'six-wheeler') {
       setShowGarageListing(true);
+      setSelectedVehicleType(serviceType);
       setSelectedServiceId(1); // Garage service ID
     } else {
       // Show coming soon for other services
       alert(`${serviceType} service - Coming Soon!`);
+    }
+  };
+
+  // Handle vehicle type change from garage pages
+  const handleVehicleTypeChange = (vehicleType) => {
+    setSelectedVehicleType(vehicleType);
+  };
+
+  // Handle opening vehicle type modal from BannerCarousel
+  const handleFindGaragesClick = () => {
+    if (serviceCategoriesRef.current) {
+      serviceCategoriesRef.current.openVehicleModal();
     }
   };
 
@@ -140,7 +216,18 @@ const Home = ({ setCurrentPage }) => {
   // Back to main page
   const backToMain = () => {
     setShowGarageListing(false);
+    setSelectedVehicleType(null);
     setSelectedServiceId(null);
+    // Scroll to top when going back to main page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Scroll to top of page
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   return (
@@ -150,39 +237,56 @@ const Home = ({ setCurrentPage }) => {
         selectedCity={selectedCity} 
         onCityChange={setSelectedCity} 
         setCurrentPage={setCurrentPage}
+        scrollToTop={scrollToTop}
+        onBackToMain={backToMain}
+        isDetectingLocation={isDetectingLocation}
       />
 
       {/* Main Content */}
-      <main className="pt-16">
+      <main>
         {!showGarageListing ? (
           <>
             {/* Banner Carousel */}
-            <BannerCarousel banners={landingData.banners || []} />
+            <BannerCarousel 
+              banners={landingData.banners || []} 
+              onFindGaragesClick={handleFindGaragesClick}
+            />
 
             {/* Service Categories */}
-            <ServiceCategories onServiceClick={handleServiceClick} />
+            <ServiceCategories 
+              ref={serviceCategoriesRef}
+              onServiceClick={handleServiceClick} 
+            />
 
             {/* Marketing Section */}
             <section className="py-20 px-4 bg-gray-900">
               <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                   <div>
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-                      Your Vehicle, <span className="text-pink-600">Our Priority</span>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+                      Your Vehicle, <span className="text-red-600">Our Priority</span>
                     </h2>
-                    <p className="text-xl text-gray-300 mb-8">
+                    <p className="text-lg text-gray-300 mb-8">
                       Whether you drive a bike, car, or commercial vehicle, we connect you with the best garages in your area. 
                       Get transparent pricing, verified mechanics, and quality service for all vehicle types. 
                       From routine maintenance to major repairs, find the right garage for your needs.
                     </p>
-                    <button className="bg-gradient-to-r from-pink-700 to-pink-800 hover:from-pink-800 hover:to-pink-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <button 
+                      onClick={() => {
+                        const element = document.getElementById('services-section');
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
                       EXPLORE SERVICES
                     </button>
                   </div>
                   <div className="relative">
                     <img
-                      src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                      alt="Vehicle Service"
+                      src="https://images.pexels.com/photos/13065690/pexels-photo-13065690.jpeg"
+                      alt="Professional Garage Service"
                       className="rounded-xl shadow-2xl"
                     />
                   </div>
@@ -194,10 +298,10 @@ const Home = ({ setCurrentPage }) => {
             <section className="py-20 px-4 bg-black">
               <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
                     Why Choose Our Platform
                   </h2>
-                  <p className="text-xl text-gray-400">Trusted by vehicle owners across India</p>
+                  <p className="text-lg text-gray-400">Trusted by vehicle owners across India</p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
@@ -234,7 +338,7 @@ const Home = ({ setCurrentPage }) => {
                     }
                   ].map((benefit, index) => (
                     <div key={index} className="bg-gray-800 rounded-xl p-6 text-center">
-                      <div className="text-4xl mb-4 text-pink-500">
+                      <div className="text-4xl mb-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                         <FontAwesomeIcon icon={benefit.icon} />
                       </div>
                       <h3 className="text-xl font-semibold mb-3 text-white">{benefit.title}</h3>
@@ -333,31 +437,31 @@ const Home = ({ setCurrentPage }) => {
                     <h3 className="text-2xl font-bold mb-4 text-white">Platform Features</h3>
                     <ul className="space-y-3 text-gray-300">
                       <li className="flex items-center">
-                        <span className="text-pink-600 mr-3">
+                        <span className="text-red-600 mr-3">
                           <FontAwesomeIcon icon={faCheck} />
                         </span>
                         Verified garage network for all vehicle types
                       </li>
                       <li className="flex items-center">
-                        <span className="text-pink-600 mr-3">
+                        <span className="text-red-600 mr-3">
                           <FontAwesomeIcon icon={faCheck} />
                         </span>
                         Transparent pricing with detailed cost breakdowns
                       </li>
                       <li className="flex items-center">
-                        <span className="text-pink-600 mr-3">
+                        <span className="text-red-600 mr-3">
                           <FontAwesomeIcon icon={faCheck} />
                         </span>
                         Real-time service tracking and updates
                       </li>
                       <li className="flex items-center">
-                        <span className="text-pink-600 mr-3">
+                        <span className="text-red-600 mr-3">
                           <FontAwesomeIcon icon={faCheck} />
                         </span>
                         Support for 2, 4, and 6 wheelers
                       </li>
                       <li className="flex items-center">
-                        <span className="text-pink-600 mr-3">
+                        <span className="text-red-600 mr-3">
                           <FontAwesomeIcon icon={faCheck} />
                         </span>
                         24/7 customer support and assistance
@@ -370,24 +474,43 @@ const Home = ({ setCurrentPage }) => {
           </>
         ) : (
           <>
-            {/* Back Button */}
-            <div className="py-4 px-4 bg-gray-900">
-              <div className="max-w-7xl mx-auto">
-                <button
-                  onClick={backToMain}
-                  className="flex items-center text-pink-500 hover:text-pink-400 transition-colors duration-200"
-                >
-                  ← Back to Home
-                </button>
-              </div>
-            </div>
-
-            {/* Garage Listing */}
-            <GarageListing
+            {/* Render specific vehicle type garage component */}
+            {selectedVehicleType === 'two-wheeler' && (
+              <TwoWheelerGarages
+                selectedCity={selectedCity}
+                filterData={filterData}
+                onGarageClick={handleGarageClick}
+                onBackToMain={backToMain}
+                onVehicleTypeChange={handleVehicleTypeChange}
+              />
+            )}
+            {selectedVehicleType === 'three-wheeler' && (
+              <ThreeWheelerGarages
+                selectedCity={selectedCity}
+                filterData={filterData}
+                onGarageClick={handleGarageClick}
+                onBackToMain={backToMain}
+                onVehicleTypeChange={handleVehicleTypeChange}
+              />
+            )}
+            {selectedVehicleType === 'four-wheeler' && (
+              <FourWheelerGarages
+                selectedCity={selectedCity}
+                filterData={filterData}
+                onGarageClick={handleGarageClick}
+                onBackToMain={backToMain}
+                onVehicleTypeChange={handleVehicleTypeChange}
+              />
+            )}
+            {selectedVehicleType === 'six-wheeler' && (
+              <SixWheelerGarages
               selectedCity={selectedCity}
               filterData={filterData}
               onGarageClick={handleGarageClick}
+                onBackToMain={backToMain}
+                onVehicleTypeChange={handleVehicleTypeChange}
             />
+            )}
           </>
         )}
       </main>
@@ -447,13 +570,13 @@ const Home = ({ setCurrentPage }) => {
                       {selectedGarage.services.map((service) => (
                         <div key={service.id} className="flex justify-between items-center bg-gray-700 p-3 rounded">
                           <span className="text-gray-300">{service.name}</span>
-                          <span className="text-pink-500 font-semibold">{service.price}</span>
+                          <span className="text-red-500 font-semibold">{service.price}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                   
-                  <button className="w-full bg-gradient-to-r from-pink-700 to-pink-800 hover:from-pink-800 hover:to-pink-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mt-6">
+                  <button className="w-full bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mt-6">
                     Book Now
                   </button>
                 </div>
@@ -466,8 +589,10 @@ const Home = ({ setCurrentPage }) => {
 
 
       {/* Footer */}
-      <Footer setCurrentPage={setCurrentPage} />
+      <Footer setCurrentPage={setCurrentPage} scrollToTop={scrollToTop} />
 
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 };

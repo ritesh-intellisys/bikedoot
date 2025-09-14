@@ -55,7 +55,7 @@ const LocationTest = () => {
         <button
           onClick={testGeolocation}
           disabled={loading}
-          className="w-full bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50"
+          className="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50"
         >
           {loading ? 'Testing...' : 'Test Geolocation'}
         </button>
