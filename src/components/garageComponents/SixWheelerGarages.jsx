@@ -137,6 +137,12 @@ const SixWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
   const handleFilterApply = (newFilters) => {
     console.log("Filters received from child:", newFilters);
     setFilters(newFilters);
+    
+    // If brands are selected from FilterSystem, automatically switch to authorized mode
+    if (newFilters && newFilters.brands && newFilters.brands.length > 0) {
+      setGarageType('authorized');
+      setSelectedBrand(''); // Clear the garage component's brand selection
+    }
   };
 
   const handleClearFilters = () => {

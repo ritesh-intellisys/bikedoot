@@ -716,8 +716,23 @@ export const getGaragesByServiceCategory = async (requestData) => {
   // Filter data based on garage type and brand
   let filteredData = [];
   
-  if (garageType === 'authorized' && selectedBrand) {
-    // Return authorized service centers for specific brand
+  // If brands are selected from FilterSystem, automatically switch to authorized mode
+  if (filterBrands.length > 0) {
+    console.log('Brand filtering activated for brands:', filterBrands);
+    console.log('Vehicle type:', vehicleType);
+    console.log('Available authorized brands:', Object.keys(authorizedServiceCenters[vehicleType] || {}));
+    
+    // Search only in authorized service centers for selected brands
+    const allAuthorized = [];
+    filterBrands.forEach(brand => {
+      const brandCenters = authorizedServiceCenters[vehicleType]?.[brand] || [];
+      console.log(`Brand: ${brand}, Found centers:`, brandCenters.length);
+      allAuthorized.push(...brandCenters);
+    });
+    filteredData = allAuthorized;
+    console.log('Total filtered data:', filteredData.length);
+  } else if (garageType === 'authorized' && selectedBrand) {
+    // Return authorized service centers for specific brand (from garage component dropdown)
     filteredData = authorizedServiceCenters[vehicleType]?.[selectedBrand] || [];
   } else if (garageType === 'authorized' && !selectedBrand) {
     // Return all authorized service centers for the vehicle type
@@ -729,14 +744,6 @@ export const getGaragesByServiceCategory = async (requestData) => {
   } else {
     // Return all garages (local + authorized)
     filteredData = mockData[vehicleType] || [];
-  }
-
-  // Apply brand filtering from FilterSystem
-  if (filterBrands.length > 0) {
-    filteredData = filteredData.filter(garage => {
-      // Check if garage has any of the selected brands
-      return garage.brands && garage.brands.some(brand => filterBrands.includes(brand));
-    });
   }
 
   // Check if no results found and provide appropriate message
