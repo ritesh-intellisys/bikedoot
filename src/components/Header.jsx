@@ -18,7 +18,7 @@ const Header = ({ currentPage, setCurrentPage }) => {
               className="text-xl font-bold text-white cursor-pointer hover:text-red-400 transition-colors"
               onClick={() => handleNavClick('home')}
             >
-              BikeDoot
+              BikedooT
             </h1>
           </div>
           <nav className="hidden md:flex space-x-8">

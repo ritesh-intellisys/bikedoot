@@ -101,7 +101,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
                 }
               }}
             >
-              BikeDoot
+              <span className="text-red-500">Bike</span>Doot
             </h1>
 
             {/* Search Bar */}

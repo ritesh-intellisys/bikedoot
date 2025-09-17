@@ -1,9 +1,17 @@
+import { apiGet } from '../utils/api';
+
 export const fetchLandingPageData = async (city) => {
-  // For development, return mock data directly
-  // TODO: Replace with actual API call when backend is ready
   console.log(`Fetching landing page data for city: ${city}`);
   
-  return {
+  try {
+    // Try real API first
+    const response = await apiGet(`/landing-page?city=${city}`);
+    return response.data || response;
+  } catch (error) {
+    console.warn('API call failed, using mock data:', error.message);
+    
+    // Fallback to mock data
+    return {
       cities: [
         { id: 1, name: 'Mumbai', state: 'Maharashtra' },
         { id: 2, name: 'Delhi', state: 'NCR' },
@@ -57,4 +65,5 @@ export const fetchLandingPageData = async (city) => {
         }
       ]
     };
-  };
+  }
+};

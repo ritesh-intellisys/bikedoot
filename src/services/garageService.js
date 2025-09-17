@@ -1,9 +1,31 @@
+import { apiGet } from '../utils/api';
+
 export const getGaragesByServiceCategory = async (requestData) => {
-  // For development, return mock data directly
-  // TODO: Replace with actual API call when backend is ready
   console.log('Fetching garages with request data:', requestData);
   
   const vehicleType = requestData.vehicleType || 'two-wheeler';
+  
+  // Only use real API for two-wheelers
+  if (vehicleType === 'two-wheeler') {
+    try {
+      // Try real API first for two-wheelers only
+      // Convert requestData to query parameters for GET request
+      const queryParams = new URLSearchParams();
+      Object.keys(requestData).forEach(key => {
+        if (requestData[key] !== null && requestData[key] !== undefined) {
+          queryParams.append(key, requestData[key]);
+        }
+      });
+      
+      const response = await apiGet(`/garages?${queryParams.toString()}`);
+      return response.data || response;
+    } catch (error) {
+      console.warn('API call failed for two-wheelers, using mock data:', error.message);
+    }
+  } else {
+    console.log(`Using mock data for ${vehicleType} (API only available for two-wheelers)`);
+  }
+  
   const garageType = requestData.garageType || 'all';
   const selectedBrand = requestData.selectedBrand || '';
   const filterBrands = requestData.filter?.brands || [];

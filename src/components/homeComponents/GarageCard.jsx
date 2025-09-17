@@ -1,9 +1,38 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { StarIcon, MapPinIcon, PhoneIcon, ClockIcon } from '@heroicons/react/24/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 const GarageCard = ({ garage, onClick, isExpanded = false }) => {
+  const navigate = useNavigate();
+  
+  const handleBookNow = (e) => {
+    e.stopPropagation(); // Prevent card click event
+    console.log("Book Now clicked for garage:", garage.id, garage.name);
+    
+    const token = localStorage.getItem("authToken");
+    
+    // For demo purposes, allow booking without authentication
+    // In production, you would check for valid token
+    if (token || true) { // Always allow for demo
+      // Set mock user data for demo
+      if (!localStorage.getItem("authToken")) {
+        localStorage.setItem("authToken", "demo-token-123");
+        localStorage.setItem("subscriberId", "1");
+        localStorage.setItem("businessId", "1");
+      }
+      
+      console.log("Navigating to booking with garageId:", garage.id);
+      navigate("/booking", { 
+        state: { garageId: garage.id } 
+      });
+    } else {
+      // Show login popup or redirect to login
+      alert("Please login to book a service");
+    }
+  };
+  
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <StarIcon
@@ -89,9 +118,22 @@ const GarageCard = ({ garage, onClick, isExpanded = false }) => {
           </div>
         )}
         
-                        <button className="w-full bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mt-3">
+                        <button 
+          onClick={isExpanded ? handleBookNow : undefined}
+          className="w-full bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mt-3"
+        >
           {isExpanded ? 'Book Now' : 'View Details'}
         </button>
+        
+        {/* Always show Book Now button for quick booking */}
+        {!isExpanded && (
+          <button 
+            onClick={handleBookNow}
+            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mt-2"
+          >
+            Book Now
+          </button>
+        )}
       </div>
     </div>
   );
