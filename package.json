@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
+    "@fortawesome/free-brands-svg-icons": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.0",
     "@fortawesome/react-fontawesome": "^3.0.1",
     "@headlessui/react": "^2.2.7",
+    "@heroicons/react": "^2.2.0",
     "axios": "^1.11.0",
     "lucide-react": "^0.542.0",
     "react": "^19.1.1",
