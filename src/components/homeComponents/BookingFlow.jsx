@@ -26,24 +26,31 @@ const BookingFlow = () => {
   
   // Check authentication
   useEffect(() => {
-    console.log("BookingFlow mounted with garageId:", garageId);
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      // For demo purposes, set mock authentication data
-      localStorage.setItem("authToken", "demo-token-123");
-      localStorage.setItem("subscriberId", "1");
-      localStorage.setItem("businessId", "1");
-      console.log("Set mock authentication data");
-    }
-    
-    if (!garageId) {
-      console.log("No garageId, redirecting to home");
+    try {
+      console.log("BookingFlow mounted with garageId:", garageId);
+      console.log("Location state:", location.state);
+      
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        // For demo purposes, set mock authentication data
+        localStorage.setItem("authToken", "demo-token-123");
+        localStorage.setItem("subscriberId", "1");
+        localStorage.setItem("businessId", "1");
+        console.log("Set mock authentication data");
+      }
+      
+      if (!garageId) {
+        console.log("No garageId, redirecting to home");
+        navigate("/");
+        return;
+      }
+      
+      console.log("BookingFlow ready with garageId:", garageId);
+    } catch (error) {
+      console.error("Error in BookingFlow useEffect:", error);
       navigate("/");
-      return;
     }
-    
-    console.log("BookingFlow ready with garageId:", garageId);
-  }, [garageId, navigate]);
+  }, [garageId, navigate, location.state]);
   
   // Navigation logic with validation
   const handleNext = () => {
@@ -127,8 +134,9 @@ const BookingFlow = () => {
     );
   }
   
-  return (
-    <div className="min-h-screen bg-black">
+  try {
+    return (
+      <div className="min-h-screen bg-black">
       {/* Header */}
       <div className="bg-gray-900 border-b border-gray-800">
         <div className="max-w-4xl mx-auto px-4 py-6">
@@ -209,6 +217,23 @@ const BookingFlow = () => {
       )}
     </div>
   );
+  } catch (error) {
+    console.error("Error rendering BookingFlow:", error);
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-500 mb-4">Error Loading Booking</h1>
+          <p className="text-gray-400 mb-4">Something went wrong. Please try again.</p>
+          <button 
+            onClick={() => navigate("/")}
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
+          >
+            Go Back Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default BookingFlow;

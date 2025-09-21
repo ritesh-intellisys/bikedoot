@@ -23,7 +23,13 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
     const interval = setInterval(() => {
       const cityFromStorage = sessionStorage.getItem("selectedCity");
       if (cityFromStorage !== selectedCity) {
-        onCityChange(cityFromStorage);
+        // Convert localities to main cities
+        let correctedCity = cityFromStorage;
+        if (cityFromStorage === "Mulshi" || cityFromStorage === "Hinjewadi" || cityFromStorage === "Wakad" || cityFromStorage === "Baner") {
+          correctedCity = "Pune";
+          sessionStorage.setItem("selectedCity", "Pune");
+        }
+        onCityChange(correctedCity);
       }
     }, 500);
 

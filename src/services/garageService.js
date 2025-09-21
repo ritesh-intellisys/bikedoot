@@ -1,26 +1,40 @@
-import { apiGet } from '../utils/api';
-
 export const getGaragesByServiceCategory = async (requestData) => {
   console.log('Fetching garages with request data:', requestData);
   
   const vehicleType = requestData.vehicleType || 'two-wheeler';
   
-  // Only use real API for two-wheelers
+  // Try real API first - same as old website
   if (vehicleType === 'two-wheeler') {
     try {
-      // Try real API first for two-wheelers only
-      // Convert requestData to query parameters for GET request
-      const queryParams = new URLSearchParams();
-      Object.keys(requestData).forEach(key => {
-        if (requestData[key] !== null && requestData[key] !== undefined) {
-          queryParams.append(key, requestData[key]);
-        }
+      const API_URL = import.meta.env.VITE_API_URL || 'https://workshop.bikedoot.com/api';
+      
+      // Create API request data matching old website structure exactly
+      const apiRequestData = {
+        location: requestData.location,
+        latitude: requestData.latitude,
+        longitude: requestData.longitude,
+        filter: requestData.filter
+      };
+      
+      console.log('🔄 Attempting real API call to /listgarage/ with data:', apiRequestData);
+      
+      const response = await fetch(`${API_URL}/listgarage/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(apiRequestData),
       });
       
-      const response = await apiGet(`/garages?${queryParams.toString()}`);
-      return response.data || response;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log('✅ Real API response:', result);
+      return result;
     } catch (error) {
-      console.warn('API call failed for two-wheelers, using mock data:', error.message);
+      console.warn('❌ API call failed for two-wheelers, using mock data:', error.message);
     }
   } else {
     console.log(`Using mock data for ${vehicleType} (API only available for two-wheelers)`);
@@ -82,7 +96,7 @@ export const getGaragesByServiceCategory = async (requestData) => {
           reviewCount: 234,
           verified: true,
           distance: 1.8,
-          image: "https://images.unsplash.com/photo-1599256630445-67b5772b1204?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg",
           services: [
             { id: 1, name: "General Service", price: "₹600" },
             { id: 2, name: "Oil Change", price: "₹350" },
@@ -103,7 +117,7 @@ export const getGaragesByServiceCategory = async (requestData) => {
           reviewCount: 67,
           verified: false,
           distance: 6.2,
-          image: "https://plus.unsplash.com/premium_photo-1661411119301-8cae0adce9a7?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg",
           services: [
             { id: 1, name: "General Service", price: "₹400" },
             { id: 2, name: "Oil Change", price: "₹200" }

@@ -20,11 +20,18 @@ import SixWheelerGarages from '../components/garageComponents/SixWheelerGarages'
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { fetchLandingPageData } from '../services/landingpage';
+import { cleanupLocationData } from '../utils/geolocation';
 
 const Home = ({ setCurrentPage }) => {
   // State management - exact from original site
   const [selectedCity, setSelectedCity] = useState(() => {
-    return sessionStorage.getItem("selectedCity") || "Pune";
+    const city = sessionStorage.getItem("selectedCity") || "Pune";
+    // Convert localities to main cities
+    if (city === "Mulshi" || city === "Hinjewadi" || city === "Wakad" || city === "Baner") {
+      sessionStorage.setItem("selectedCity", "Pune");
+      return "Pune";
+    }
+    return city;
   });
   const [landingData, setLandingData] = useState({});
   const [cities, setCities] = useState([]);
@@ -42,85 +49,40 @@ const Home = ({ setCurrentPage }) => {
   // Ref for ServiceCategories component to access its modal functions
   const serviceCategoriesRef = useRef(null);
 
-  // Enhanced geolocation setup with automatic city detection
+  // Geolocation setup - exact match with old website
   useEffect(() => {
-    const storedLat = sessionStorage.getItem("latitude");
-    const storedLng = sessionStorage.getItem("longitude");
-    const storedCity = sessionStorage.getItem("selectedCity");
-
-    // If we have stored location and city, use them
-    if (storedLat && storedLng && storedCity) {
+    // Clean up any incorrect location data first
+    cleanupLocationData();
+    
+    // Check if we already have location data
+    if (sessionStorage.getItem("latitude") && sessionStorage.getItem("longitude")) {
       setLocationReady(true);
       return;
     }
 
-    // Start location detection
-    setIsDetectingLocation(true);
-
-    // Function to get city name from coordinates using reverse geocoding
-    const getCityFromCoordinates = async (lat, lng) => {
-      try {
-        // Using a free reverse geocoding service
-        const response = await fetch(
-          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
-        );
-        const data = await response.json();
-        
-        if (data.city) {
-          const cityName = data.city;
-          sessionStorage.setItem("selectedCity", cityName);
-          setSelectedCity(cityName);
-          console.log("Auto-detected city:", cityName);
-        } else if (data.locality) {
-          const cityName = data.locality;
-          sessionStorage.setItem("selectedCity", cityName);
-          setSelectedCity(cityName);
-          console.log("Auto-detected locality:", cityName);
-        }
-      } catch (error) {
-        console.error("Reverse geocoding error:", error);
-        // Fallback to default city
-        sessionStorage.setItem("selectedCity", "Pune");
-        setSelectedCity("Pune");
-      }
-    };
-
+    // ✅ Geolocation API support check
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        async ({ coords }) => {
-          const { latitude, longitude } = coords;
-          sessionStorage.setItem("latitude", latitude);
-          sessionStorage.setItem("longitude", longitude);
-          
-          // Get city name from coordinates
-          await getCityFromCoordinates(latitude, longitude);
+        ({ coords }) => {
+          sessionStorage.setItem("latitude", coords.latitude);
+          sessionStorage.setItem("longitude", coords.longitude);
+          console.log("📍 Latitude: in mainpage", coords.latitude);
+          console.log("📍 Longitude: in mainpage", coords.longitude);
           setLocationReady(true);
-          setIsDetectingLocation(false);
         },
-        async (error) => {
+        (error) => {
           console.error("Geolocation error:", error);
-          // Set fallback coordinates and city
+          // Set fallback coordinates
           sessionStorage.setItem("latitude", "17.74162");
           sessionStorage.setItem("longitude", "73.8567");
-          sessionStorage.setItem("selectedCity", "Pune");
-          setSelectedCity("Pune");
           setLocationReady(true);
-          setIsDetectingLocation(false);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000, // Reduced timeout for faster fallback
-          maximumAge: 300000, // Cache for 5 minutes
         }
       );
     } else {
       // Browser doesn't support geolocation
       sessionStorage.setItem("latitude", "17.74162");
       sessionStorage.setItem("longitude", "73.8567");
-      sessionStorage.setItem("selectedCity", "Pune");
-      setSelectedCity("Pune");
       setLocationReady(true);
-      setIsDetectingLocation(false);
     }
   }, []);
 

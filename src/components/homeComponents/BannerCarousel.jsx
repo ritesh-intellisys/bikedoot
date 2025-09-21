@@ -21,7 +21,7 @@ const BannerCarousel = ({ banners, onFindGaragesClick }) => {
           dynamicBullets: true,
         }}
         navigation={true}
-        loop={true}
+        loop={banners && banners.length >= 2}
         className="h-full w-full"
       >
         {banners.map((banner) => (

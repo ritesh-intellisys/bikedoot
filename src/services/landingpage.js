@@ -1,17 +1,12 @@
-import { apiGet } from '../utils/api';
+// import { apiGet } from '../utils/api'; // Not needed since using mock data
 
 export const fetchLandingPageData = async (city) => {
   console.log(`Fetching landing page data for city: ${city}`);
   
-  try {
-    // Try real API first
-    const response = await apiGet(`/landing-page?city=${city}`);
-    return response.data || response;
-  } catch (error) {
-    console.warn('API call failed, using mock data:', error.message);
-    
-    // Fallback to mock data
-    return {
+  // Using mock data since API endpoints are not available
+  console.log('Using mock data for landing page (API endpoint not available)');
+  
+  return {
       cities: [
         { id: 1, name: 'Mumbai', state: 'Maharashtra' },
         { id: 2, name: 'Delhi', state: 'NCR' },
@@ -46,24 +41,30 @@ export const fetchLandingPageData = async (city) => {
           id: 1,
           title: "FIND NEARBY GARAGES",
           subtitle: "Discover verified garages near you for all vehicle types - 2 wheelers, 4 wheelers, and 6 wheelers. Get transparent pricing and real-time service updates.",
-          image: "https://plus.unsplash.com/premium_photo-1661750362435-00f8fef16292?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg",
           link: "/garages"
         },
         {
           id: 2,
           title: "TRANSPARENT SERVICE COSTS",
           subtitle: "Compare service prices across multiple garages. Get detailed cost breakdowns for general service, oil change, brake service, and more for all vehicle types.",
-          image: "https://images.unsplash.com/photo-1570129476815-ba368ac77013?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+          image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg",
           link: "/services"
         },
         {
           id: 3,
           title: "ALL VEHICLE TYPES SUPPORTED",
           subtitle: "From bikes and scooters to cars, trucks, and commercial vehicles. Find specialized garages for your specific vehicle type with verified mechanics.",
-          image: "https://plus.unsplash.com/premium_photo-1661779071501-629999b46de0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg",
           link: "/about"
+        },
+        {
+          id: 4,
+          title: "EXPERT MECHANICS AVAILABLE",
+          subtitle: "Connect with certified and experienced mechanics who specialize in your vehicle type. Get professional service with quality assurance and warranty.",
+          image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg",
+          link: "/mechanics"
         }
       ]
     };
-  }
 };

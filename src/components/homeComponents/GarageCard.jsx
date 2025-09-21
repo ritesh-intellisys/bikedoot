@@ -10,6 +10,7 @@ const GarageCard = ({ garage, onClick, isExpanded = false }) => {
   const handleBookNow = (e) => {
     e.stopPropagation(); // Prevent card click event
     console.log("Book Now clicked for garage:", garage.id, garage.name);
+    console.log("Full garage data:", garage);
     
     const token = localStorage.getItem("authToken");
     

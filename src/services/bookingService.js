@@ -6,51 +6,13 @@ export const fetchUserVehicles = async (subscriberId) => {
   console.log('Fetching user vehicles for subscriber:', subscriberId);
   
   try {
-    // Try real API first (only available for two-wheelers)
+    // Try real API first
     const response = await apiGet(`/user/vehicles/${subscriberId}`);
     return response.data || response;
   } catch (error) {
-    console.warn('API call failed, using mock data (API only available for two-wheelers):', error.message);
-    
-    // Fallback to mock data
-    return [
-      {
-        id: 1,
-        vehicle_id: 101,
-        brand: "Honda",
-        model: "Activa 6G",
-        cc_id: 1,
-        cc: "110cc",
-        year: "2022",
-        registration_number: "MH01AB1234",
-        image: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        color: "Red"
-      },
-      {
-        id: 2,
-        vehicle_id: 102,
-        brand: "Yamaha",
-        model: "FZ-S V3",
-        cc_id: 2,
-        cc: "149cc",
-        year: "2021",
-        registration_number: "MH02CD5678",
-        image: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        color: "Blue"
-      },
-      {
-        id: 3,
-        vehicle_id: 103,
-        brand: "Bajaj",
-        model: "Pulsar 150",
-        cc_id: 2,
-        cc: "149cc",
-        year: "2020",
-        registration_number: "MH03EF9012",
-        image: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        color: "Black"
-      }
-    ];
+    console.warn('API call failed for user vehicles:', error.message);
+    // Return empty array if API fails
+    return [];
   }
 };
 
@@ -61,104 +23,15 @@ export const fetchGarageServices = async (payload) => {
   const { garageid, ccid } = payload;
   
   try {
-    // Try real API first (only available for two-wheelers)
+    // Try real API first
     const response = await apiGet(`/garage/${garageid}/services?cc_id=${ccid}`);
     return response.data || response;
   } catch (error) {
-    console.warn('API call failed, using mock data (API only available for two-wheelers):', error.message);
-    
-    // Mock data based on garage and CC
-    const services = {
-      1: [ // 110cc services
-        {
-          id: 1,
-          name: "General Service",
-          description: "Complete bike service including oil change, filter cleaning, and basic checks",
-          price: 500,
-          category: "Service",
-          duration: "2-3 hours",
-          includes: ["Engine oil change", "Air filter cleaning", "Chain lubrication", "Basic inspection"]
-        },
-        {
-          id: 2,
-          name: "Oil Change",
-          description: "Engine oil replacement with genuine oil",
-          price: 300,
-          category: "Service",
-          duration: "30 minutes",
-          includes: ["Engine oil replacement", "Oil filter change"]
-        },
-        {
-          id: 3,
-          name: "Brake Service",
-          description: "Complete brake system service and adjustment",
-          price: 400,
-          category: "Service",
-          duration: "1 hour",
-          includes: ["Brake pad inspection", "Brake fluid check", "Brake adjustment"]
-        }
-      ],
-      2: [ // 149cc services
-        {
-          id: 1,
-          name: "General Service",
-          description: "Complete bike service including oil change, filter cleaning, and basic checks",
-          price: 600,
-          category: "Service",
-          duration: "2-3 hours",
-          includes: ["Engine oil change", "Air filter cleaning", "Chain lubrication", "Basic inspection"]
-        },
-        {
-          id: 2,
-          name: "Oil Change",
-          description: "Engine oil replacement with genuine oil",
-          price: 350,
-          category: "Service",
-          duration: "30 minutes",
-          includes: ["Engine oil replacement", "Oil filter change"]
-        },
-        {
-          id: 3,
-          name: "Brake Service",
-          description: "Complete brake system service and adjustment",
-          price: 450,
-          category: "Service",
-          duration: "1 hour",
-          includes: ["Brake pad inspection", "Brake fluid check", "Brake adjustment"]
-        }
-      ]
-    };
-
-    const addOns = [
-      {
-        id: 101,
-        name: "Bike Wash",
-        description: "Complete bike cleaning and polishing",
-        price: 150,
-        category: "Add-On",
-        duration: "30 minutes"
-      },
-      {
-        id: 102,
-        name: "Chain Lubrication",
-        description: "Chain cleaning and lubrication",
-        price: 100,
-        category: "Add-On",
-        duration: "15 minutes"
-      },
-      {
-        id: 103,
-        name: "Tire Pressure Check",
-        description: "Check and adjust tire pressure",
-        price: 50,
-        category: "Add-On",
-        duration: "10 minutes"
-      }
-    ];
-
+    console.warn('API call failed for garage services:', error.message);
+    // Return empty object if API fails
     return {
-      services: services[ccid] || services[1],
-      addOns: addOns
+      services: [],
+      addOns: []
     };
   }
 };
@@ -172,35 +45,9 @@ export const fetchUserAddresses = async (subscriberId) => {
     const response = await apiGet(`/user/addresses/${subscriberId}`);
     return response.data || response;
   } catch (error) {
-    console.warn('API call failed, using mock data:', error.message);
-    
-    // Mock data
-    return [
-      {
-        id: 1,
-        address: "123 Main Street, Andheri West",
-        city: "Mumbai",
-        pincode: "400058",
-        is_default: true,
-        landmark: "Near Andheri Station"
-      },
-      {
-        id: 2,
-        address: "456 Park Avenue, Bandra West",
-        city: "Mumbai",
-        pincode: "400050",
-        is_default: false,
-        landmark: "Opposite Bandra Station"
-      },
-      {
-        id: 3,
-        address: "789 Tech Park, Koramangala",
-        city: "Bangalore",
-        pincode: "560034",
-        is_default: false,
-        landmark: "Near Forum Mall"
-      }
-    ];
+    console.warn('API call failed for user addresses:', error.message);
+    // Return empty array if API fails
+    return [];
   }
 };
 
@@ -213,17 +60,11 @@ export const createAddress = async (payload) => {
     const response = await apiPost('/address/create', payload);
     return response;
   } catch (error) {
-    console.warn('API call failed, using mock response:', error.message);
-    
-    // Mock response
+    console.warn('API call failed for address creation:', error.message);
+    // Return error response if API fails
     return {
-      success: true,
-      data: {
-        id: Math.floor(Math.random() * 1000) + 100,
-        ...payload,
-        is_default: false
-      },
-      message: "Address created successfully"
+      success: false,
+      message: "Failed to create address"
     };
   }
 };
@@ -237,20 +78,11 @@ export const createBooking = async (payload) => {
     const response = await apiPost('/booking/create', payload);
     return response;
   } catch (error) {
-    console.warn('API call failed, using mock response:', error.message);
-    
-    // Fallback to mock response
+    console.warn('API call failed for booking creation:', error.message);
+    // Return error response if API fails
     return {
-      success: true,
-      data: {
-        booking_id: `BK${Date.now()}`,
-        booking_date: payload.bookingdate,
-        booking_slot: payload.bookingslot,
-        total_amount: payload.bookingamount,
-        status: "Confirmed",
-        ...payload
-      },
-      message: "Booking created successfully"
+      success: false,
+      message: "Failed to create booking"
     };
   }
 };
@@ -264,56 +96,89 @@ export const fetchBikeBrands = async () => {
     const response = await apiGet('/bike-brands');
     return response.data || response;
   } catch (error) {
-    console.warn('API call failed, using mock data:', error.message);
-    
+    console.warn('API call failed for bike brands:', error.message);
+    // Return fallback data if API fails
     return [
-      { id: 1, name: "Honda" },
-      { id: 2, name: "Yamaha" },
-      { id: 3, name: "Bajaj" },
-      { id: 4, name: "TVS" },
-      { id: 5, name: "Hero" },
-      { id: 6, name: "Royal Enfield" },
-      { id: 7, name: "KTM" },
-      { id: 8, name: "Suzuki" },
-      { id: 9, name: "Kawasaki" },
-      { id: 10, name: "Ducati" }
+      { id: 1, name: 'Honda' },
+      { id: 2, name: 'Bajaj' },
+      { id: 3, name: 'TVS' },
+      { id: 4, name: 'Hero' },
+      { id: 5, name: 'Yamaha' },
+      { id: 6, name: 'Royal Enfield' },
+      { id: 7, name: 'KTM' },
+      { id: 8, name: 'Suzuki' }
     ];
   }
 };
 
 // Fetch bike models by brand
 export const fetchBikeModels = async (brandId) => {
-  console.log('Fetching bike models for brand:', brandId);
+  console.log('🔍 Fetching bike models for brand ID:', brandId);
   
   try {
     // Try real API first
+    console.log('🔍 Attempting API call to /bike-models/' + brandId);
     const response = await apiGet(`/bike-models/${brandId}`);
+    console.log('🔍 API response received:', response);
     return response.data || response;
   } catch (error) {
-    console.warn('API call failed, using mock data:', error.message);
-    
-    const models = {
+    console.warn('🔍 API call failed for bike models:', error.message);
+    console.log('🔍 Using fallback data for brand ID:', brandId);
+    // Return fallback data if API fails
+    const fallbackModels = {
       1: [ // Honda
-        { id: 1, name: "Activa 6G", cc_id: 1, cc: "110cc" },
-        { id: 2, name: "Shine", cc_id: 1, cc: "110cc" },
-        { id: 3, name: "Unicorn", cc_id: 2, cc: "149cc" },
-        { id: 4, name: "CBR 150R", cc_id: 2, cc: "149cc" }
+        { id: 1, name: 'Activa 6G', cc: '110cc', cc_id: 1 },
+        { id: 2, name: 'Shine', cc: '125cc', cc_id: 2 },
+        { id: 3, name: 'Unicorn', cc: '160cc', cc_id: 3 },
+        { id: 4, name: 'CB Hornet', cc: '160cc', cc_id: 3 }
       ],
-      2: [ // Yamaha
-        { id: 5, name: "FZ-S V3", cc_id: 2, cc: "149cc" },
-        { id: 6, name: "R15 V4", cc_id: 3, cc: "155cc" },
-        { id: 7, name: "MT-15", cc_id: 2, cc: "149cc" },
-        { id: 8, name: "Ray ZR", cc_id: 1, cc: "110cc" }
+      2: [ // Bajaj
+        { id: 5, name: 'Pulsar 150', cc: '150cc', cc_id: 4 },
+        { id: 6, name: 'Pulsar 220', cc: '220cc', cc_id: 5 },
+        { id: 7, name: 'Discover', cc: '125cc', cc_id: 2 },
+        { id: 8, name: 'CT 100', cc: '100cc', cc_id: 6 }
       ],
-      3: [ // Bajaj
-        { id: 9, name: "Pulsar 150", cc_id: 2, cc: "149cc" },
-        { id: 10, name: "Pulsar 220F", cc_id: 4, cc: "220cc" },
-        { id: 11, name: "Dominar 400", cc_id: 5, cc: "373cc" },
-        { id: 12, name: "CT 100", cc_id: 1, cc: "100cc" }
+      3: [ // TVS
+        { id: 9, name: 'Jupiter', cc: '110cc', cc_id: 1 },
+        { id: 10, name: 'Apache RTR', cc: '160cc', cc_id: 3 },
+        { id: 11, name: 'Star City', cc: '110cc', cc_id: 1 },
+        { id: 12, name: 'Sport', cc: '110cc', cc_id: 1 }
+      ],
+      4: [ // Hero
+        { id: 13, name: 'Splendor', cc: '100cc', cc_id: 6 },
+        { id: 14, name: 'Passion Pro', cc: '110cc', cc_id: 1 },
+        { id: 15, name: 'Xtreme', cc: '160cc', cc_id: 3 },
+        { id: 16, name: 'Glamour', cc: '125cc', cc_id: 2 }
+      ],
+      5: [ // Yamaha
+        { id: 17, name: 'FZ', cc: '150cc', cc_id: 4 },
+        { id: 18, name: 'R15', cc: '155cc', cc_id: 7 },
+        { id: 19, name: 'Fascino', cc: '125cc', cc_id: 2 },
+        { id: 20, name: 'Ray ZR', cc: '125cc', cc_id: 2 }
+      ],
+      6: [ // Royal Enfield
+        { id: 21, name: 'Classic 350', cc: '350cc', cc_id: 8 },
+        { id: 22, name: 'Bullet 350', cc: '350cc', cc_id: 8 },
+        { id: 23, name: 'Thunderbird', cc: '350cc', cc_id: 8 },
+        { id: 24, name: 'Continental GT', cc: '650cc', cc_id: 9 }
+      ],
+      7: [ // KTM
+        { id: 25, name: 'Duke 200', cc: '200cc', cc_id: 10 },
+        { id: 26, name: 'Duke 390', cc: '390cc', cc_id: 11 },
+        { id: 27, name: 'RC 200', cc: '200cc', cc_id: 10 },
+        { id: 28, name: 'RC 390', cc: '390cc', cc_id: 11 }
+      ],
+      8: [ // Suzuki
+        { id: 29, name: 'Access 125', cc: '125cc', cc_id: 2 },
+        { id: 30, name: 'Gixxer', cc: '155cc', cc_id: 7 },
+        { id: 31, name: 'Burgman', cc: '125cc', cc_id: 2 },
+        { id: 32, name: 'Intruder', cc: '150cc', cc_id: 4 }
       ]
     };
     
-    return models[brandId] || [];
+    const result = fallbackModels[brandId] || [];
+    console.log('🔍 Returning fallback models:', result);
+    return result;
   }
 };
 
@@ -326,17 +191,17 @@ export const fetchCities = async () => {
     const response = await apiGet('/cities');
     return response.data || response;
   } catch (error) {
-    console.warn('API call failed, using mock data:', error.message);
-    
+    console.warn('API call failed for cities:', error.message);
+    // Return fallback data if API fails
     return [
-      { id: 1, name: "Mumbai", state: "Maharashtra" },
-      { id: 2, name: "Delhi", state: "NCR" },
-      { id: 3, name: "Bangalore", state: "Karnataka" },
-      { id: 4, name: "Chennai", state: "Tamil Nadu" },
-      { id: 5, name: "Pune", state: "Maharashtra" },
-      { id: 6, name: "Hyderabad", state: "Telangana" },
-      { id: 7, name: "Kolkata", state: "West Bengal" },
-      { id: 8, name: "Ahmedabad", state: "Gujarat" }
+      { id: 1, name: 'Mumbai', state: 'Maharashtra' },
+      { id: 2, name: 'Delhi', state: 'NCR' },
+      { id: 3, name: 'Bangalore', state: 'Karnataka' },
+      { id: 4, name: 'Chennai', state: 'Tamil Nadu' },
+      { id: 5, name: 'Pune', state: 'Maharashtra' },
+      { id: 6, name: 'Hyderabad', state: 'Telangana' },
+      { id: 7, name: 'Kolkata', state: 'West Bengal' },
+      { id: 8, name: 'Ahmedabad', state: 'Gujarat' }
     ];
   }
 };

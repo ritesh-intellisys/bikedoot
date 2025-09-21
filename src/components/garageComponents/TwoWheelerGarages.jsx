@@ -83,22 +83,44 @@ const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
           location: selectedCity,
           latitude: lat,
           longitude: lng,
-          vehicleType: 'two-wheeler', // Specific vehicle type
-          garageType: garageType, // 'all' or 'authorized'
-          selectedBrand: selectedBrand, // For authorized service centers
+          vehicleType: 'two-wheeler', // Keep for new website logic
+          garageType: garageType || 'all', // Keep for new website logic
+          selectedBrand: selectedBrand || '', // Keep for new website logic
           filter: {
             sort: filters?.sort || [],
             ratings: filters?.ratings || [],
-            distance: filters?.distance || [],
+            distence: filters?.distance || [], // Use old spelling like old website
             services: filters?.services || [],
             brands: filters?.brands || [],
           },
         };
 
         const response = await getGaragesByServiceCategory(requestData);
-        setGarages(response?.data || []);
-        setFilteredGarages(response?.data || []);
-        setNoResultsMessage(response?.message || null);
+        console.log('🔍 Full API response:', response);
+        console.log('🔍 Response data:', response?.data);
+        console.log('🔍 Response type:', typeof response);
+        console.log('🔍 Response keys:', Object.keys(response || {}));
+        
+        // Handle different response structures
+        let garagesData = [];
+        if (response?.data) {
+          garagesData = response.data;
+        } else if (Array.isArray(response)) {
+          garagesData = response;
+        } else if (response?.garages) {
+          garagesData = response.garages;
+        }
+        
+        console.log('🔍 Processed garages data:', garagesData);
+        setGarages(garagesData);
+        setFilteredGarages(garagesData);
+        
+        // Only set noResultsMessage if there are actually no garages
+        if (garagesData.length === 0) {
+          setNoResultsMessage(response?.message || "No garages found in your area");
+        } else {
+          setNoResultsMessage(null);
+        }
       } catch (error) {
         console.error("Failed to fetch two-wheeler garages:", error);
       } finally {
@@ -181,6 +203,9 @@ const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
       </div>
     );
   }
+
+  // Debug logging
+  console.log('🔍 Component render - garages:', garages.length, 'filteredGarages:', filteredGarages.length, 'loading:', loading, 'noResultsMessage:', noResultsMessage);
 
   return (
     <div className="min-h-screen bg-black text-white">

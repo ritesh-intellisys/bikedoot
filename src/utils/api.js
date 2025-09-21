@@ -34,6 +34,12 @@ export const apiRequest = async (endpoint, options = {}) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
+    // Check if response is HTML (404 page) instead of JSON
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('text/html')) {
+      throw new Error('Server returned HTML instead of JSON - endpoint may not exist');
+    }
+    
     const data = await response.json();
     return data;
   } catch (error) {
