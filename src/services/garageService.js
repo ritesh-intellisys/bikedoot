@@ -9,25 +9,55 @@ export const getGaragesByServiceCategory = async (requestData) => {
       const API_URL = import.meta.env.VITE_API_URL || 'https://workshop.bikedoot.com/api';
       
       // Create API request data matching old website structure exactly
+      const location = requestData.location?.trim() || sessionStorage.getItem("selectedCity") || 'Pune'; // Ensure location is not empty
       const apiRequestData = {
-        location: requestData.location,
-        latitude: requestData.latitude,
-        longitude: requestData.longitude,
-        filter: requestData.filter
+        location: location,
+        latitude: parseFloat(requestData.latitude),
+        longitude: parseFloat(requestData.longitude),
+        filter: {
+          sort: requestData.filter?.sort || [],
+          ratings: requestData.filter?.ratings || [],
+          distence: requestData.filter?.distance || [], // Keep old spelling like old website
+          services: requestData.filter?.services || [],
+          brands: requestData.filter?.brands || [],
+        }
       };
       
+      // Validate required fields before making the request
+      if (!apiRequestData.location || !apiRequestData.latitude || !apiRequestData.longitude) {
+        throw new Error(`Missing required fields: location=${apiRequestData.location}, latitude=${apiRequestData.latitude}, longitude=${apiRequestData.longitude}`);
+      }
+      
+      console.log('🔄 Original requestData:', requestData);
+      console.log('🔄 Processed location:', location);
       console.log('🔄 Attempting real API call to /listgarage/ with data:', apiRequestData);
+      console.log('🔄 API URL:', `${API_URL}/listgarage/`);
+      console.log('🔄 Request body:', JSON.stringify(apiRequestData));
       
       const response = await fetch(`${API_URL}/listgarage/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'User-Agent': 'Bikedoot-WebApp/1.0',
         },
         body: JSON.stringify(apiRequestData),
       });
       
+      console.log('🔄 Response status:', response.status);
+      console.log('🔄 Response headers:', Object.fromEntries(response.headers.entries()));
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Try to get error details from response
+        let errorDetails = '';
+        try {
+          const errorText = await response.text();
+          console.log('🔄 Error response body:', errorText);
+          errorDetails = ` - ${errorText}`;
+        } catch (e) {
+          console.log('🔄 Could not read error response body');
+        }
+        throw new Error(`HTTP error! status: ${response.status}${errorDetails}`);
       }
       
       const result = await response.json();
