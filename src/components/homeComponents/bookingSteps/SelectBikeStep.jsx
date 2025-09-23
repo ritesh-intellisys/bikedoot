@@ -22,6 +22,11 @@ const SelectBikeStep = ({
       try {
         const subscriberId = localStorage.getItem("subscriberId") || "1";
         const userVehicles = await fetchUserVehicles(subscriberId);
+        console.log('🔍 User vehicles data structure:', userVehicles);
+        if (userVehicles.length > 0) {
+          console.log('🔍 First vehicle structure:', userVehicles[0]);
+          console.log('🔍 Vehicle properties:', Object.keys(userVehicles[0]));
+        }
         setVehicles(userVehicles);
         
         // Auto-select first vehicle if none selected
@@ -93,16 +98,16 @@ const SelectBikeStep = ({
           >
             <div className="text-center">
               <img
-                src={vehicle.image}
-                alt={`${vehicle.brand} ${vehicle.model}`}
+                src={vehicle.image || vehicle.model?.image || 'https://via.placeholder.com/96'}
+                alt={vehicle.brand || vehicle.model?.name || vehicle.name || 'Vehicle'}
                 className="w-24 h-24 mx-auto mb-4 object-cover rounded-lg"
               />
               <h3 className="text-lg font-semibold text-white mb-1">
-                {vehicle.brand} {vehicle.model}
+                {vehicle.brand || vehicle.model?.name || vehicle.name || 'Unknown Vehicle'}
               </h3>
-              <p className="text-gray-400 text-sm mb-2">{vehicle.cc}</p>
-              <p className="text-gray-500 text-xs">{vehicle.year}</p>
-              <p className="text-gray-500 text-xs">{vehicle.registration_number}</p>
+              <p className="text-gray-400 text-sm mb-2">{vehicle.cc || vehicle.model?.cc || 'N/A'}</p>
+              <p className="text-gray-500 text-xs">{vehicle.year || 'N/A'}</p>
+              <p className="text-gray-500 text-xs">{vehicle.registration_number || 'N/A'}</p>
               {selectedBikeId === vehicle.id && (
                 <div className="mt-3">
                   <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-600 text-white">

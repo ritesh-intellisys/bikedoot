@@ -57,15 +57,61 @@ export const getGaragesByServiceCategory = async (requestData) => {
           verified: true,
           distance: 2.3,
           image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg",
-          services: [
-            { id: 1, name: "General Service", price: "₹500" },
-            { id: 2, name: "Oil Change", price: "₹300" },
-            { id: 3, name: "Brake Service", price: "₹400" }
-          ],
-          operatingHours: "8:00 AM - 8:00 PM",
           phone: "+91 98765 43210",
           description: "Premium bike service center with certified mechanics and quality parts.",
-          brands: ['Honda', 'Yamaha', 'Bajaj']
+          brands: ['Honda', 'Yamaha', 'Bajaj'],
+          banners: [
+            { image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg" },
+            { image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg" },
+            { image: "https://images.pexels.com/photos/1384572336/pexels-photo-1384572336.jpeg" }
+          ],
+          services: {
+            service: [
+              {
+                "110cc": [
+                  { name: "General Service", price: "₹500" },
+                  { name: "Oil Change", price: "₹300" },
+                  { name: "Brake Service", price: "₹400" }
+                ]
+              },
+              {
+                "150cc": [
+                  { name: "General Service", price: "₹600" },
+                  { name: "Oil Change", price: "₹350" },
+                  { name: "Brake Service", price: "₹450" }
+                ]
+              }
+            ],
+            addon: [
+              {
+                "110cc": [
+                  { name: "Engine Cleaning", price: "₹200" },
+                  { name: "Chain Lubrication", price: "₹150" }
+                ]
+              }
+            ]
+          },
+          reviews: [
+            {
+              name: "Rajesh Kumar",
+              rating: 5,
+              comment: "Excellent service! My bike runs like new after their service.",
+              date: "2 days ago"
+            },
+            {
+              name: "Priya Sharma",
+              rating: 4,
+              comment: "Good quality work and reasonable prices. Recommended!",
+              date: "1 week ago"
+            },
+            {
+              name: "Amit Singh",
+              rating: 5,
+              comment: "Professional staff and quick service. Will definitely come back.",
+              date: "2 weeks ago"
+            }
+          ],
+          operatingHours: "8:00 AM - 8:00 PM"
         },
         {
           id: 2,
@@ -77,15 +123,47 @@ export const getGaragesByServiceCategory = async (requestData) => {
           verified: true,
           distance: 4.1,
           image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg",
-          services: [
-            { id: 1, name: "General Service", price: "₹450" },
-            { id: 2, name: "Oil Change", price: "₹250" },
-            { id: 3, name: "Tire Service", price: "₹350" }
-          ],
-          operatingHours: "9:00 AM - 7:00 PM",
           phone: "+91 98765 43211",
           description: "Fast and reliable bike service with experienced technicians.",
-          brands: ['TVS', 'Hero', 'Royal Enfield']
+          brands: ['TVS', 'Hero', 'Royal Enfield'],
+          banners: [
+            { image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg" },
+            { image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg" }
+          ],
+          services: {
+            service: [
+              {
+                "110cc": [
+                  { name: "General Service", price: "₹450" },
+                  { name: "Oil Change", price: "₹250" },
+                  { name: "Tire Service", price: "₹350" }
+                ]
+              }
+            ],
+            addon: [
+              {
+                "110cc": [
+                  { name: "Battery Check", price: "₹100" },
+                  { name: "Air Filter Cleaning", price: "₹80" }
+                ]
+              }
+            ]
+          },
+          reviews: [
+            {
+              name: "Vikram Patel",
+              rating: 4,
+              comment: "Quick service and good quality work.",
+              date: "3 days ago"
+            },
+            {
+              name: "Sunita Reddy",
+              rating: 5,
+              comment: "Very satisfied with the service. Staff is friendly and professional.",
+              date: "1 week ago"
+            }
+          ],
+          operatingHours: "9:00 AM - 7:00 PM"
         },
         {
           id: 3,
@@ -97,16 +175,61 @@ export const getGaragesByServiceCategory = async (requestData) => {
           verified: true,
           distance: 1.8,
           image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg",
-          services: [
-            { id: 1, name: "General Service", price: "₹600" },
-            { id: 2, name: "Oil Change", price: "₹350" },
-            { id: 3, name: "Brake Service", price: "₹450" },
-            { id: 4, name: "Tire Service", price: "₹400" }
-          ],
-          operatingHours: "7:00 AM - 9:00 PM",
           phone: "+91 98765 43212",
           description: "Expert bike service with premium quality and customer satisfaction guarantee.",
-          brands: ['KTM', 'Suzuki', 'Kawasaki']
+          brands: ['KTM', 'Suzuki', 'Kawasaki'],
+          banners: [
+            { image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg" },
+            { image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg" }
+          ],
+          services: {
+            service: [
+              {
+                "150cc": [
+                  { name: "General Service", price: "₹600" },
+                  { name: "Oil Change", price: "₹350" },
+                  { name: "Brake Service", price: "₹450" },
+                  { name: "Tire Service", price: "₹400" }
+                ]
+              },
+              {
+                "200cc": [
+                  { name: "General Service", price: "₹700" },
+                  { name: "Oil Change", price: "₹400" },
+                  { name: "Brake Service", price: "₹550" }
+                ]
+              }
+            ],
+            addon: [
+              {
+                "150cc": [
+                  { name: "Performance Tuning", price: "₹500" },
+                  { name: "Custom Paint", price: "₹2000" }
+                ]
+              }
+            ]
+          },
+          reviews: [
+            {
+              name: "Arjun Nair",
+              rating: 5,
+              comment: "Best bike service in Bangalore! Highly recommended.",
+              date: "1 day ago"
+            },
+            {
+              name: "Deepika Menon",
+              rating: 5,
+              comment: "Excellent service quality and customer care.",
+              date: "4 days ago"
+            },
+            {
+              name: "Rohit Kumar",
+              rating: 4,
+              comment: "Good service but a bit expensive. Quality is top-notch.",
+              date: "1 week ago"
+            }
+          ],
+          operatingHours: "7:00 AM - 9:00 PM"
         },
         {
           id: 4,
@@ -118,14 +241,44 @@ export const getGaragesByServiceCategory = async (requestData) => {
           verified: false,
           distance: 6.2,
           image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg",
-          services: [
-            { id: 1, name: "General Service", price: "₹400" },
-            { id: 2, name: "Oil Change", price: "₹200" }
-          ],
-          operatingHours: "8:30 AM - 6:30 PM",
           phone: "+91 98765 43213",
           description: "Affordable bike service with good quality work.",
-          brands: ['Hero', 'TVS']
+          brands: ['Hero', 'TVS'],
+          banners: [
+            { image: "https://images.pexels.com/photos/9607057/pexels-photo-9607057.jpeg" }
+          ],
+          services: {
+            service: [
+              {
+                "110cc": [
+                  { name: "General Service", price: "₹400" },
+                  { name: "Oil Change", price: "₹200" }
+                ]
+              }
+            ],
+            addon: [
+              {
+                "110cc": [
+                  { name: "Basic Cleaning", price: "₹100" }
+                ]
+              }
+            ]
+          },
+          reviews: [
+            {
+              name: "Suresh Kumar",
+              rating: 4,
+              comment: "Good service at reasonable prices.",
+              date: "5 days ago"
+            },
+            {
+              name: "Lakshmi Devi",
+              rating: 5,
+              comment: "Very satisfied with the work done on my bike.",
+              date: "1 week ago"
+            }
+          ],
+          operatingHours: "8:30 AM - 6:30 PM"
         },
         {
           id: 5,
@@ -137,16 +290,61 @@ export const getGaragesByServiceCategory = async (requestData) => {
           verified: true,
           distance: 3.7,
           image: "https://media.istockphoto.com/id/1384572336/photo/motorbike-mechanic-busy-repairing-bike-at-garage-with-medical-face-mask-concept-of-safety.jpg?s=1024x1024&w=is&k=20&c=OiYa7Nxy3s4AUoG9NGr8sHM5fYNuq4-4oI6HFF-MJ7U=",
-          services: [
-            { id: 1, name: "General Service", price: "₹550" },
-            { id: 2, name: "Oil Change", price: "₹280" },
-            { id: 3, name: "Brake Service", price: "₹380" },
-            { id: 4, name: "Tire Service", price: "₹320" }
-          ],
-          operatingHours: "8:00 AM - 8:00 PM",
           phone: "+91 98765 43214",
           description: "Royal treatment for your bike with premium service quality.",
-          brands: ['Royal Enfield', 'Ducati', 'BMW']
+          brands: ['Royal Enfield', 'Ducati', 'BMW'],
+          banners: [
+            { image: "https://media.istockphoto.com/id/1384572336/photo/motorbike-mechanic-busy-repairing-bike-at-garage-with-medical-face-mask-concept-of-safety.jpg?s=1024x1024&w=is&k=20&c=OiYa7Nxy3s4AUoG9NGr8sHM5fYNuq4-4oI6HFF-MJ7U=" },
+            { image: "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg" }
+          ],
+          services: {
+            service: [
+              {
+                "350cc": [
+                  { name: "General Service", price: "₹550" },
+                  { name: "Oil Change", price: "₹280" },
+                  { name: "Brake Service", price: "₹380" },
+                  { name: "Tire Service", price: "₹320" }
+                ]
+              },
+              {
+                "500cc": [
+                  { name: "General Service", price: "₹650" },
+                  { name: "Oil Change", price: "₹350" },
+                  { name: "Brake Service", price: "₹450" }
+                ]
+              }
+            ],
+            addon: [
+              {
+                "350cc": [
+                  { name: "Premium Cleaning", price: "₹300" },
+                  { name: "Engine Polish", price: "₹400" }
+                ]
+              }
+            ]
+          },
+          reviews: [
+            {
+              name: "Ravi Joshi",
+              rating: 5,
+              comment: "Excellent service for my Royal Enfield. Highly recommended!",
+              date: "3 days ago"
+            },
+            {
+              name: "Anita Desai",
+              rating: 4,
+              comment: "Good quality work and professional staff.",
+              date: "1 week ago"
+            },
+            {
+              name: "Vikram Thakur",
+              rating: 5,
+              comment: "Best garage in Pune for premium bikes.",
+              date: "2 weeks ago"
+            }
+          ],
+          operatingHours: "8:00 AM - 8:00 PM"
         },
         {
           id: 6,

@@ -17,6 +17,7 @@ import TwoWheelerGarages from '../components/garageComponents/TwoWheelerGarages'
 import ThreeWheelerGarages from '../components/garageComponents/ThreeWheelerGarages';
 import FourWheelerGarages from '../components/garageComponents/FourWheelerGarages';
 import SixWheelerGarages from '../components/garageComponents/SixWheelerGarages';
+import GarageDetailPage from '../components/garageComponents/GarageDetailPage';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { fetchLandingPageData } from '../services/landingpage';
@@ -477,75 +478,18 @@ const Home = ({ setCurrentPage }) => {
         )}
       </main>
 
-      {/* Garage Detail Modal */}
+      {/* Garage Detail Page */}
       {showGarageDetail && selectedGarage && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-2xl font-bold text-white">{selectedGarage.name}</h2>
-                <button
-                  onClick={closeGarageDetail}
-                  className="text-gray-400 hover:text-white text-2xl"
-                >
-                  ×
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <img
-                    src={selectedGarage.image}
-                    alt={selectedGarage.name}
-                    className="w-full h-64 object-cover rounded-lg"
-                  />
-                </div>
-                
-                <div>
-                  <div className="flex items-center mb-4">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <span key={i} className={i < Math.floor(selectedGarage.rating) ? "text-yellow-400" : "text-gray-600"}>
-                        ★
-                      </span>
-                    ))}
-                    <span className="ml-2 text-gray-400">({selectedGarage.rating})</span>
-                    {selectedGarage.verified && (
-                      <span className="ml-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs">
-                        ✓ Verified
-                      </span>
-                    )}
-                  </div>
-                  
-                  <p className="text-gray-300 mb-4">{selectedGarage.description}</p>
-                  
-                  <div className="space-y-2 text-gray-300">
-                    <p><strong>Location:</strong> {selectedGarage.location}</p>
-                    <p><strong>Address:</strong> {selectedGarage.address}</p>
-                    <p><strong>Phone:</strong> {selectedGarage.phone}</p>
-                    <p><strong>Hours:</strong> {selectedGarage.operatingHours}</p>
-                    <p><strong>Distance:</strong> {selectedGarage.distance}km away</p>
-                  </div>
-                  
-                  <div className="mt-6">
-                    <h3 className="text-lg font-semibold text-white mb-3">Services:</h3>
-                    <div className="grid grid-cols-1 gap-2">
-                      {selectedGarage.services.map((service) => (
-                        <div key={service.id} className="flex justify-between items-center bg-gray-700 p-3 rounded">
-                          <span className="text-gray-300">{service.name}</span>
-                          <span className="text-red-500 font-semibold">{service.price}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <button className="w-full bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mt-6">
-                    Book Now
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <GarageDetailPage
+          garage={selectedGarage}
+          onClose={closeGarageDetail}
+          onBookNow={() => {
+            // Navigate to booking flow
+            closeGarageDetail();
+            // You can add navigation logic here
+            console.log('Navigate to booking for garage:', selectedGarage.id);
+          }}
+        />
       )}
 
 

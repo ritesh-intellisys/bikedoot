@@ -2,30 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { createAddress, fetchCities } from '../../../services/bookingService';
 
-const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
-  const [cities, setCities] = useState([]);
+const AddAddressModal = ({ isOpen, onClose, onSuccess, cities = [] }) => {
   const [selectedCity, setSelectedCity] = useState('');
   const [address, setAddress] = useState('');
   const [pincode, setPincode] = useState('');
   const [landmark, setLandmark] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  
-  // Load cities on component mount
-  useEffect(() => {
-    const loadCities = async () => {
-      try {
-        const citiesData = await fetchCities();
-        setCities(citiesData);
-      } catch (error) {
-        console.error('Error loading cities:', error);
-      }
-    };
-    
-    if (isOpen) {
-      loadCities();
-    }
-  }, [isOpen]);
   
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { fetchUserAddresses } from '../../../services/bookingService';
+import React, { useState, useEffect, useMemo } from 'react';
+import { PlusIcon, MapPinIcon, ClockIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
+import { fetchUserAddresses, createAddress, fetchCities } from '../../../services/bookingService';
 import AddAddressModal from './AddAddressModal';
 
 const SlotAndAddressStep = ({ 
@@ -12,62 +12,145 @@ const SlotAndAddressStep = ({
   setErrors 
 }) => {
   const [addresses, setAddresses] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
+  const [cities, setCities] = useState([]);
+  const [selectedDateLabel, setSelectedDateLabel] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedEstimateOption, setSelectedEstimateOption] = useState(false);
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
-  
-  // Generate available dates (next 3 days)
-  const generateAvailableDates = () => {
-    const dates = [];
-    const today = new Date();
-    
-    for (let i = 1; i <= 3; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      dates.push({
-        date: date.toISOString().split('T')[0],
-        display: date.toLocaleDateString('en-US', { 
-          weekday: 'short', 
-          month: 'short', 
-          day: 'numeric' 
-        })
-      });
+  const [hasAddress, setHasAddress] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
+
+  // Generate available slots (matching old website logic)
+  const generateAvailableSlots = () => {
+    const addDays = (date, days) => {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    };
+
+    const formatDateLabel = (date) => {
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const dayName = days[date.getDay()];
+      const formattedDate = date.toISOString().slice(0, 10); // yyyy-mm-dd
+      return `${formattedDate} (${dayName})`;
+    };
+
+    const generateSlots = (dayIndex) => {
+      const today = new Date();
+      const date = addDays(today, dayIndex);
+      const slots = [];
+
+      let startHour = 10;
+      const endHour = 18;
+
+      if (dayIndex === 0) {
+        const currentHour = today.getHours();
+        const currentMinutes = today.getMinutes();
+        startHour = currentMinutes > 0 ? currentHour + 1 : currentHour;
+        if (startHour < 10) startHour = 10;
+        if (startHour > endHour) return []; // No slots for today if past endHour
+      }
+
+      for (let hour = startHour; hour <= endHour; hour++) {
+        const isPM = hour >= 12;
+        const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+        const label = `${displayHour.toString().padStart(2, "0")}:00 ${isPM ? "PM" : "AM"}`;
+        slots.push({ label });
+      }
+
+      return slots;
+    };
+
+    // Generate slots for 4 days (today + next 3 days)
+    const slotsArray = [0, 1, 2, 3].map((dayIndex) => ({
+      dateLabel: formatDateLabel(addDays(new Date(), dayIndex)),
+      slots: generateSlots(dayIndex),
+    }));
+
+    // If today has no slots, drop it and return next 3 days
+    if (slotsArray[0].slots.length === 0) {
+      return slotsArray.slice(1, 4); // return days 1, 2, 3 (3 days starting tomorrow)
     }
-    
-    return dates;
+
+    // Otherwise return first 3 days including today
+    return slotsArray.slice(0, 3);
   };
-  
-  // Generate time slots (9 AM to 6 PM, 1-hour intervals)
-  const generateTimeSlots = () => {
-    const slots = [];
-    for (let hour = 9; hour <= 18; hour++) {
-      const time = `${hour.toString().padStart(2, '0')}:00`;
-      slots.push({
-        time: time,
-        display: `${hour > 12 ? hour - 12 : hour}:00 ${hour >= 12 ? 'PM' : 'AM'}`
-      });
+
+  // Usage
+  const garageData = useMemo(() => {
+    return {
+      availableSlots: generateAvailableSlots(),
+    };
+  }, []);
+
+  const filterSlots = (slots) =>
+    slots.filter((slot) => {
+      const timeString = slot.label.replace(/\s*(AM|PM)/i, "");
+      const [hours] = timeString.split(":").map(Number);
+      const isPM = /PM/i.test(slot.label);
+      const slotHour = isPM && hours !== 12 ? hours + 12 : hours;
+      return slotHour >= 10 && slotHour < 19;
+    });
+
+  // Auto-select first date and slot on mount
+  useEffect(() => {
+    if (garageData.availableSlots?.length > 0 && !selectedDateLabel) {
+      const firstSlot = garageData.availableSlots[0];
+      const filtered = filterSlots(firstSlot.slots || []);
+
+      setSelectedDateLabel(firstSlot.dateLabel);
+      setSlotAndAddress((prev) => ({
+        ...prev,
+        date: firstSlot.dateLabel,
+        slot: filtered[0]?.label || "",
+      }));
+      setSelectedSlot(filtered[0]?.label || "");
+
+      console.log("🔵 Auto-selected first date:", firstSlot.dateLabel);
+      if (filtered[0]) {
+        console.log("🔵 Auto-selected first slot:", filtered[0].label);
+      }
     }
-    return slots;
-  };
-  
-  const availableDates = generateAvailableDates();
-  const timeSlots = generateTimeSlots();
-  
-  // Load user addresses on component mount
+  }, [garageData.availableSlots, selectedDateLabel, setSlotAndAddress]);
+
+  // Load cities from landing page API (like old website)
+  useEffect(() => {
+    const loadCities = async () => {
+      try {
+        const cityName = sessionStorage.getItem("selectedCity") || "Pune";
+        const citiesData = await fetchCities(cityName);
+        console.log("🖼️ Fetched cities data:", citiesData);
+        
+        if (Array.isArray(citiesData) && citiesData.length > 0) {
+          setCities(citiesData);
+        } else {
+          setCities([]);
+        }
+      } catch (err) {
+        console.error("❌ Failed to load cities data:", err);
+        setCities([]);
+      }
+    };
+
+    loadCities();
+  }, []);
+
+  // Load user addresses
   useEffect(() => {
     const loadAddresses = async () => {
       setLoading(true);
       try {
         const subscriberId = localStorage.getItem("subscriberId") || "1";
         const userAddresses = await fetchUserAddresses(subscriberId);
+        console.log("🔍 User addresses loaded:", userAddresses);
         setAddresses(userAddresses);
         
         // Auto-select default address if available
         const defaultAddress = userAddresses.find(addr => addr.is_default);
         if (defaultAddress) {
           setSelectedAddress(defaultAddress);
+          setHasAddress(true);
         }
       } catch (error) {
         console.error('Error fetching addresses:', error);
@@ -79,12 +162,12 @@ const SlotAndAddressStep = ({
     
     loadAddresses();
   }, [setLoading, setErrors]);
-  
+
   // Update parent component when selections change
   useEffect(() => {
-    if (selectedDate && selectedSlot && selectedAddress) {
+    if (selectedDateLabel && selectedSlot && selectedAddress) {
       setSlotAndAddress({
-        date: selectedDate,
+        date: selectedDateLabel,
         slot: selectedSlot,
         address: selectedAddress,
         estimate: selectedEstimateOption
@@ -93,14 +176,42 @@ const SlotAndAddressStep = ({
     } else {
       setSlotAndAddress(null);
     }
-  }, [selectedDate, selectedSlot, selectedAddress, selectedEstimateOption, setSlotAndAddress, setErrors]);
-  
+  }, [selectedDateLabel, selectedSlot, selectedAddress, selectedEstimateOption, setSlotAndAddress, setErrors]);
+
+  const handleDateClick = (date) => {
+    setSelectedDateLabel(date);
+    setSlotAndAddress((prev) => ({
+      ...prev,
+      date,
+    }));
+    console.log("🟢 Selected Date:", date);
+  };
+
+  const handleSlotClick = (slotLabel) => {
+    console.log("✅ Selected Slot:", slotLabel);
+    setSelectedSlot(slotLabel);
+    setSlotAndAddress((prev) => ({
+      ...prev,
+      slot: slotLabel,
+    }));
+  };
+
+  const handleEstimateSelection = (value) => {
+    setSlotAndAddress((prev) => ({
+      ...prev,
+      estimate: value,
+    }));
+    setSelectedEstimateOption(value);
+    console.log("Selected Estimate Option:", value);
+  };
+
   const handleAddAddressSuccess = (newAddress) => {
     setAddresses(prev => [...prev, newAddress]);
     setSelectedAddress(newAddress);
+    setHasAddress(true);
     setIsAddAddressModalOpen(false);
   };
-  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -111,7 +222,7 @@ const SlotAndAddressStep = ({
       </div>
     );
   }
-  
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -135,42 +246,55 @@ const SlotAndAddressStep = ({
       
       {/* Date Selection */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-white">Select Date</h3>
+        <h3 className="text-xl font-semibold text-white flex items-center">
+          <CalendarDaysIcon className="w-5 h-5 mr-2" />
+          Select Date
+        </h3>
         <div className="flex space-x-3 overflow-x-auto pb-2">
-          {availableDates.map((dateObj) => (
+          {garageData.availableSlots.map((slotData) => (
             <button
-              key={dateObj.date}
-              onClick={() => setSelectedDate(dateObj.date)}
+              key={slotData.dateLabel}
+              onClick={() => handleDateClick(slotData.dateLabel)}
               className={`flex-shrink-0 px-4 py-3 rounded-lg font-medium transition-colors ${
-                selectedDate === dateObj.date
+                selectedDateLabel === slotData.dateLabel
                   ? 'bg-red-600 text-white'
                   : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
               }`}
             >
-              {dateObj.display}
+              {slotData.dateLabel}
             </button>
           ))}
         </div>
       </div>
       
       {/* Time Slot Selection */}
-      {selectedDate && (
+      {selectedDateLabel && (
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-white">Select Time Slot</h3>
+          <h3 className="text-xl font-semibold text-white flex items-center">
+            <ClockIcon className="w-5 h-5 mr-2" />
+            Select Time Slot
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-            {timeSlots.map((slot) => (
-              <button
-                key={slot.time}
-                onClick={() => setSelectedSlot(slot.time)}
-                className={`px-4 py-3 rounded-lg font-medium transition-colors ${
-                  selectedSlot === slot.time
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                }`}
-              >
-                {slot.display}
-              </button>
-            ))}
+            {(() => {
+              const selectedDateData = garageData.availableSlots.find(
+                slot => slot.dateLabel === selectedDateLabel
+              );
+              const filteredSlots = selectedDateData ? filterSlots(selectedDateData.slots) : [];
+              
+              return filteredSlots.map((slot) => (
+                <button
+                  key={slot.label}
+                  onClick={() => handleSlotClick(slot.label)}
+                  className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                    selectedSlot === slot.label
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  }`}
+                >
+                  {slot.label}
+                </button>
+              ));
+            })()}
           </div>
         </div>
       )}
@@ -178,7 +302,10 @@ const SlotAndAddressStep = ({
       {/* Address Selection */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-white">Select Address</h3>
+          <h3 className="text-xl font-semibold text-white flex items-center">
+            <MapPinIcon className="w-5 h-5 mr-2" />
+            Select Address
+          </h3>
           <button
             onClick={() => setIsAddAddressModalOpen(true)}
             className="flex items-center space-x-2 text-red-400 hover:text-red-300 transition-colors"
@@ -239,7 +366,7 @@ const SlotAndAddressStep = ({
             <input
               type="checkbox"
               checked={selectedEstimateOption}
-              onChange={(e) => setSelectedEstimateOption(e.target.checked)}
+              onChange={(e) => handleEstimateSelection(e.target.checked)}
               className="w-5 h-5 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500 focus:ring-2"
             />
             <div>
@@ -251,66 +378,16 @@ const SlotAndAddressStep = ({
           </label>
         </div>
       </div>
-      
-      {/* Selection Summary */}
-      {(selectedDate || selectedSlot || selectedAddress) && (
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">Selected Details</h3>
-          
-          <div className="space-y-3">
-            {selectedDate && (
-              <div className="flex justify-between">
-                <span className="text-gray-400">Date:</span>
-                <span className="text-white">
-                  {new Date(selectedDate).toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </span>
-              </div>
-            )}
-            
-            {selectedSlot && (
-              <div className="flex justify-between">
-                <span className="text-gray-400">Time:</span>
-                <span className="text-white">
-                  {timeSlots.find(s => s.time === selectedSlot)?.display}
-                </span>
-              </div>
-            )}
-            
-            {selectedAddress && (
-              <div className="flex justify-between">
-                <span className="text-gray-400">Address:</span>
-                <span className="text-white text-right max-w-xs">
-                  {selectedAddress.address}, {selectedAddress.city} - {selectedAddress.pincode}
-                </span>
-              </div>
-            )}
-            
-            <div className="flex justify-between">
-              <span className="text-gray-400">Estimate Requested:</span>
-              <span className="text-white">
-                {selectedEstimateOption ? 'Yes' : 'No'}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-      
+
       {/* Add Address Modal */}
-      {isAddAddressModalOpen && (
-        <AddAddressModal
-          isOpen={isAddAddressModalOpen}
-          onClose={() => setIsAddAddressModalOpen(false)}
-          onSuccess={handleAddAddressSuccess}
-        />
-      )}
+      <AddAddressModal
+        isOpen={isAddAddressModalOpen}
+        onClose={() => setIsAddAddressModalOpen(false)}
+        onSuccess={handleAddAddressSuccess}
+        cities={cities}
+      />
     </div>
   );
 };
 
 export default SlotAndAddressStep;
-

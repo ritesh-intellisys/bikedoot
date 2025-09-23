@@ -123,7 +123,7 @@ const SelectServiceStep = ({
       <div className="space-y-4">
         <h3 className="text-xl font-semibold text-white">Services</h3>
         <div className="space-y-3">
-          {services.map((service) => (
+          {(services || []).map((service) => (
             <div
               key={service.id}
               className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden"
@@ -178,7 +178,7 @@ const SelectServiceStep = ({
                   <div className="mt-4 pt-4 border-t border-gray-700">
                     <h5 className="text-sm font-medium text-white mb-2">Includes:</h5>
                     <ul className="space-y-1">
-                      {service.includes.map((item, index) => (
+                      {(service.includes || []).map((item, index) => (
                         <li key={index} className="text-gray-400 text-sm flex items-center">
                           <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
                           {item}
@@ -197,7 +197,7 @@ const SelectServiceStep = ({
       <div className="space-y-4">
         <h3 className="text-xl font-semibold text-white">Add-ons</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {addOns.map((addOn) => (
+          {(addOns || []).map((addOn) => (
             <div
               key={addOn.id}
               className={`bg-gray-800 rounded-xl border p-4 transition-all duration-200 ${
@@ -249,7 +249,7 @@ const SelectServiceStep = ({
             <div className="mb-4">
               <h4 className="text-sm font-medium text-gray-400 mb-2">Services:</h4>
               <div className="space-y-2">
-                {selectedServices.map((service) => (
+                {(selectedServices || []).map((service) => (
                   <div key={service.id} className="flex justify-between items-center">
                     <span className="text-white">{service.name}</span>
                     <span className="text-red-400 font-semibold">₹{service.price}</span>
@@ -263,7 +263,7 @@ const SelectServiceStep = ({
             <div className="mb-4">
               <h4 className="text-sm font-medium text-gray-400 mb-2">Add-ons:</h4>
               <div className="space-y-2">
-                {selectedAddOns.map((addOn) => (
+                {(selectedAddOns || []).map((addOn) => (
                   <div key={addOn.id} className="flex justify-between items-center">
                     <span className="text-white">{addOn.name}</span>
                     <span className="text-red-400 font-semibold">₹{addOn.price}</span>
