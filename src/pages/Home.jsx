@@ -21,7 +21,7 @@ import GarageDetailPage from '../components/garageComponents/GarageDetailPage';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { fetchLandingPageData } from '../services/landingpage';
-import { cleanupLocationData } from '../utils/geolocation';
+import { cleanupLocationData, getCurrentLocation, getCityFromCoordinates, storeLocationData } from '../utils/geolocation';
 
 const Home = ({ setCurrentPage }) => {
   // State management - exact from original site
@@ -50,41 +50,66 @@ const Home = ({ setCurrentPage }) => {
   // Ref for ServiceCategories component to access its modal functions
   const serviceCategoriesRef = useRef(null);
 
-  // Geolocation setup - exact match with old website
+  // Geolocation setup - improved with better error handling and city detection
   useEffect(() => {
     // Clean up any incorrect location data first
     cleanupLocationData();
     
     // Check if we already have location data
     if (sessionStorage.getItem("latitude") && sessionStorage.getItem("longitude")) {
+      console.log("📍 Using existing location data");
       setLocationReady(true);
       return;
     }
 
-    // ✅ Geolocation API support check
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          sessionStorage.setItem("latitude", coords.latitude);
-          sessionStorage.setItem("longitude", coords.longitude);
-          console.log("📍 Latitude: in mainpage", coords.latitude);
-          console.log("📍 Longitude: in mainpage", coords.longitude);
-          setLocationReady(true);
-        },
-        (error) => {
-          console.error("Geolocation error:", error);
-          // Set fallback coordinates
-          sessionStorage.setItem("latitude", "17.74162");
-          sessionStorage.setItem("longitude", "73.8567");
-          setLocationReady(true);
+    // Enhanced geolocation with better error handling
+    const initializeLocation = async () => {
+      setIsDetectingLocation(true);
+      try {
+        console.log("📍 Attempting to get current location...");
+        const { latitude, longitude } = await getCurrentLocation();
+        
+        console.log("📍 Coordinates obtained:", { latitude, longitude });
+        
+        // Get city information from coordinates
+        try {
+          const cityData = await getCityFromCoordinates(latitude, longitude);
+          console.log("📍 City data:", cityData);
+          
+          // Store location data with city information
+          storeLocationData(latitude, longitude, cityData);
+          
+          // Update selected city if we got a valid city
+          if (cityData.city) {
+            setSelectedCity(cityData.city);
+            console.log("📍 Updated selected city to:", cityData.city);
+          }
+        } catch (cityError) {
+          console.warn("📍 Failed to get city data, using coordinates only:", cityError);
+          // Store just coordinates if city detection fails
+          sessionStorage.setItem("latitude", latitude.toString());
+          sessionStorage.setItem("longitude", longitude.toString());
         }
-      );
-    } else {
-      // Browser doesn't support geolocation
-      sessionStorage.setItem("latitude", "17.74162");
-      sessionStorage.setItem("longitude", "73.8567");
-      setLocationReady(true);
-    }
+        
+        setLocationReady(true);
+      } catch (error) {
+        console.error("📍 Geolocation failed:", error);
+        
+        // Set fallback coordinates (Pune)
+        const fallbackLat = 18.5204;
+        const fallbackLng = 73.8567;
+        sessionStorage.setItem("latitude", fallbackLat.toString());
+        sessionStorage.setItem("longitude", fallbackLng.toString());
+        sessionStorage.setItem("selectedCity", "Pune");
+        
+        console.log("📍 Using fallback location: Pune");
+        setLocationReady(true);
+      } finally {
+        setIsDetectingLocation(false);
+      }
+    };
+
+    initializeLocation();
   }, []);
 
   // Load landing page data - exact from original site

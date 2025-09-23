@@ -4,7 +4,7 @@ import GarageCard from '../homeComponents/GarageCard';
 import ScrollToTop from '../ScrollToTop';
 import VehicleTypeSelector from '../VehicleTypeSelector';
 import { getGaragesByServiceCategory } from '../../services/garageService';
-import { getStoredLocationData, hasLocationData } from '../../utils/geolocation';
+import { getStoredLocationData, hasLocationData, getCurrentLocation, getCityFromCoordinates, storeLocationData } from '../../utils/geolocation';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMain, onVehicleTypeChange }) => {
@@ -50,22 +50,44 @@ const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Geolocation setup
+  // Geolocation setup with improved handling
   useEffect(() => {
-    // Check if we already have location data
-    if (hasLocationData()) {
-      setLocationReady(true);
-      return;
-    }
+    const initializeLocation = async () => {
+      // Check if we already have location data
+      if (hasLocationData()) {
+        console.log("📍 Using existing location data in garage component");
+        setLocationReady(true);
+        return;
+      }
 
-    // Set fallback coordinates if no location data available
-    const { latitude, longitude } = getStoredLocationData();
-    if (!latitude || !longitude) {
-      sessionStorage.setItem("latitude", "17.74162");
-      sessionStorage.setItem("longitude", "73.8567");
-    }
-    
-    setLocationReady(true);
+      // Try to get fresh location data
+      try {
+        console.log("📍 No location data found, attempting to get current location...");
+        const { latitude, longitude } = await getCurrentLocation();
+        
+        // Try to get city information
+        try {
+          const cityData = await getCityFromCoordinates(latitude, longitude);
+          storeLocationData(latitude, longitude, cityData);
+          console.log("📍 Location and city data stored:", { latitude, longitude, city: cityData.city });
+        } catch (cityError) {
+          console.warn("📍 Failed to get city data, storing coordinates only:", cityError);
+          sessionStorage.setItem("latitude", latitude.toString());
+          sessionStorage.setItem("longitude", longitude.toString());
+        }
+        
+        setLocationReady(true);
+      } catch (error) {
+        console.error("📍 Failed to get location, using fallback:", error);
+        // Set fallback coordinates
+        sessionStorage.setItem("latitude", "18.5204");
+        sessionStorage.setItem("longitude", "73.8567");
+        sessionStorage.setItem("selectedCity", "Pune");
+        setLocationReady(true);
+      }
+    };
+
+    initializeLocation();
   }, []);
 
   // Fetch garages when filters or location change
