@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDownIcon, MagnifyingGlassIcon, UserIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, MagnifyingGlassIcon, UserIcon, MapPinIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { getCurrentLocation, getCityFromCoordinates, storeLocationData, getStoredLocationData } from '../../utils/geolocation';
+import { isAuthenticated, clearAuthData } from '../../services/authService';
 import CitySelectionPopup from './CitySelectionPopup';
 
 const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBackToMain, isDetectingLocation }) => {
   const [isCityPopupOpen, setIsCityPopupOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check authentication status
+  useEffect(() => {
+    setIsLoggedIn(isAuthenticated());
+  }, []);
+
+  const handleLogout = () => {
+    clearAuthData();
+    setIsLoggedIn(false);
+    setCurrentPage('home');
+  };
 
   // Listen for session storage changes
   useEffect(() => {
@@ -175,9 +188,31 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
             </div>
 
             {/* User Menu */}
-            <button className="text-white hover:text-red-500 transition-colors duration-200">
-              <UserIcon className="w-6 h-6" />
-            </button>
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-4">
+                <button 
+                  onClick={() => setCurrentPage('profile')}
+                  className="text-white hover:text-red-500 transition-colors duration-200"
+                  title="Profile"
+                >
+                  <UserIcon className="w-6 h-6" />
+                </button>
+                <button 
+                  onClick={handleLogout}
+                  className="text-white hover:text-red-500 transition-colors duration-200"
+                  title="Logout"
+                >
+                  <ArrowRightOnRectangleIcon className="w-6 h-6" />
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setCurrentPage('login')}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium"
+              >
+                Sign In
+              </button>
+            )}
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">

@@ -82,8 +82,8 @@ const SelectServiceStep = ({
   };
   
   const calculateTotal = () => {
-    const serviceTotal = selectedServices.reduce((sum, service) => sum + service.price, 0);
-    const addOnTotal = selectedAddOns.reduce((sum, addOn) => sum + addOn.price, 0);
+    const serviceTotal = selectedServices.reduce((sum, service) => sum + parseFloat(service.price || 0), 0);
+    const addOnTotal = selectedAddOns.reduce((sum, addOn) => sum + parseFloat(addOn.price || 0), 0);
     return serviceTotal + addOnTotal;
   };
   
@@ -141,7 +141,7 @@ const SelectServiceStep = ({
                       <span>Duration: {service.duration}</span>
                       <span>•</span>
                       <span className="text-red-400 font-semibold">
-                        ₹{service.price}
+                        ₹{parseFloat(service.price || 0).toFixed(0)}
                       </span>
                     </div>
                   </div>
@@ -178,12 +178,26 @@ const SelectServiceStep = ({
                   <div className="mt-4 pt-4 border-t border-gray-700">
                     <h5 className="text-sm font-medium text-white mb-2">Includes:</h5>
                     <ul className="space-y-1">
-                      {(service.includes || []).map((item, index) => (
-                        <li key={index} className="text-gray-400 text-sm flex items-center">
-                          <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
-                          {item}
-                        </li>
-                      ))}
+                      {(() => {
+                        // Handle both array and string formats
+                        let includesList = [];
+                        if (Array.isArray(service.includes)) {
+                          includesList = service.includes;
+                        } else if (typeof service.includes === 'string') {
+                          // Split by bullet points and clean up
+                          includesList = service.includes
+                            .split('•')
+                            .map(item => item.trim())
+                            .filter(item => item.length > 0);
+                        }
+                        
+                        return includesList.map((item, index) => (
+                          <li key={index} className="text-gray-400 text-sm flex items-center">
+                            <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
+                            {item}
+                          </li>
+                        ));
+                      })()}
                     </ul>
                   </div>
                 )}
@@ -211,7 +225,7 @@ const SelectServiceStep = ({
                   {addOn.name}
                 </h4>
                 <span className="text-red-400 font-semibold">
-                  ₹{addOn.price}
+                  ₹{parseFloat(addOn.price || 0).toFixed(0)}
                 </span>
               </div>
               
@@ -252,7 +266,7 @@ const SelectServiceStep = ({
                 {(selectedServices || []).map((service) => (
                   <div key={service.id} className="flex justify-between items-center">
                     <span className="text-white">{service.name}</span>
-                    <span className="text-red-400 font-semibold">₹{service.price}</span>
+                    <span className="text-red-400 font-semibold">₹{parseFloat(service.price || 0).toFixed(0)}</span>
                   </div>
                 ))}
               </div>
@@ -266,7 +280,7 @@ const SelectServiceStep = ({
                 {(selectedAddOns || []).map((addOn) => (
                   <div key={addOn.id} className="flex justify-between items-center">
                     <span className="text-white">{addOn.name}</span>
-                    <span className="text-red-400 font-semibold">₹{addOn.price}</span>
+                    <span className="text-red-400 font-semibold">₹{parseFloat(addOn.price || 0).toFixed(0)}</span>
                   </div>
                 ))}
               </div>
@@ -276,7 +290,7 @@ const SelectServiceStep = ({
           <div className="border-t border-gray-700 pt-4">
             <div className="flex justify-between items-center">
               <span className="text-lg font-semibold text-white">Total:</span>
-              <span className="text-xl font-bold text-red-400">₹{calculateTotal()}</span>
+              <span className="text-xl font-bold text-red-400">₹{calculateTotal().toFixed(0)}</span>
             </div>
           </div>
         </div>

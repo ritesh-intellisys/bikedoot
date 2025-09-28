@@ -4,7 +4,7 @@ import GarageCard from './GarageCard';
 import { getGaragesByServiceCategory } from '../../services/garageService';
 import { getStoredLocationData, hasLocationData } from '../../utils/geolocation';
 
-const GarageListing = ({ selectedCity, filterData, onGarageClick }) => {
+const GarageListing = ({ selectedCity, filterData, onGarageClick, setCurrentPage, onShowLoginPopup }) => {
   const [garages, setGarages] = useState([]);
   const [filteredGarages, setFilteredGarages] = useState([]);
   const [filters, setFilters] = useState(null);
@@ -137,6 +137,8 @@ const GarageListing = ({ selectedCity, filterData, onGarageClick }) => {
                     key={garage.id}
                     garage={garage}
                     onClick={handleGarageClick}
+                    setCurrentPage={setCurrentPage}
+                    onShowLoginPopup={onShowLoginPopup}
                   />
                 ))}
               </div>

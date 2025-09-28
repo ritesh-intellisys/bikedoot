@@ -3,34 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { StarIcon, MapPinIcon, PhoneIcon, ClockIcon } from '@heroicons/react/24/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { isAuthenticated } from '../../services/authService';
 
-const GarageCard = ({ garage, onClick, isExpanded = false }) => {
+const GarageCard = ({ garage, onClick, isExpanded = false, setCurrentPage, onShowLoginPopup }) => {
   const navigate = useNavigate();
   
   const handleBookNow = (e) => {
     e.stopPropagation(); // Prevent card click event
     console.log("Book Now clicked for garage:", garage.id, garage.name);
-    console.log("Full garage data:", garage);
     
-    const token = localStorage.getItem("authToken");
-    
-    // For demo purposes, allow booking without authentication
-    // In production, you would check for valid token
-    if (token || true) { // Always allow for demo
-      // Set mock user data for demo
-      if (!localStorage.getItem("authToken")) {
-        localStorage.setItem("authToken", "demo-token-123");
-        localStorage.setItem("subscriberId", "1");
-        localStorage.setItem("businessId", "1");
-      }
-      
-      console.log("Navigating to booking with garageId:", garage.id);
+    // Check if user is authenticated
+    if (isAuthenticated()) {
+      console.log("✅ User is authenticated, navigating to booking with garageId:", garage.id);
       navigate("/booking", { 
         state: { garageId: garage.id } 
       });
     } else {
-      // Show login popup or redirect to login
-      alert("Please login to book a service");
+      console.log("❌ User not authenticated, showing login popup");
+      if (onShowLoginPopup) {
+        onShowLoginPopup(garage.id);
+      }
     }
   };
   
@@ -136,6 +128,7 @@ const GarageCard = ({ garage, onClick, isExpanded = false }) => {
           </button>
         )}
       </div>
+
     </div>
   );
 };

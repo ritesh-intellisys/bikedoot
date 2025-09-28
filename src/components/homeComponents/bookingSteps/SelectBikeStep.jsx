@@ -51,10 +51,32 @@ const SelectBikeStep = ({
     setErrors({});
   };
   
-  const handleAddBikeSuccess = (newVehicle) => {
-    setVehicles(prev => [...prev, newVehicle]);
-    setSelectedBikeId(newVehicle.id);
-    setBikeData(newVehicle);
+  const handleAddBikeSuccess = async (newVehicle) => {
+    // Refresh the vehicles list to include the newly added vehicle
+    try {
+      const subscriberId = localStorage.getItem("subscriberId") || "1";
+      const userVehicles = await fetchUserVehicles(subscriberId);
+      setVehicles(userVehicles);
+      
+      // Find the newly added vehicle in the updated list
+      const addedVehicle = userVehicles.find(v => v.id === newVehicle.id || v.vehicle_id === newVehicle.vehicle_id);
+      if (addedVehicle) {
+        setSelectedBikeId(addedVehicle.id);
+        setBikeData(addedVehicle);
+      } else {
+        // Fallback to the newVehicle data if not found in API response
+        setVehicles(prev => [...prev, newVehicle]);
+        setSelectedBikeId(newVehicle.id);
+        setBikeData(newVehicle);
+      }
+    } catch (error) {
+      console.error('Error refreshing vehicles list:', error);
+      // Fallback to local update
+      setVehicles(prev => [...prev, newVehicle]);
+      setSelectedBikeId(newVehicle.id);
+      setBikeData(newVehicle);
+    }
+    
     setIsAddBikeModalOpen(false);
   };
   
@@ -122,11 +144,11 @@ const SelectBikeStep = ({
         {/* Add New Bike Card */}
         <div
           onClick={() => setIsAddBikeModalOpen(true)}
-          className="bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl p-6 cursor-pointer transition-all duration-200 hover:border-red-500 hover:bg-gray-700 flex flex-col items-center justify-center min-h-[200px]"
+          className="bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl p-3 sm:p-6 cursor-pointer transition-all duration-200 hover:border-red-500 hover:bg-gray-700 flex flex-col items-center justify-center min-h-[120px] sm:min-h-[200px]"
         >
-          <PlusIcon className="w-12 h-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold text-white mb-2">Add New Bike</h3>
-          <p className="text-gray-400 text-sm text-center">
+          <PlusIcon className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 mb-2 sm:mb-4" />
+          <h3 className="text-base sm:text-lg font-semibold text-white mb-1 sm:mb-2">Add New Bike</h3>
+          <p className="text-gray-400 text-xs sm:text-sm text-center">
             Don't see your bike? Add it to your profile
           </p>
         </div>

@@ -10,8 +10,11 @@ const BookingFlow = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Get garageId from navigation state
-  const garageId = location.state?.garageId;
+  // Get garageId from URL params or navigation state
+  const urlParams = new URLSearchParams(location.search);
+  const garageId = urlParams.get('garageId') || location.state?.garageId;
+  const returnTo = urlParams.get('returnTo') || location.state?.returnTo;
+  const vehicleType = urlParams.get('vehicleType') || location.state?.vehicleType;
   
   // Main booking state
   const [activeStep, setActiveStep] = useState(0);
@@ -32,11 +35,9 @@ const BookingFlow = () => {
       
       const token = localStorage.getItem("authToken");
       if (!token) {
-        // For demo purposes, set mock authentication data
-        localStorage.setItem("authToken", "demo-token-123");
-        localStorage.setItem("subscriberId", "1");
-        localStorage.setItem("businessId", "1");
-        console.log("Set mock authentication data");
+        console.log("No authentication token, redirecting to login");
+        navigate("/login");
+        return;
       }
       
       if (!garageId) {
@@ -124,10 +125,16 @@ const BookingFlow = () => {
           <h2 className="text-2xl font-bold mb-4">Invalid Booking Request</h2>
           <p className="text-gray-400 mb-6">Please select a garage first to start booking.</p>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => {
+              if (returnTo === 'garage-list' && vehicleType) {
+                navigate(`/?vehicleType=${vehicleType}`);
+              } else {
+                navigate("/");
+              }
+            }}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            Go Back to Home
+            {returnTo === 'garage-list' ? 'Go Back to Garages' : 'Go Back to Home'}
           </button>
         </div>
       </div>
@@ -146,7 +153,15 @@ const BookingFlow = () => {
               <p className="text-gray-400 mt-1">Complete your booking in 4 simple steps</p>
             </div>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => {
+                // Return to garage list if that's where we came from, otherwise go to home
+                if (returnTo === 'garage-list' && vehicleType) {
+                  // Navigate back to garage list with vehicle type
+                  navigate(`/?vehicleType=${vehicleType}`);
+                } else {
+                  navigate("/");
+                }
+              }}
               className="text-gray-400 hover:text-white transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,10 +240,16 @@ const BookingFlow = () => {
           <h1 className="text-2xl font-bold text-red-500 mb-4">Error Loading Booking</h1>
           <p className="text-gray-400 mb-4">Something went wrong. Please try again.</p>
           <button 
-            onClick={() => navigate("/")}
+            onClick={() => {
+              if (returnTo === 'garage-list' && vehicleType) {
+                navigate(`/?vehicleType=${vehicleType}`);
+              } else {
+                navigate("/");
+              }
+            }}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
           >
-            Go Back Home
+            {returnTo === 'garage-list' ? 'Go Back to Garages' : 'Go Back Home'}
           </button>
         </div>
       </div>

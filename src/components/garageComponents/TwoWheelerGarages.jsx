@@ -7,7 +7,7 @@ import { getGaragesByServiceCategory } from '../../services/garageService';
 import { getStoredLocationData, hasLocationData, getCurrentLocation, getCityFromCoordinates, storeLocationData } from '../../utils/geolocation';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
-const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMain, onVehicleTypeChange }) => {
+const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMain, onVehicleTypeChange, onShowLoginPopup }) => {
   const [garages, setGarages] = useState([]);
   const [filteredGarages, setFilteredGarages] = useState([]);
   const [filters, setFilters] = useState(null);
@@ -365,6 +365,8 @@ const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
                           key={garage.id}
                           garage={garage}
                           onClick={handleGarageClick}
+                          setCurrentPage={onBackToMain}
+                          onShowLoginPopup={onShowLoginPopup}
                         />
                       ))}
                     </div>

@@ -3,6 +3,8 @@ import './AboutUs.css';
 import Header from '../components/homeComponents/Header';
 import ScrollToTop from '../components/ScrollToTop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { isAuthenticated } from '../services/authService';
+import LoginPopup from '../components/homeComponents/LoginPopup';
 import { 
   faBicycle,
   faUsers,
@@ -35,8 +37,26 @@ const AboutUs = ({ setCurrentPage }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedCity, setSelectedCity] = useState('Mumbai');
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
   const statsSectionRef = useRef(null);
   const teamSectionRef = useRef(null);
+
+  const handleBookNow = () => {
+    if (isAuthenticated()) {
+      // User is authenticated, redirect to home to start booking
+      console.log("✅ User is authenticated, redirecting to home");
+      setCurrentPage('home');
+    } else {
+      // User not authenticated, show login popup
+      console.log("❌ User not authenticated, showing login popup");
+      setShowLoginPopup(true);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    console.log("✅ Login successful, redirecting to home");
+    setCurrentPage('home');
+  };
   const valuesSectionRef = useRef(null);
   const servicesSectionRef = useRef(null);
 
@@ -280,7 +300,7 @@ const AboutUs = ({ setCurrentPage }) => {
                       </li>
                     ))}
                   </ul>
-                  <button className="btn service-btn">Book Now</button>
+                  <button className="btn service-btn" onClick={handleBookNow}>Book Now</button>
                 </div>
               </div>
             ))}
@@ -447,6 +467,13 @@ const AboutUs = ({ setCurrentPage }) => {
       
       {/* Scroll to Top Button */}
       <ScrollToTop />
+
+      {/* Login Popup */}
+      <LoginPopup
+        isOpen={showLoginPopup}
+        onClose={() => setShowLoginPopup(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 };

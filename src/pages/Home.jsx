@@ -22,6 +22,7 @@ import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { fetchLandingPageData } from '../services/landingpage';
 import { cleanupLocationData, getCurrentLocation, getCityFromCoordinates, storeLocationData } from '../utils/geolocation';
+import LoginPopup from '../components/homeComponents/LoginPopup';
 
 const Home = ({ setCurrentPage }) => {
   // State management - exact from original site
@@ -46,9 +47,23 @@ const Home = ({ setCurrentPage }) => {
   const [selectedGarage, setSelectedGarage] = useState(null);
   const [showGarageDetail, setShowGarageDetail] = useState(false);
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [loginPopupGarageId, setLoginPopupGarageId] = useState(null);
 
   // Ref for ServiceCategories component to access its modal functions
   const serviceCategoriesRef = useRef(null);
+
+  // Handle URL parameters for returning from booking flow
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const vehicleType = urlParams.get('vehicleType');
+    if (vehicleType) {
+      console.log('📍 Returning from booking flow, showing garage list for:', vehicleType);
+      setSelectedVehicleType(vehicleType);
+      setShowGarageListing(true);
+      setSelectedServiceId(1);
+    }
+  }, []);
 
   // Geolocation setup - improved with better error handling and city detection
   useEffect(() => {
@@ -210,6 +225,28 @@ const Home = ({ setCurrentPage }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Handle login popup from garage cards
+  const handleShowLoginPopup = (garageId) => {
+    console.log("🔍 Showing login popup for garage:", garageId);
+    setLoginPopupGarageId(garageId);
+    setShowLoginPopup(true);
+  };
+
+  // Handle login success for garage detail
+  const handleLoginSuccess = () => {
+    console.log("✅ Login successful, proceeding to booking");
+    if (loginPopupGarageId) {
+      // Login popup from garage card
+      window.location.href = `/booking?garageId=${loginPopupGarageId}&returnTo=garage-list&vehicleType=${selectedVehicleType}`;
+    } else {
+      // Login popup from garage detail
+      closeGarageDetail();
+      window.location.href = `/booking?garageId=${selectedGarage.id}&returnTo=garage-list&vehicleType=${selectedVehicleType}`;
+    }
+    setShowLoginPopup(false);
+    setLoginPopupGarageId(null);
+  };
+
   // Scroll to top of page
   const scrollToTop = () => {
     window.scrollTo({
@@ -229,6 +266,7 @@ const Home = ({ setCurrentPage }) => {
         onBackToMain={backToMain}
         isDetectingLocation={isDetectingLocation}
       />
+
 
       {/* Main Content */}
       <main>
@@ -470,6 +508,7 @@ const Home = ({ setCurrentPage }) => {
                 onGarageClick={handleGarageClick}
                 onBackToMain={backToMain}
                 onVehicleTypeChange={handleVehicleTypeChange}
+                onShowLoginPopup={handleShowLoginPopup}
               />
             )}
             {selectedVehicleType === 'three-wheeler' && (
@@ -479,6 +518,7 @@ const Home = ({ setCurrentPage }) => {
                 onGarageClick={handleGarageClick}
                 onBackToMain={backToMain}
                 onVehicleTypeChange={handleVehicleTypeChange}
+                onShowLoginPopup={handleShowLoginPopup}
               />
             )}
             {selectedVehicleType === 'four-wheeler' && (
@@ -488,6 +528,7 @@ const Home = ({ setCurrentPage }) => {
                 onGarageClick={handleGarageClick}
                 onBackToMain={backToMain}
                 onVehicleTypeChange={handleVehicleTypeChange}
+                onShowLoginPopup={handleShowLoginPopup}
               />
             )}
             {selectedVehicleType === 'six-wheeler' && (
@@ -495,8 +536,9 @@ const Home = ({ setCurrentPage }) => {
               selectedCity={selectedCity}
               filterData={filterData}
               onGarageClick={handleGarageClick}
-                onBackToMain={backToMain}
-                onVehicleTypeChange={handleVehicleTypeChange}
+              onBackToMain={backToMain}
+              onVehicleTypeChange={handleVehicleTypeChange}
+              onShowLoginPopup={handleShowLoginPopup}
             />
             )}
           </>
@@ -509,10 +551,19 @@ const Home = ({ setCurrentPage }) => {
           garage={selectedGarage}
           onClose={closeGarageDetail}
           onBookNow={() => {
-            // Navigate to booking flow
-            closeGarageDetail();
-            // You can add navigation logic here
-            console.log('Navigate to booking for garage:', selectedGarage.id);
+            // Check if user is authenticated
+            const token = localStorage.getItem('authToken');
+            
+            if (token) {
+              // User is authenticated, proceed to booking
+              console.log("✅ User is authenticated, proceeding to booking");
+              closeGarageDetail();
+              window.location.href = `/booking?garageId=${selectedGarage.id}&returnTo=garage-list&vehicleType=${selectedVehicleType}`;
+            } else {
+              // User not authenticated, show login popup
+              console.log("❌ User not authenticated, showing login popup");
+              setShowLoginPopup(true);
+            }
           }}
         />
       )}
@@ -524,6 +575,13 @@ const Home = ({ setCurrentPage }) => {
 
       {/* Scroll to Top Button */}
       <ScrollToTop />
+
+      {/* Login Popup */}
+      <LoginPopup
+        isOpen={showLoginPopup}
+        onClose={() => setShowLoginPopup(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 };
