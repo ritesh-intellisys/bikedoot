@@ -290,14 +290,14 @@ const Home = ({ setCurrentPage }) => {
             />
 
             {/* Marketing Section */}
-            <section className="py-12 px-4 bg-gray-900">
+            <section className="py-8 md:py-12 px-4 bg-gray-900">
               <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
                   <div>
-                    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+                    <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6 text-white">
                       Your Vehicle, <span className="text-red-600">Our Priority</span>
                     </h2>
-                    <p className="text-lg text-gray-300 mb-8">
+                    <p className="text-sm md:text-lg text-gray-300 mb-6 md:mb-8">
                       Whether you drive a bike, car, or commercial vehicle, we connect you with the best garages in your area. 
                       Get transparent pricing, verified mechanics, and quality service for all vehicle types. 
                       From routine maintenance to major repairs, find the right garage for your needs.
@@ -309,7 +309,7 @@ const Home = ({ setCurrentPage }) => {
                           element.scrollIntoView({ behavior: 'smooth' });
                         }
                       }}
-                      className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                      className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl text-sm md:text-base"
                     >
                       EXPLORE SERVICES
                     </button>
@@ -328,11 +328,11 @@ const Home = ({ setCurrentPage }) => {
             {/* Why Book With Us */}
             <section className="py-12 px-4 bg-black">
               <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-12">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+                <div className="text-center mb-8 md:mb-12">
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 text-white">
                     Why Choose Our Platform
                   </h2>
-                  <p className="text-lg text-gray-400">Trusted by vehicle owners across India</p>
+                  <p className="text-sm md:text-lg text-gray-400">Trusted by vehicle owners across India</p>
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
@@ -379,12 +379,12 @@ const Home = ({ setCurrentPage }) => {
                 </div>
 
                 {/* Customer Reviews */}
-                <div className="text-center mb-8">
-                  <h3 className="text-3xl font-bold mb-4 text-white">What Our Customers Say</h3>
-                  <p className="text-xl text-gray-400">Real reviews from real customers</p>
+                <div className="text-center mb-6 md:mb-8">
+                  <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 text-white">What Our Customers Say</h3>
+                  <p className="text-sm md:text-xl text-gray-400">Real reviews from real customers</p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                   {[
                     {
                       name: "Rahul Sharma",
@@ -411,28 +411,28 @@ const Home = ({ setCurrentPage }) => {
                       timestamp: "2 weeks ago"
                     }
                   ].map((review, index) => (
-                    <div key={index} className="bg-gray-800 rounded-xl p-6">
-                      <div className="flex items-center justify-between mb-4">
+                    <div key={index} className="bg-gray-800 rounded-xl p-3 md:p-6">
+                      <div className="flex items-center justify-between mb-2 md:mb-4">
                         <div className="flex items-center">
                           {Array.from({ length: 5 }, (_, i) => (
                             <span key={i} className={i < review.rating ? "text-yellow-400" : "text-gray-600"}>
-                              <FontAwesomeIcon icon={faStar} />
+                              <FontAwesomeIcon icon={faStar} className="text-xs md:text-sm" />
                             </span>
                           ))}
                           {review.verified && (
-                            <span className="ml-2 text-green-500 text-sm">
+                            <span className="ml-1 md:ml-2 text-green-500 text-xs md:text-sm">
                               <FontAwesomeIcon icon={faCheck} className="mr-1" />
-                              Verified
+                              <span className="hidden md:inline">Verified</span>
                             </span>
                           )}
                         </div>
-                        <span className="text-gray-400 text-sm">{review.timestamp}</span>
+                        <span className="text-gray-400 text-xs md:text-sm">{review.timestamp}</span>
                       </div>
-                      <p className="text-gray-300 mb-4">"{review.comment}"</p>
+                      <p className="text-gray-300 mb-2 md:mb-4 text-xs md:text-base">"{review.comment}"</p>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-semibold text-white">{review.name}</p>
-                          <p className="text-gray-400 text-sm">{review.location}</p>
+                          <p className="font-semibold text-white text-xs md:text-base">{review.name}</p>
+                          <p className="text-gray-400 text-xs md:text-sm">{review.location}</p>
                         </div>
                       </div>
                     </div>
@@ -442,58 +442,58 @@ const Home = ({ setCurrentPage }) => {
             </section>
 
             {/* Information Section */}
-            <section className="py-12 px-4 bg-gray-800">
+            <section className="py-8 md:py-12 px-4 bg-gray-800">
               <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
                   <div>
-                    <h2 className="text-3xl font-bold mb-6 text-white">Our Mission</h2>
-                    <p className="text-gray-300 mb-4">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-white">Our Mission</h2>
+                    <p className="text-sm md:text-base text-gray-300 mb-3 md:mb-4">
                       We're revolutionizing how vehicle owners find and connect with garages. Whether you own a bike, 
                       car, or commercial vehicle, our platform makes it easy to find verified garages near you with 
                       transparent pricing and quality service.
                     </p>
-                    <p className="text-gray-300 mb-4">
+                    <p className="text-sm md:text-base text-gray-300 mb-3 md:mb-4">
                       Our comprehensive verification system ensures every garage meets high standards for quality, 
                       reliability, and customer service. We understand that your vehicle is essential for your daily 
                       life and business, so we connect you with the best mechanics in your area.
                     </p>
-                    <p className="text-gray-300">
+                    <p className="text-sm md:text-base text-gray-300">
                       From routine maintenance and repairs to specialized services for all vehicle types, 
                       our platform offers a complete solution for all your vehicle care needs. Transparent 
                       pricing, real-time updates, and customer-first approach make us the trusted choice 
                       for vehicle owners across India.
                     </p>
                   </div>
-                  <div className="bg-gray-700 rounded-xl p-8">
-                    <h3 className="text-2xl font-bold mb-4 text-white">Platform Features</h3>
-                    <ul className="space-y-3 text-gray-300">
-                      <li className="flex items-center">
-                        <span className="text-red-600 mr-3">
-                          <FontAwesomeIcon icon={faCheck} />
+                  <div className="bg-gray-700 rounded-xl p-4 md:p-8">
+                    <h3 className="text-lg md:text-2xl font-bold mb-3 md:mb-4 text-white">Platform Features</h3>
+                    <ul className="space-y-2 md:space-y-3 text-gray-300">
+                      <li className="flex items-center text-sm md:text-base">
+                        <span className="text-red-600 mr-2 md:mr-3">
+                          <FontAwesomeIcon icon={faCheck} className="text-xs md:text-sm" />
                         </span>
                         Verified garage network for all vehicle types
                       </li>
-                      <li className="flex items-center">
-                        <span className="text-red-600 mr-3">
-                          <FontAwesomeIcon icon={faCheck} />
+                      <li className="flex items-center text-sm md:text-base">
+                        <span className="text-red-600 mr-2 md:mr-3">
+                          <FontAwesomeIcon icon={faCheck} className="text-xs md:text-sm" />
                         </span>
                         Transparent pricing with detailed cost breakdowns
                       </li>
-                      <li className="flex items-center">
-                        <span className="text-red-600 mr-3">
-                          <FontAwesomeIcon icon={faCheck} />
+                      <li className="flex items-center text-sm md:text-base">
+                        <span className="text-red-600 mr-2 md:mr-3">
+                          <FontAwesomeIcon icon={faCheck} className="text-xs md:text-sm" />
                         </span>
                         Real-time service tracking and updates
                       </li>
-                      <li className="flex items-center">
-                        <span className="text-red-600 mr-3">
-                          <FontAwesomeIcon icon={faCheck} />
+                      <li className="flex items-center text-sm md:text-base">
+                        <span className="text-red-600 mr-2 md:mr-3">
+                          <FontAwesomeIcon icon={faCheck} className="text-xs md:text-sm" />
                         </span>
                         Support for 2, 4, and 6 wheelers
                       </li>
-                      <li className="flex items-center">
-                        <span className="text-red-600 mr-3">
-                          <FontAwesomeIcon icon={faCheck} />
+                      <li className="flex items-center text-sm md:text-base">
+                        <span className="text-red-600 mr-2 md:mr-3">
+                          <FontAwesomeIcon icon={faCheck} className="text-xs md:text-sm" />
                         </span>
                         24/7 customer support and assistance
                       </li>

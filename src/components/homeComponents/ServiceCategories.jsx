@@ -159,11 +159,11 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
   return (
     <section className="py-12 px-4 bg-gray-900">
       <div className="max-w-7xl mx-auto">
-        <div id="services-section" className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+        <div id="services-section" className="text-center mb-8 md:mb-12">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 text-white">
             Services for All Vehicle Types
           </h2>
-          <p className="text-lg text-gray-400">Find the right service for your needs</p>
+          <p className="text-sm md:text-lg text-gray-400">Find the right service for your needs</p>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-3 md:gap-6">

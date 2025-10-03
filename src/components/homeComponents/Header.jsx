@@ -149,7 +149,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
           <div className="flex items-center space-x-6">
             {/* Logo */}
             <h1 
-              className="text-xl font-bold text-white cursor-pointer hover:text-red-500 transition-colors"
+              className="text-lg md:text-xl font-bold text-white cursor-pointer hover:text-red-500 transition-colors"
               onClick={() => {
                 setCurrentPage('home');
                 if (onBackToMain) {
@@ -164,13 +164,13 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
             </h1>
 
             {/* Search Bar */}
-            <div className="hidden md:flex w-80">
+            <div className="hidden md:flex w-60 lg:w-80">
               <div className="relative w-full">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search for garages, services..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm"
                 />
               </div>
             </div>
@@ -179,7 +179,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
           {/* Right Group: Navigation + City Selection + Login */}
           <div className="flex items-center space-x-4">
             {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
               <a 
                 href="#" 
                 onClick={() => {
@@ -188,21 +188,21 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
                     onBackToMain();
                   }
                 }}
-                className="text-white hover:text-red-500 transition-colors duration-200 font-medium"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium text-sm lg:text-base"
               >
                 Home
               </a>
               <a 
                 href="#" 
                 onClick={() => setCurrentPage('about')}
-                className="text-white hover:text-red-500 transition-colors duration-200 font-medium"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium text-sm lg:text-base"
               >
                 About
               </a>
               <a 
                 href="#" 
                 onClick={() => setCurrentPage('contact')}
-                className="text-white hover:text-red-500 transition-colors duration-200 font-medium"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium text-sm lg:text-base"
               >
                 Contact
               </a>
@@ -213,16 +213,19 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
               <button
                 onClick={() => setIsCityPopupOpen(true)}
                 disabled={isDetectingLocation}
-                className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center space-x-1 lg:space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-2 lg:px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-xs lg:text-sm"
               >
-                <MapPinIcon className="w-4 h-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} />
-                <span>
+                <MapPinIcon className="w-3 h-3 lg:w-4 lg:h-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} />
+                <span className="hidden lg:inline">
                   {isDetectingLocation ? 'Detecting...' : (selectedCity || 'Select City')}
                 </span>
+                <span className="lg:hidden">
+                  {isDetectingLocation ? '...' : (selectedCity || 'City')}
+                </span>
                 {isDetectingLocation ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2" style={{ borderColor: '#ff3864', borderTopColor: '#cc1e3a' }}></div>
+                  <div className="animate-spin rounded-full h-3 w-3 lg:h-4 lg:w-4 border-b-2" style={{ borderColor: '#ff3864', borderTopColor: '#cc1e3a' }}></div>
                 ) : (
-                  <ChevronDownIcon className="w-4 h-4" />
+                  <ChevronDownIcon className="w-3 h-3 lg:w-4 lg:h-4" />
                 )}
               </button>
             </div>
@@ -248,7 +251,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
             ) : (
               <button 
                 onClick={() => setCurrentPage('login')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium"
+                className="bg-red-600 hover:bg-red-700 text-white px-3 lg:px-4 py-2 rounded-lg transition-colors duration-200 font-medium text-sm lg:text-base"
               >
                 Sign In
               </button>
