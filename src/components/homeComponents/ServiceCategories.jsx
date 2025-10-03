@@ -166,37 +166,28 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
           <p className="text-lg text-gray-400">Find the right service for your needs</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-3 md:gap-6">
           {serviceCategories.map((category) => (
             <div key={category.id} className="relative">
               <div
-                className="bg-gray-800 rounded-xl p-6 text-center hover:bg-gray-700 transition-all cursor-pointer transform hover:scale-105"
+                className="bg-gray-800 rounded-xl p-3 md:p-6 text-center hover:bg-gray-700 transition-all cursor-pointer transform hover:scale-105"
                 onClick={() => handleCardClick(category)}
               >
-                <div className="text-4xl mb-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                <div className="text-2xl md:text-4xl mb-2 md:mb-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                   <FontAwesomeIcon icon={category.icon} />
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-white">{category.title}</h3>
-                <p className="text-gray-400 mb-4">{category.description}</p>
+                <h3 className="text-sm md:text-lg font-semibold mb-1 md:mb-2 text-white">{category.title}</h3>
+                <p className="text-xs md:text-base text-gray-400 mb-2 md:mb-4">{category.description}</p>
                 
-                {category.hasDropdown ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <span className="text-sm font-medium" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>SELECT VEHICLE</span>
-                    <FontAwesomeIcon 
-                      icon={faChevronDown} 
-                      className="text-sm"
-                      style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} 
-                    />
-                  </div>
-                ) : category.available ? (
+                {category.available ? (
                   <button 
-                    onClick={() => setIsVehicleModalOpen(true)}
-                    className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                    onClick={() => handleCardClick(category)}
+                    className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-1 px-2 md:py-2 md:px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl text-xs md:text-sm"
                   >
-                    FIND GARAGES
+                    {category.hasDropdown ? 'SELECT VEHICLE' : 'FIND GARAGES'}
                   </button>
                 ) : (
-                  <span className="text-gray-500 text-sm">Coming Soon</span>
+                  <span className="text-gray-500 text-xs md:text-sm">Coming Soon</span>
                 )}
               </div>
 

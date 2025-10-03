@@ -335,7 +335,7 @@ const Home = ({ setCurrentPage }) => {
                   <p className="text-lg text-gray-400">Trusted by vehicle owners across India</p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
                   {[
                     {
                       title: "Verified Garages",
@@ -368,12 +368,12 @@ const Home = ({ setCurrentPage }) => {
                       icon: faMobileAlt
                     }
                   ].map((benefit, index) => (
-                    <div key={index} className="bg-gray-800 rounded-xl p-6 text-center">
-                      <div className="text-4xl mb-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                    <div key={index} className="bg-gray-800 rounded-xl p-3 md:p-6 text-center">
+                      <div className="text-2xl md:text-4xl mb-2 md:mb-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                         <FontAwesomeIcon icon={benefit.icon} />
                       </div>
-                      <h3 className="text-xl font-semibold mb-3 text-white">{benefit.title}</h3>
-                      <p className="text-gray-400">{benefit.description}</p>
+                      <h3 className="text-sm md:text-xl font-semibold mb-1 md:mb-3 text-white">{benefit.title}</h3>
+                      <p className="text-xs md:text-base text-gray-400">{benefit.description}</p>
                     </div>
                   ))}
                 </div>
