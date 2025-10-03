@@ -11,7 +11,8 @@ import {
   faBolt,
   faChevronDown,
   faChevronUp,
-  faTimes
+  faTimes,
+  faSprayCan
 } from '@fortawesome/free-solid-svg-icons';
 
 const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
@@ -49,28 +50,32 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
       title: "2 Wheeler",
       description: "Bikes, scooters, motorcycles",
       icon: faMotorcycle,
-      type: 'two-wheeler'
+      type: 'two-wheeler',
+      available: true
     },
     {
       id: 2,
       title: "3 Wheeler",
       description: "Auto rickshaws, tuk-tuks",
       icon: faCar,
-      type: 'three-wheeler'
+      type: 'three-wheeler',
+      available: false
     },
     {
       id: 3,
       title: "4 Wheeler",
       description: "Cars, SUVs, passenger vehicles",
       icon: faCar,
-      type: 'four-wheeler'
+      type: 'four-wheeler',
+      available: true
     },
     {
       id: 4,
       title: "6 Wheeler",
       description: "Trucks, commercial vehicles",
       icon: faTruck,
-      type: 'six-wheeler'
+      type: 'six-wheeler',
+      available: false
     }
   ];
 
@@ -86,6 +91,14 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
     },
     {
       id: 2,
+      title: "Washing & Detailing",
+      description: "Car wash and detailing services",
+      icon: faSprayCan,
+      available: true,
+      type: 'washing-detailing'
+    },
+    {
+      id: 3,
       title: "Buy/Sell",
       description: "Purchase or sell vehicles",
       icon: faShoppingCart,
@@ -93,7 +106,7 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
       type: 'buy-sell'
     },
     {
-      id: 3,
+      id: 4,
       title: "Rent",
       description: "Vehicle rental services",
       icon: faKey,
@@ -101,7 +114,7 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
       type: 'rent'
     },
     {
-      id: 4,
+      id: 5,
       title: "EV Service",
       description: "Electric vehicle services",
       icon: faBolt,
@@ -109,7 +122,7 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
       type: 'ev-service'
     },
     {
-      id: 5,
+      id: 6,
       title: "Emergency Services",
       description: "24/7 roadside assistance",
       icon: faExclamationTriangle,
@@ -119,8 +132,12 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
   ];
 
   const handleVehicleTypeClick = (vehicleType) => {
-    onServiceClick(vehicleType.type);
-    setIsVehicleModalOpen(false);
+    if (vehicleType.available) {
+      onServiceClick(vehicleType.type);
+      setIsVehicleModalOpen(false);
+    } else {
+      alert(`${vehicleType.title} service - Coming Soon!`);
+    }
   };
 
   const handleCardClick = (service) => {
@@ -140,16 +157,16 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
   };
 
   return (
-    <section className="py-20 px-4 bg-gray-900">
+    <section className="py-12 px-4 bg-gray-900">
       <div className="max-w-7xl mx-auto">
-        <div id="services-section" className="text-center mb-16">
+        <div id="services-section" className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
             Services for All Vehicle Types
           </h2>
           <p className="text-lg text-gray-400">Find the right service for your needs</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
           {serviceCategories.map((category) => (
             <div key={category.id} className="relative">
               <div
@@ -209,14 +226,40 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
                 {vehicleTypes.map((vehicle) => (
                   <div
                     key={vehicle.id}
-                    className="bg-gray-800 rounded-xl p-6 text-center hover:bg-gray-700 transition-all cursor-pointer transform hover:scale-105 border-2 border-transparent hover:border-red-500 group"
+                    className={`bg-gray-800 rounded-xl p-6 text-center transition-all border-2 border-transparent group ${
+                      vehicle.available 
+                        ? 'hover:bg-gray-700 cursor-pointer transform hover:scale-105 hover:border-red-500' 
+                        : 'opacity-50 cursor-not-allowed'
+                    }`}
                     onClick={() => handleVehicleTypeClick(vehicle)}
                   >
-                    <div className="text-6xl mb-4 transition-colors" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                    <div className={`text-6xl mb-4 transition-colors ${
+                      vehicle.available 
+                        ? 'group-hover:scale-110' 
+                        : ''
+                    }`} style={{ 
+                      background: vehicle.available 
+                        ? 'linear-gradient(135deg, #ff3864, #cc1e3a)' 
+                        : 'linear-gradient(135deg, #666, #999)',
+                      WebkitBackgroundClip: 'text', 
+                      WebkitTextFillColor: 'transparent', 
+                      backgroundClip: 'text' 
+                    }}>
                       <FontAwesomeIcon icon={vehicle.icon} />
                     </div>
-                    <h3 className="text-lg font-bold text-white mb-2">{vehicle.title}</h3>
-                    <p className="text-gray-400 text-base">{vehicle.description}</p>
+                    <h3 className={`text-lg font-bold mb-2 ${vehicle.available ? 'text-white' : 'text-gray-500'}`}>
+                      {vehicle.title}
+                    </h3>
+                    <p className={`text-base ${vehicle.available ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {vehicle.description}
+                    </p>
+                    {!vehicle.available && (
+                      <div className="mt-2">
+                        <span className="text-xs text-gray-500 bg-gray-700 px-2 py-1 rounded">
+                          Coming Soon
+                        </span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

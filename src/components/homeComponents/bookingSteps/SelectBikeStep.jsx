@@ -107,12 +107,12 @@ const SelectBikeStep = ({
       )}
       
       {/* Vehicles Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 gap-4">
         {vehicles.map((vehicle) => (
           <div
             key={vehicle.id}
             onClick={() => handleBikeSelect(vehicle)}
-            className={`bg-gray-800 rounded-xl p-6 cursor-pointer transition-all duration-200 hover:bg-gray-700 ${
+            className={`bg-gray-800 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:bg-gray-700 ${
               selectedBikeId === vehicle.id
                 ? 'ring-2 ring-red-500 bg-gray-700 scale-105'
                 : 'hover:scale-102'
@@ -122,17 +122,14 @@ const SelectBikeStep = ({
               <img
                 src={vehicle.image || vehicle.model?.image || 'https://via.placeholder.com/96'}
                 alt={vehicle.brand || vehicle.model?.name || vehicle.name || 'Vehicle'}
-                className="w-24 h-24 mx-auto mb-4 object-cover rounded-lg"
+                className="w-16 h-16 mx-auto mb-3 object-cover rounded-lg"
               />
-              <h3 className="text-lg font-semibold text-white mb-1">
+              <h3 className="text-sm font-semibold text-white mb-1">
                 {vehicle.brand || vehicle.model?.name || vehicle.name || 'Unknown Vehicle'}
               </h3>
-              <p className="text-gray-400 text-sm mb-2">{vehicle.cc || vehicle.model?.cc || 'N/A'}</p>
-              <p className="text-gray-500 text-xs">{vehicle.year || 'N/A'}</p>
-              <p className="text-gray-500 text-xs">{vehicle.registration_number || 'N/A'}</p>
               {selectedBikeId === vehicle.id && (
-                <div className="mt-3">
-                  <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-600 text-white">
+                <div className="mt-2">
+                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-600 text-white">
                     Selected
                   </div>
                 </div>
@@ -144,11 +141,11 @@ const SelectBikeStep = ({
         {/* Add New Bike Card */}
         <div
           onClick={() => setIsAddBikeModalOpen(true)}
-          className="bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl p-3 sm:p-6 cursor-pointer transition-all duration-200 hover:border-red-500 hover:bg-gray-700 flex flex-col items-center justify-center min-h-[120px] sm:min-h-[200px]"
+          className="bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-red-500 hover:bg-gray-700 flex flex-col items-center justify-center min-h-[140px]"
         >
-          <PlusIcon className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 mb-2 sm:mb-4" />
-          <h3 className="text-base sm:text-lg font-semibold text-white mb-1 sm:mb-2">Add New Bike</h3>
-          <p className="text-gray-400 text-xs sm:text-sm text-center">
+          <PlusIcon className="w-6 h-6 text-gray-400 mb-2" />
+          <h3 className="text-sm font-semibold text-white mb-1">Add New Bike</h3>
+          <p className="text-gray-400 text-xs text-center">
             Don't see your bike? Add it to your profile
           </p>
         </div>
@@ -160,16 +157,14 @@ const SelectBikeStep = ({
           <h3 className="text-lg font-semibold text-white mb-4">Selected Bike</h3>
           <div className="flex items-center space-x-4">
             <img
-              src={bikeData.image}
-              alt={`${bikeData.brand} ${bikeData.model}`}
+              src={bikeData.image || bikeData.model?.image || 'https://via.placeholder.com/96'}
+              alt={bikeData.brand || bikeData.model?.name || 'Vehicle'}
               className="w-16 h-16 object-cover rounded-lg"
             />
             <div>
               <h4 className="text-white font-medium">
-                {bikeData.brand} {bikeData.model}
+                {bikeData.brand || bikeData.model?.name || 'Unknown Vehicle'}
               </h4>
-              <p className="text-gray-400 text-sm">{bikeData.cc} • {bikeData.year}</p>
-              <p className="text-gray-500 text-xs">{bikeData.registration_number}</p>
             </div>
           </div>
         </div>

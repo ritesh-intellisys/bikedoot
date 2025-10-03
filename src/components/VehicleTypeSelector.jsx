@@ -7,9 +7,7 @@ const VehicleTypeSelector = ({ currentVehicleType, onVehicleTypeChange }) => {
 
   const vehicleTypes = [
     { value: 'two-wheeler', label: 'Two Wheeler', icon: '🏍️' },
-    { value: 'three-wheeler', label: 'Three Wheeler', icon: '🛺' },
-    { value: 'four-wheeler', label: 'Four Wheeler', icon: '🚗' },
-    { value: 'six-wheeler', label: 'Six Wheeler', icon: '🚛' }
+    { value: 'four-wheeler', label: 'Four Wheeler', icon: '🚗' }
   ];
 
   const currentType = vehicleTypes.find(type => type.value === currentVehicleType);

@@ -171,7 +171,7 @@ const FourWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToM
 
   if (loading) {
     return (
-      <div className="py-20 px-4 bg-black">
+      <div className="py-12 px-4 bg-black">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" style={{ borderColor: '#ff3864', borderTopColor: '#cc1e3a' }}></div>
@@ -188,7 +188,7 @@ const FourWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToM
       {/* Four Wheeler Garages Section */}
       <section className="py-8 px-4 bg-black">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
               Four Wheeler Garages Near You
             </h2>

@@ -19,7 +19,7 @@ const SummaryStep = ({
   
   const calculateTotal = () => {
     if (!selectedService) return 0;
-    return selectedService.reduce((sum, service) => sum + service.price, 0);
+    return selectedService.reduce((sum, service) => sum + parseFloat(service.price || 0), 0);
   };
   
   const applyPromoCode = () => {
@@ -40,23 +40,21 @@ const SummaryStep = ({
       const total = calculateTotal();
       const promoData = applyPromoCode();
       
+      // Format date like old website (extract date from date string)
+      const formattedDate = slotAndAddress.date.split(' ')[0];
+      
       const payload = {
         businessid: parseInt(localStorage.getItem("businessId") || "1"),
         subscriberid: parseInt(localStorage.getItem("subscriberId") || "1"),
         subscribervehicleid: bikeData.vehicle_id || bikeData.id,
         subscriberaddressid: slotAndAddress.address.id,
         garageid: garageId,
-        bookingdate: slotAndAddress.date,
+        bookingdate: formattedDate,
         bookingslot: slotAndAddress.slot,
         suggestion: suggestion.trim(),
-        bookingamount: promoData.finalTotal.toFixed(2),
+        bookingamount: calculateTotal().toFixed(2),
         promocode: "SUMMER10",
-        requiredestimate: slotAndAddress.estimate === true,
-        services: selectedService.map(service => ({
-          service_id: service.id,
-          service_name: service.name,
-          service_price: service.price
-        }))
+        requiredestimate: slotAndAddress.estimate === "yes"
       };
       
       const response = await createBooking(payload);
@@ -152,100 +150,129 @@ const SummaryStep = ({
         </div>
       )}
       
-      {/* Bike Details */}
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">Selected Bike</h3>
-        <div className="flex items-center space-x-4">
-          <img
-            src={bikeData?.image}
-            alt={`${bikeData?.brand} ${bikeData?.model}`}
-            className="w-16 h-16 object-cover rounded-lg"
-          />
-          <div>
-            <h4 className="text-white font-medium">
-              {bikeData?.brand} {bikeData?.model}
+      {/* Bike Details - Card Format like old website */}
+      <div className="flex justify-center">
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-xs w-full">
+          <h3 className="text-lg font-semibold text-white mb-4 text-center">Selected Bike</h3>
+          <div className="flex flex-col items-center space-y-3">
+            <div className="w-32 h-20 bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
+              <img
+                src={bikeData?.image || bikeData?.model?.image || 'https://via.placeholder.com/96'}
+                alt={bikeData?.brand || bikeData?.model?.name || 'Vehicle'}
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <h4 className="text-white font-medium text-center">
+              {bikeData?.brand || bikeData?.model?.name || 'Unknown Vehicle'}
             </h4>
-            <p className="text-gray-400 text-sm">{bikeData?.cc} • {bikeData?.year}</p>
-            <p className="text-gray-500 text-xs">{bikeData?.registration_number}</p>
           </div>
         </div>
       </div>
       
-      {/* Services */}
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">Selected Services</h3>
-        <div className="space-y-3">
-          {selectedService?.map((service) => (
-            <div key={service.id} className="flex justify-between items-center">
-              <div>
-                <span className="text-white font-medium">{service.name}</span>
-                <p className="text-gray-400 text-sm">{service.description}</p>
+      {/* Services - Card Format like old website */}
+      <div className="flex justify-center">
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
+          <h3 className="text-lg font-semibold text-white mb-4">Selected Service</h3>
+          {selectedService && selectedService.length > 0 ? (
+            <div className="space-y-3">
+              {selectedService.map((service) => (
+                <div key={service.id}>
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-white font-medium text-lg">{service.name}</h4>
+                    <span className="text-red-400 font-semibold text-lg">₹{parseFloat(service.price || 0).toFixed(0)}</span>
+                  </div>
+                  {service.description && (
+                    <p className="text-gray-400 text-sm whitespace-pre-line">{service.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400">No service selected</p>
+          )}
+        </div>
+      </div>
+      
+      {/* Schedule - Card Format like old website */}
+      {slotAndAddress?.date && slotAndAddress?.slot && (
+        <div className="flex justify-center">
+          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
+            <h3 className="text-lg font-semibold text-white mb-4">Selected Schedule</h3>
+            <p className="text-white">
+              {formatDate(slotAndAddress.date)} at {formatTime(slotAndAddress.slot)}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Address - Card Format like old website */}
+      {slotAndAddress?.address && (
+        <div className="flex justify-center">
+          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
+            <h3 className="text-lg font-semibold text-white mb-4">Selected Address</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray-400">City:</span>
+                <span className="text-white">{slotAndAddress.address.city}</span>
               </div>
-              <span className="text-red-400 font-semibold">₹{service.price}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Date, Time & Address */}
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">Service Details</h3>
-        <div className="space-y-3">
-          <div className="flex justify-between">
-            <span className="text-gray-400">Date:</span>
-            <span className="text-white">{formatDate(slotAndAddress?.date)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Time:</span>
-            <span className="text-white">{formatTime(slotAndAddress?.slot)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Address:</span>
-            <span className="text-white text-right max-w-xs">
-              {slotAndAddress?.address?.address}, {slotAndAddress?.address?.city} - {slotAndAddress?.address?.pincode}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Estimate Requested:</span>
-            <span className="text-white">
-              {slotAndAddress?.estimate ? 'Yes' : 'No'}
-            </span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Suggestion */}
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">Special Instructions (Optional)</h3>
-        <textarea
-          value={suggestion}
-          onChange={(e) => setSuggestion(e.target.value)}
-          placeholder="Any special instructions or requests for the mechanic..."
-          rows={3}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
-        />
-      </div>
-      
-      {/* Price Breakdown */}
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">Price Breakdown</h3>
-        <div className="space-y-3">
-          <div className="flex justify-between">
-            <span className="text-gray-400">Subtotal:</span>
-            <span className="text-white">₹{promoData.originalTotal}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Promo Code (SUMMER10):</span>
-            <span className="text-green-400">-₹{promoData.discount.toFixed(2)}</span>
-          </div>
-          <div className="border-t border-gray-700 pt-3">
-            <div className="flex justify-between">
-              <span className="text-lg font-semibold text-white">Total:</span>
-              <span className="text-xl font-bold text-red-400">₹{promoData.finalTotal.toFixed(2)}</span>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Locality:</span>
+                <span className="text-white">{slotAndAddress.address.address}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Pincode:</span>
+                <span className="text-white">{slotAndAddress.address.pincode}</span>
+              </div>
             </div>
           </div>
         </div>
+      )}
+      
+      {/* Additional Details - Card Format like old website */}
+      <div className="flex justify-center">
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
+          <h3 className="text-lg font-semibold text-white mb-4">Additional Details</h3>
+          <div className="space-y-3">
+             {slotAndAddress?.estimate && (
+               <p className="text-white">
+                 <strong>Estimate Required:</strong> {slotAndAddress.estimate === "yes" ? 'Yes' : 'No'}
+               </p>
+             )}
+            {suggestion && suggestion.trim() !== "" && (
+              <p className="text-white">
+                <strong>Suggestion:</strong> {suggestion}
+              </p>
+            )}
+            {(!slotAndAddress?.estimate && (!suggestion || suggestion.trim() === "")) && (
+              <p className="text-gray-400">No additional details</p>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Suggestion Input */}
+      <div className="flex justify-center">
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
+          <h3 className="text-lg font-semibold text-white mb-4">Special Instructions (Optional)</h3>
+          <textarea
+            value={suggestion}
+            onChange={(e) => setSuggestion(e.target.value)}
+            placeholder="Any special instructions or requests for the mechanic..."
+            rows={3}
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+          />
+        </div>
+      </div>
+      
+      {/* Final Price - Simple format like old website */}
+      {selectedService && selectedService.length > 0 && (
+        <div className="flex justify-center">
+          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full text-center">
+            <h3 className="text-lg font-semibold text-white mb-2">Final Price</h3>
+            <p className="text-2xl font-bold text-red-400">₹{calculateTotal().toFixed(0)}</p>
+          </div>
+        </div>
+      )}
       
       {/* Confirm Booking Button */}
       <div className="text-center">

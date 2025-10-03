@@ -65,7 +65,7 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
         businessid: parseInt(businessId),
         subscriberid: parseInt(subscriberId),
         address: formData.address,
-        city_id: selectedCity.id,
+        city: selectedCity.id,
         pincode: formData.pincode,
         landmark: formData.landmark || ''
       };

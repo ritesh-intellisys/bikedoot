@@ -159,7 +159,7 @@ const FilterSystem = ({ filterData, onApplyFilters, isMobile, onSortChange, onCl
         </button>
 
         {isBrandDropdownOpen && (
-          <div className="absolute z-50 w-full top-full left-0 mt-2 bg-gray-700 border border-gray-600 rounded-lg shadow-lg max-h-60 overflow-hidden">
+          <div className="absolute z-50 w-fit min-w-full top-full left-0 mt-2 bg-gray-700 border border-gray-600 rounded-lg shadow-lg max-h-60 overflow-hidden">
             <div className="p-3 border-b border-gray-600">
               <div className="relative">
                             <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} />
@@ -268,13 +268,13 @@ const FilterSystem = ({ filterData, onApplyFilters, isMobile, onSortChange, onCl
   );
 
   return (
-    <div className="bg-gray-800 rounded-xl p-6 mb-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-gray-800 rounded-xl mb-6">
+      <div className={`flex items-center justify-between ${isMobile && !isExpanded ? 'p-4' : 'p-6'} ${isMobile && !isExpanded ? 'w-fit' : ''}`}>
                     <h2 className="text-lg font-bold text-white">Filters</h2>
         {isMobile && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-white transition-colors ml-2"
           >
             {isExpanded ? (
               <ChevronUpIcon className="w-5 h-5" />
@@ -286,7 +286,7 @@ const FilterSystem = ({ filterData, onApplyFilters, isMobile, onSortChange, onCl
       </div>
 
       {(!isMobile || isExpanded) && (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6 pt-0">
           <BrandSelector />
           <DistanceSlider />
           <ServicesFilter />
@@ -350,7 +350,7 @@ export const SortByDropdown = ({ currentSort, onSortChange }) => {
       </button>
 
                   {isOpen && (
-                    <div className="absolute z-10 right-0 mt-2 w-64 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
+                    <div className="absolute z-10 right-0 mt-2 w-fit min-w-64 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
                       <div className="py-2 pt-3">
                         {sortOptions.map((option) => (
                           <button

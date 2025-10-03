@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { fetchGarageServices } from '../../../services/bookingService';
 
 const SelectServiceStep = ({ 
@@ -14,7 +13,6 @@ const SelectServiceStep = ({
 }) => {
   const [services, setServices] = useState([]);
   const [addOns, setAddOns] = useState([]);
-  const [expandedService, setExpandedService] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedAddOns, setSelectedAddOns] = useState([]);
   
@@ -27,10 +25,37 @@ const SelectServiceStep = ({
       try {
         const payload = {
           garageid: garageId,
-          ccid: bikeData.cc_id || 1
+          ccid: bikeData.cc_id || bikeData.model?.cc_id || bikeData.cc || 1
         };
         
         const serviceData = await fetchGarageServices(payload);
+        console.log('🔍 Complete service data structure:', serviceData);
+        
+        // If no services found, try with different ccid values
+        if (serviceData.services.length === 0 && serviceData.addOns.length === 0) {
+          console.log('🔍 No services found, trying with different ccid values...');
+          
+          // Try with ccid 2, 3, 4, 5 (common ccid values)
+          for (let testCcid of [2, 3, 4, 5]) {
+            const testPayload = { garageid: garageId, ccid: testCcid };
+            console.log(`🔍 Trying ccid ${testCcid}:`, testPayload);
+            
+            try {
+              const testServiceData = await fetchGarageServices(testPayload);
+              console.log(`🔍 Test result for ccid ${testCcid}:`, testServiceData);
+              
+              if (testServiceData.services.length > 0 || testServiceData.addOns.length > 0) {
+                console.log(`🔍 Found services with ccid ${testCcid}!`);
+                setServices(testServiceData.services);
+                setAddOns(testServiceData.addOns);
+                return;
+              }
+            } catch (testError) {
+              console.log(`🔍 Test failed for ccid ${testCcid}:`, testError.message);
+            }
+          }
+        }
+        
         setServices(serviceData.services);
         setAddOns(serviceData.addOns);
       } catch (error) {
@@ -103,7 +128,7 @@ const SelectServiceStep = ({
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white mb-2">Select Services</h2>
-        <p className="text-gray-400">Choose the services you need for your {bikeData?.brand} {bikeData?.model}</p>
+        <p className="text-gray-400">Choose the services you need for your {bikeData?.brand || bikeData?.model?.name || 'vehicle'}</p>
       </div>
       
       {/* Error Display */}
@@ -123,87 +148,100 @@ const SelectServiceStep = ({
       <div className="space-y-4">
         <h3 className="text-xl font-semibold text-white">Services</h3>
         <div className="space-y-3">
-          {(services || []).map((service) => (
+          {(services || []).map((service) => {
+            console.log('🔍 Rendering service:', service.name, 'Full object:', service);
+            return (
             <div
               key={service.id}
               className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden"
             >
               <div className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h4 className="text-lg font-semibold text-white mb-1">
-                      {service.name}
-                    </h4>
-                    <p className="text-gray-400 text-sm mb-2">
-                      {service.description}
-                    </p>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <span>Duration: {service.duration}</span>
-                      <span>•</span>
-                      <span className="text-red-400 font-semibold">
-                        ₹{parseFloat(service.price || 0).toFixed(0)}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-3">
-                    <button
-                      onClick={() => setExpandedService(
-                        expandedService === service.id ? null : service.id
-                      )}
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      {expandedService === service.id ? (
-                        <ChevronUpIcon className="w-5 h-5" />
-                      ) : (
-                        <ChevronDownIcon className="w-5 h-5" />
-                      )}
-                    </button>
-                    
-                    <button
-                      onClick={() => toggleService(service)}
-                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                        isServiceSelected(service)
-                          ? 'bg-red-600 text-white'
-                          : 'bg-gray-700 text-white hover:bg-gray-600'
-                      }`}
-                    >
-                      {isServiceSelected(service) ? 'Remove' : 'Add'}
-                    </button>
-                  </div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-lg font-semibold text-white">
+                    {service.name}
+                  </h4>
+                  <button
+                    onClick={() => toggleService(service)}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      isServiceSelected(service)
+                        ? 'bg-red-600 text-white'
+                        : 'bg-gray-700 text-white hover:bg-gray-600'
+                    }`}
+                  >
+                    {isServiceSelected(service) ? 'Remove' : 'Add'}
+                  </button>
                 </div>
                 
-                {/* Expanded Content */}
-                {expandedService === service.id && (
+                <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
+                  <span>Duration: {service.duration}</span>
+                  <span>•</span>
+                  <span className="text-red-400 font-semibold">
+                    ₹{parseFloat(service.price || 0).toFixed(0)}
+                  </span>
+                </div>
+                
+                {/* Service Details - Always Visible */}
                   <div className="mt-4 pt-4 border-t border-gray-700">
                     <h5 className="text-sm font-medium text-white mb-2">Includes:</h5>
-                    <ul className="space-y-1">
-                      {(() => {
-                        // Handle both array and string formats
-                        let includesList = [];
-                        if (Array.isArray(service.includes)) {
-                          includesList = service.includes;
-                        } else if (typeof service.includes === 'string') {
-                          // Split by bullet points and clean up
-                          includesList = service.includes
-                            .split('•')
+                  {console.log('🔍 Service details for:', service.name, 'Includes:', service.includes)}
+                  <ul className="space-y-2">
+                    {(() => {
+                      // Handle multiple possible field names and formats
+                      let includesList = [];
+                      const includesData = service.includes || service.details || service.description || service.features || '';
+                      console.log('🔍 Service includes data:', includesData, 'Type:', typeof includesData);
+                      console.log('🔍 Service object keys:', Object.keys(service));
+                      
+                      if (Array.isArray(includesData)) {
+                        includesList = includesData;
+                      } else if (typeof includesData === 'string' && includesData.trim()) {
+                        // Split by multiple bullet point formats and clean up
+                        includesList = includesData
+                          .split(/[•·\-\*]/) // Split by bullet, middle dot, dash, or asterisk
+                          .map(item => item.trim())
+                          .filter(item => item.length > 0 && item !== '');
+                        
+                        // If no items found with bullet points, try splitting by newlines
+                        if (includesList.length === 0) {
+                          includesList = includesData
+                            .split('\n')
                             .map(item => item.trim())
                             .filter(item => item.length > 0);
                         }
                         
-                        return includesList.map((item, index) => (
-                          <li key={index} className="text-gray-400 text-sm flex items-center">
-                            <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
-                            {item}
+                        // If still no items, try splitting by periods
+                        if (includesList.length === 0) {
+                          includesList = includesData
+                            .split('.')
+                            .map(item => item.trim())
+                            .filter(item => item.length > 0);
+                        }
+                      }
+                      
+                      console.log('🔍 Processed includes list:', includesList);
+                      
+                      // If no includes found, show a fallback message
+                      if (includesList.length === 0) {
+                        return (
+                          <li className="text-gray-500 text-sm italic">
+                            Service details not available
                           </li>
-                        ));
-                      })()}
+                        );
+                      }
+                      
+                      return includesList.map((item, index) => (
+                        <li key={index} className="text-gray-400 text-sm flex items-start">
+                          <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-3 mt-1.5 flex-shrink-0"></span>
+                          <span className="flex-1">{item}</span>
+                        </li>
+                      ));
+                    })()}
                     </ul>
                   </div>
-                )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       

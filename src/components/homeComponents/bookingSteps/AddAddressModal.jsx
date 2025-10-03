@@ -33,9 +33,12 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess, cities = [] }) => {
       const subscriberId = localStorage.getItem("subscriberId") || "1";
       const selectedCityData = cities.find(c => c.name === selectedCity);
       
+      const businessId = localStorage.getItem("businessId") || "1";
+      
       const payload = {
+        businessid: parseInt(businessId),
         subscriberid: parseInt(subscriberId),
-        city_id: selectedCityData?.id || 1,
+        city: selectedCityData?.id || 1,
         address: address.trim(),
         pincode: pincode.trim(),
         landmark: landmark.trim() || null

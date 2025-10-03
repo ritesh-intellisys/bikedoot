@@ -15,7 +15,7 @@ import {
   TrashIcon,
   PlusIcon
 } from '@heroicons/react/24/outline';
-import { fetchUserVehicles, fetchUserAddresses, createAddress, deleteUserVehicle, fetchUserBookings, cancelBooking, fetchCities, fetchUserProfile, updateUserProfile, initializeUserProfile } from '../services/bookingService';
+import { fetchUserVehicles, fetchUserAddresses, createAddress, deleteUserVehicle, fetchCities } from '../services/bookingService';
 import AddVehicleModal from '../components/profileComponents/AddVehicleModal';
 import AddAddressModal from '../components/profileComponents/AddAddressModal';
 
@@ -34,7 +34,6 @@ const Profile = ({ setCurrentPage }) => {
   // Real data from API
   const [vehicles, setVehicles] = useState([]);
   const [addresses, setAddresses] = useState([]);
-  const [bookings, setBookings] = useState([]);
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -61,31 +60,25 @@ const Profile = ({ setCurrentPage }) => {
           return;
         }
 
-        // Initialize user profile if it doesn't exist
-        const mobileNumber = localStorage.getItem('mobileNumber') || '';
-        const initializedProfile = initializeUserProfile(subscriberId, mobileNumber);
-        
-        // Load user profile, vehicles, addresses, bookings, and cities in parallel
-        const [profileData, vehiclesData, addressesData, bookingsData, citiesData] = await Promise.all([
-          fetchUserProfile(subscriberId),
+        // Load user vehicles, addresses, and cities in parallel
+        const [vehiclesData, addressesData, citiesData] = await Promise.all([
           fetchUserVehicles(subscriberId),
           fetchUserAddresses(subscriberId),
-          fetchUserBookings(subscriberId),
           fetchCities()
         ]);
 
-        // Set user profile data with fallback to initialized profile
+        // Set user profile data with basic info
+        const mobileNumber = localStorage.getItem('mobileNumber') || '';
         setUserData({
-          name: profileData.name || initializedProfile.name || 'User',
-          email: profileData.email || initializedProfile.email || '',
-          phone: profileData.phone || profileData.mobile || initializedProfile.phone || mobileNumber,
-          city: profileData.city || profileData.location || initializedProfile.city || 'Pune',
-          joinDate: profileData.joinDate || profileData.created_at || initializedProfile.createdAt || 'Recently'
+          name: 'User',
+          email: '',
+          phone: mobileNumber,
+          city: 'Pune',
+          joinDate: 'Recently'
         });
 
         setVehicles(vehiclesData || []);
         setAddresses(addressesData || []);
-        setBookings(bookingsData || []);
         setCities(citiesData || []);
       } catch (err) {
         console.error('Error loading user data:', err);
@@ -121,18 +114,13 @@ const Profile = ({ setCurrentPage }) => {
         city: editData.city
       };
 
-      const response = await updateUserProfile(payload);
-      
-      if (response.success !== false) {
-        setUserData({ ...editData });
-        setIsEditing(false);
-        setError('');
-        // Store mobile number in localStorage for future reference
-        if (editData.phone) {
-          localStorage.setItem('mobileNumber', editData.phone);
-        }
-      } else {
-        setError(response.message || 'Failed to update profile');
+      // Since profile update API doesn't exist in old website, just update local state
+      setUserData({ ...editData });
+      setIsEditing(false);
+      setError('');
+      // Store mobile number in localStorage for future reference
+      if (editData.phone) {
+        localStorage.setItem('mobileNumber', editData.phone);
       }
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -200,18 +188,13 @@ const Profile = ({ setCurrentPage }) => {
 
   const handleCancelBooking = async (bookingId) => {
     try {
-      const response = await cancelBooking(bookingId);
-      
-      if (response.success !== false) {
-        setBookings(prev => prev.map(booking => 
-          booking.id === bookingId 
-            ? { ...booking, status: 'Cancelled' }
-            : booking
-        ));
-        setError('');
-      } else {
-        setError(response.message || 'Failed to cancel booking');
-      }
+      // Since booking cancellation API doesn't exist in old website, just update local state
+      setBookings(prev => prev.map(booking => 
+        booking.id === bookingId 
+          ? { ...booking, status: 'Cancelled' }
+          : booking
+      ));
+      setError('');
     } catch (err) {
       console.error('Error cancelling booking:', err);
       setError('Failed to cancel booking');
@@ -230,31 +213,23 @@ const Profile = ({ setCurrentPage }) => {
     setError('');
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Upcoming': return 'text-yellow-500';
-      case 'Completed': return 'text-green-500';
-      case 'Cancelled': return 'text-red-500';
-      default: return 'text-gray-500';
-    }
-  };
 
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
       <div className="bg-gray-900 border-b border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="max-w-6xl mx-auto px-4 py-4 sm:py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <button
                 onClick={() => setCurrentPage('home')}
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                <ArrowLeftIcon className="w-6 h-6" />
+                <ArrowLeftIcon className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <div>
-                <h1 className="text-2xl font-bold text-white">My Profile</h1>
-                <p className="text-gray-400 mt-1">Manage your account and preferences</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-white">My Profile</h1>
+                <p className="text-gray-400 mt-1 text-sm sm:text-base">Manage your account and preferences</p>
               </div>
             </div>
           </div>
@@ -264,24 +239,26 @@ const Profile = ({ setCurrentPage }) => {
       {/* Navigation Tabs */}
       <div className="bg-gray-900 border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex space-x-8">
+          <div className="flex overflow-x-auto space-x-2 sm:space-x-8">
             {[
-              { id: 'profile', label: 'My Profile', icon: UserIcon },
-              { id: 'vehicles', label: 'My Vehicles', icon: TruckIcon },
-              { id: 'addresses', label: 'My Addresses', icon: HomeIcon },
-              { id: 'bookings', label: 'My Bookings', icon: CalendarDaysIcon }
+              { id: 'profile', label: 'My Profile', icon: UserIcon, shortLabel: 'Profile' },
+              { id: 'vehicles', label: 'My Vehicles', icon: TruckIcon, shortLabel: 'Vehicles' },
+              { id: 'addresses', label: 'My Addresses', icon: HomeIcon, shortLabel: 'Addresses' }
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 py-4 px-2 border-b-2 transition-colors ${
+                className={`flex items-center space-x-1 sm:space-x-2 py-3 sm:py-4 px-2 sm:px-2 border-b-2 transition-colors whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-red-500 text-red-500'
                     : 'border-transparent text-gray-400 hover:text-white'
                 }`}
               >
-                <tab.icon className="w-5 h-5" />
-                <span className="font-medium">{tab.label}</span>
+                <tab.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="font-medium text-sm sm:text-base">
+                  <span className="sm:hidden">{tab.shortLabel}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </span>
               </button>
             ))}
           </div>
@@ -308,17 +285,17 @@ const Profile = ({ setCurrentPage }) => {
       )}
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-4 sm:py-8">
         {/* My Profile Tab */}
         {activeTab === 'profile' && (
-          <div className="space-y-6">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="flex items-center justify-between mb-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
                 <h3 className="text-lg font-semibold text-white">Personal Information</h3>
                 {!isEditing && (
                   <button
                     onClick={handleEdit}
-                    className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    className="flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto"
                   >
                     <PencilIcon className="w-4 h-4" />
                     <span>Edit Profile</span>
@@ -326,7 +303,7 @@ const Profile = ({ setCurrentPage }) => {
                 )}
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {/* Name */}
                 <div>
                   <label className="text-sm text-gray-400">Name</label>
@@ -396,17 +373,17 @@ const Profile = ({ setCurrentPage }) => {
 
               {/* Action Buttons */}
               {isEditing && (
-                <div className="flex space-x-4 mt-6">
+                <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mt-6">
                   <button
                     onClick={handleSave}
-                    className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    className="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto"
                   >
                     <CheckIcon className="w-4 h-4" />
                     <span>Save Changes</span>
                   </button>
                   <button
                     onClick={handleCancel}
-                    className="flex items-center space-x-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    className="flex items-center justify-center space-x-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto"
                   >
                     <XMarkIcon className="w-4 h-4" />
                     <span>Cancel</span>
@@ -419,20 +396,20 @@ const Profile = ({ setCurrentPage }) => {
 
         {/* My Vehicles Tab */}
         {activeTab === 'vehicles' && (
-          <div className="space-y-6">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="flex items-center justify-between mb-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
                 <h3 className="text-lg font-semibold text-white">My Vehicles</h3>
                 <button 
                   onClick={() => setIsAddVehicleModalOpen(true)}
-                  className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto"
                 >
                   <PlusIcon className="w-4 h-4" />
                   <span>Add Vehicle</span>
                 </button>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {vehicles.map(vehicle => (
                   <div key={vehicle.id} className="bg-gray-800 rounded-lg p-4 border border-gray-700 relative group">
                     <button
@@ -458,20 +435,20 @@ const Profile = ({ setCurrentPage }) => {
 
         {/* My Addresses Tab */}
         {activeTab === 'addresses' && (
-          <div className="space-y-6">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="flex items-center justify-between mb-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
                 <h3 className="text-lg font-semibold text-white">My Addresses</h3>
                 <button 
                   onClick={() => setIsAddAddressModalOpen(true)}
-                  className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto"
                 >
                   <PlusIcon className="w-4 h-4" />
                   <span>Add Address</span>
                 </button>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {addresses.map(address => (
                   <div key={address.id} className="bg-gray-800 rounded-lg p-4 border border-gray-700 relative group">
                     <button
@@ -498,40 +475,6 @@ const Profile = ({ setCurrentPage }) => {
           </div>
         )}
 
-        {/* My Bookings Tab */}
-        {activeTab === 'bookings' && (
-          <div className="space-y-6">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <h3 className="text-lg font-semibold text-white mb-6">My Bookings</h3>
-              
-              <div className="space-y-4">
-                {bookings.map(booking => (
-                  <div key={booking.id} className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h4 className="text-white font-medium mb-2">{booking.bike_name || booking.bike || 'Unknown Bike'}</h4>
-                        <p className="text-gray-400 text-sm mb-1">Garage: {booking.garage_name || booking.garage || 'Unknown Garage'}</p>
-                        <p className="text-gray-400 text-sm mb-1">Date: {booking.booking_date || booking.date} at {booking.booking_slot || booking.time}</p>
-                        <p className={`text-sm font-medium ${getStatusColor(booking.status)}`}>
-                          Status: {booking.status}
-                        </p>
-                      </div>
-                      
-                      {booking.status === 'Upcoming' && (
-                        <button
-                          onClick={() => handleCancelBooking(booking.id)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-                        >
-                          Cancel Booking
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Add Vehicle Modal */}

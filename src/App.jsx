@@ -6,15 +6,33 @@ import ContactUs from './pages/ContactUs'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
 import BookingFlow from './components/homeComponents/BookingFlow'
-import { isAuthenticated } from './services/authService'
+import { isAuthenticated, initializeSession } from './services/authService'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  // Check authentication status on app load
+  // Initialize session management and check authentication status on app load
   useEffect(() => {
-    setIsLoggedIn(isAuthenticated())
+    // Initialize session management (preserves existing auth data)
+    const cleanup = initializeSession();
+    
+    // Check authentication status
+    setIsLoggedIn(isAuthenticated());
+    
+    // Listen for authentication state changes
+    const handleAuthStateChange = (e) => {
+      console.log('🔍 App auth state changed:', e.detail);
+      setIsLoggedIn(e.detail.isLoggedIn);
+    };
+    
+    window.addEventListener('authStateChanged', handleAuthStateChange);
+    
+    // Cleanup function
+    return () => {
+      cleanup();
+      window.removeEventListener('authStateChanged', handleAuthStateChange);
+    };
   }, [])
 
   const renderPage = () => {

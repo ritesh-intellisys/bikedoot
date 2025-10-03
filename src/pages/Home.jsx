@@ -18,6 +18,7 @@ import ThreeWheelerGarages from '../components/garageComponents/ThreeWheelerGara
 import FourWheelerGarages from '../components/garageComponents/FourWheelerGarages';
 import SixWheelerGarages from '../components/garageComponents/SixWheelerGarages';
 import GarageDetailPage from '../components/garageComponents/GarageDetailPage';
+import WashingService from '../components/washingComponents/WashingService';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { fetchLandingPageData } from '../services/landingpage';
@@ -43,6 +44,7 @@ const Home = ({ setCurrentPage }) => {
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [garages, setGarages] = useState([]);
   const [showGarageListing, setShowGarageListing] = useState(false);
+  const [showWashingService, setShowWashingService] = useState(false);
   const [selectedVehicleType, setSelectedVehicleType] = useState(null);
   const [selectedGarage, setSelectedGarage] = useState(null);
   const [showGarageDetail, setShowGarageDetail] = useState(false);
@@ -118,10 +120,10 @@ const Home = ({ setCurrentPage }) => {
         sessionStorage.setItem("selectedCity", "Pune");
         
         console.log("📍 Using fallback location: Pune");
-        setLocationReady(true);
+      setLocationReady(true);
       } finally {
         setIsDetectingLocation(false);
-      }
+    }
     };
 
     initializeLocation();
@@ -176,10 +178,12 @@ const Home = ({ setCurrentPage }) => {
 
   // Handle service category click
   const handleServiceClick = (serviceType) => {
-    if (serviceType === 'two-wheeler' || serviceType === 'three-wheeler' || serviceType === 'four-wheeler' || serviceType === 'six-wheeler') {
+    if (serviceType === 'two-wheeler' || serviceType === 'four-wheeler') {
       setShowGarageListing(true);
       setSelectedVehicleType(serviceType);
       setSelectedServiceId(1); // Garage service ID
+    } else if (serviceType === 'washing-detailing') {
+      setShowWashingService(true);
     } else {
       // Show coming soon for other services
       alert(`${serviceType} service - Coming Soon!`);
@@ -219,6 +223,7 @@ const Home = ({ setCurrentPage }) => {
   // Back to main page
   const backToMain = () => {
     setShowGarageListing(false);
+    setShowWashingService(false);
     setSelectedVehicleType(null);
     setSelectedServiceId(null);
     // Scroll to top when going back to main page
@@ -270,7 +275,7 @@ const Home = ({ setCurrentPage }) => {
 
       {/* Main Content */}
       <main>
-        {!showGarageListing ? (
+        {!showGarageListing && !showWashingService ? (
           <>
             {/* Banner Carousel */}
             <BannerCarousel 
@@ -285,7 +290,7 @@ const Home = ({ setCurrentPage }) => {
             />
 
             {/* Marketing Section */}
-            <section className="py-20 px-4 bg-gray-900">
+            <section className="py-12 px-4 bg-gray-900">
               <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                   <div>
@@ -321,16 +326,16 @@ const Home = ({ setCurrentPage }) => {
             </section>
 
             {/* Why Book With Us */}
-            <section className="py-20 px-4 bg-black">
+            <section className="py-12 px-4 bg-black">
               <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-16">
+                <div className="text-center mb-12">
                   <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
                     Why Choose Our Platform
                   </h2>
                   <p className="text-lg text-gray-400">Trusted by vehicle owners across India</p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                   {[
                     {
                       title: "Verified Garages",
@@ -374,7 +379,7 @@ const Home = ({ setCurrentPage }) => {
                 </div>
 
                 {/* Customer Reviews */}
-                <div className="text-center mb-12">
+                <div className="text-center mb-8">
                   <h3 className="text-3xl font-bold mb-4 text-white">What Our Customers Say</h3>
                   <p className="text-xl text-gray-400">Real reviews from real customers</p>
                 </div>
@@ -437,7 +442,7 @@ const Home = ({ setCurrentPage }) => {
             </section>
 
             {/* Information Section */}
-            <section className="py-20 px-4 bg-gray-800">
+            <section className="py-12 px-4 bg-gray-800">
               <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                   <div>
@@ -498,21 +503,38 @@ const Home = ({ setCurrentPage }) => {
               </div>
             </section>
           </>
+        ) : showWashingService ? (
+          <WashingService
+            selectedCity={selectedCity}
+            onBackToMain={backToMain}
+            onWashingCenterClick={() => {}} // No redirect to garage sections
+            onShowLoginPopup={() => {}} // No login popup for now
+          />
+        ) : showGarageDetail && selectedGarage ? (
+          <GarageDetailPage
+            garage={selectedGarage}
+            onClose={closeGarageDetail}
+            onBookNow={() => {
+              // Check if user is authenticated
+              const token = localStorage.getItem('authToken');
+              
+              if (token) {
+                // User is authenticated, proceed to booking
+                console.log("✅ User is authenticated, proceeding to booking");
+                closeGarageDetail();
+                window.location.href = `/booking?garageId=${selectedGarage.id}&returnTo=garage-list&vehicleType=${selectedVehicleType}`;
+              } else {
+                // User not authenticated, show login popup
+                console.log("❌ User not authenticated, showing login popup");
+                setShowLoginPopup(true);
+              }
+            }}
+          />
         ) : (
           <>
             {/* Render specific vehicle type garage component */}
             {selectedVehicleType === 'two-wheeler' && (
               <TwoWheelerGarages
-                selectedCity={selectedCity}
-                filterData={filterData}
-                onGarageClick={handleGarageClick}
-                onBackToMain={backToMain}
-                onVehicleTypeChange={handleVehicleTypeChange}
-                onShowLoginPopup={handleShowLoginPopup}
-              />
-            )}
-            {selectedVehicleType === 'three-wheeler' && (
-              <ThreeWheelerGarages
                 selectedCity={selectedCity}
                 filterData={filterData}
                 onGarageClick={handleGarageClick}
@@ -529,44 +551,12 @@ const Home = ({ setCurrentPage }) => {
                 onBackToMain={backToMain}
                 onVehicleTypeChange={handleVehicleTypeChange}
                 onShowLoginPopup={handleShowLoginPopup}
-              />
-            )}
-            {selectedVehicleType === 'six-wheeler' && (
-              <SixWheelerGarages
-              selectedCity={selectedCity}
-              filterData={filterData}
-              onGarageClick={handleGarageClick}
-              onBackToMain={backToMain}
-              onVehicleTypeChange={handleVehicleTypeChange}
-              onShowLoginPopup={handleShowLoginPopup}
             />
             )}
           </>
         )}
       </main>
 
-      {/* Garage Detail Page */}
-      {showGarageDetail && selectedGarage && (
-        <GarageDetailPage
-          garage={selectedGarage}
-          onClose={closeGarageDetail}
-          onBookNow={() => {
-            // Check if user is authenticated
-            const token = localStorage.getItem('authToken');
-            
-            if (token) {
-              // User is authenticated, proceed to booking
-              console.log("✅ User is authenticated, proceeding to booking");
-              closeGarageDetail();
-              window.location.href = `/booking?garageId=${selectedGarage.id}&returnTo=garage-list&vehicleType=${selectedVehicleType}`;
-            } else {
-              // User not authenticated, show login popup
-              console.log("❌ User not authenticated, showing login popup");
-              setShowLoginPopup(true);
-            }
-          }}
-        />
-      )}
 
 
 

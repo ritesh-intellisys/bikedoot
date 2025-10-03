@@ -1,0 +1,73 @@
+/* Custom styles for BannerCarousel navigation arrows */
+
+/* Small screens (mobile) - Very small arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  width: 16px !important;
+  height: 16px !important;
+  margin-top: -8px !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-radius: 50% !important;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 10px !important;
+  font-weight: bold !important;
+}
+
+/* Medium screens (tablet) - Small arrows */
+@media (min-width: 640px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 24px !important;
+    height: 24px !important;
+    margin-top: -12px !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+  }
+  
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 14px !important;
+  }
+}
+
+/* Large screens (desktop) - Medium arrows */
+@media (min-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 32px !important;
+    height: 32px !important;
+    margin-top: -16px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 18px !important;
+  }
+}
+
+/* Extra large screens - Normal arrows */
+@media (min-width: 1024px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 40px !important;
+    height: 40px !important;
+    margin-top: -20px !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+  }
+  
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 22px !important;
+  }
+}
+
+/* Hover effects */
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.7) !important;
+  transform: scale(1.1) !important;
+  transition: all 0.2s ease !important;
+}

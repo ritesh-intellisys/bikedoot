@@ -5,6 +5,7 @@ import SelectBikeStep from './bookingSteps/SelectBikeStep';
 import SelectServiceStep from './bookingSteps/SelectServiceStep';
 import SlotAndAddressStep from './bookingSteps/SlotAndAddressStep';
 import SummaryStep from './bookingSteps/SummaryStep';
+import { fetchGarageById } from '../../services/garageDetailService';
 
 const BookingFlow = () => {
   const location = useLocation();
@@ -24,10 +25,11 @@ const BookingFlow = () => {
   const [suggestion, setSuggestion] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [garageInfo, setGarageInfo] = useState(null);
   
   const steps = ["Select Bike", "Service", "Slot & Address", "Summary"];
   
-  // Check authentication
+  // Check authentication and fetch garage info
   useEffect(() => {
     try {
       console.log("BookingFlow mounted with garageId:", garageId);
@@ -46,6 +48,24 @@ const BookingFlow = () => {
         return;
       }
       
+      // Fetch garage information
+      const fetchGarageInfo = async () => {
+        try {
+          const garageData = await fetchGarageById(garageId);
+          if (garageData) {
+            setGarageInfo(garageData);
+            console.log("Garage info loaded:", garageData);
+          } else {
+            console.error("Failed to load garage information");
+            navigate("/");
+          }
+        } catch (error) {
+          console.error("Error fetching garage info:", error);
+          navigate("/");
+        }
+      };
+      
+      fetchGarageInfo();
       console.log("BookingFlow ready with garageId:", garageId);
     } catch (error) {
       console.error("Error in BookingFlow useEffect:", error);
@@ -90,6 +110,7 @@ const BookingFlow = () => {
   const renderStep = () => {
     const commonProps = {
       garageId,
+      garageInfo,
       bikeData,
       selectedService,
       slotAndAddress,
@@ -136,6 +157,18 @@ const BookingFlow = () => {
           >
             {returnTo === 'garage-list' ? 'Go Back to Garages' : 'Go Back to Home'}
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading state while garage info is being fetched
+  if (!garageInfo) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading garage information...</p>
         </div>
       </div>
     );

@@ -16,7 +16,7 @@ const SlotAndAddressStep = ({
   const [selectedDateLabel, setSelectedDateLabel] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [selectedEstimateOption, setSelectedEstimateOption] = useState(false);
+  const [selectedEstimateOption, setSelectedEstimateOption] = useState("no");
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
   const [hasAddress, setHasAddress] = useState(false);
   const [isEditing, setIsEditing] = useState(true);
@@ -327,31 +327,43 @@ const SlotAndAddressStep = ({
               }`}
             >
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className="text-white font-medium">{address.address}</p>
-                  <p className="text-gray-400 text-sm mt-1">
-                    {address.city} - {address.pincode}
-                  </p>
-                  {address.landmark && (
-                    <p className="text-gray-500 text-xs mt-1">
-                      Landmark: {address.landmark}
+                <div className="flex items-start space-x-3 flex-1">
+                  {/* Radio Button */}
+                  <input
+                    type="radio"
+                    name="address"
+                    value={address.id}
+                    checked={selectedAddress?.id === address.id}
+                    onChange={() => setSelectedAddress(address)}
+                    className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 focus:ring-red-500 focus:ring-2 mt-1"
+                  />
+                  
+                  {/* Address Details */}
+                  <div className="flex-1">
+                    <p className="text-white text-sm mb-1">
+                      <strong>🏙️ City:</strong> {address.city}
                     </p>
-                  )}
+                    <p className="text-white text-sm mb-1">
+                      <strong>📌 Pincode:</strong> {address.pincode}
+                    </p>
+                    <p className="text-white text-sm">
+                      <strong>📍 Address:</strong> {address.address}
+                    </p>
+                    {address.landmark && (
+                      <p className="text-gray-400 text-xs mt-1">
+                        <strong>Landmark:</strong> {address.landmark}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 
-                {address.is_default && (
-                  <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
-                    Default
-                  </span>
-                )}
-                
-                {selectedAddress?.id === address.id && (
-                  <div className="ml-3">
-                    <div className="w-5 h-5 bg-red-600 rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-                )}
+                <div className="flex items-center space-x-2">
+                  {address.is_default && (
+                    <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
+                      Default
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -362,20 +374,50 @@ const SlotAndAddressStep = ({
       <div className="space-y-4">
         <h3 className="text-xl font-semibold text-white">Additional Options</h3>
         <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-          <label className="flex items-center space-x-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={selectedEstimateOption}
-              onChange={(e) => handleEstimateSelection(e.target.checked)}
-              className="w-5 h-5 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500 focus:ring-2"
-            />
-            <div>
-              <span className="text-white font-medium">Request Estimate</span>
-              <p className="text-gray-400 text-sm">
-                Get a detailed estimate before starting the service
-              </p>
+          <div className="flex items-center justify-between">
+            <span className="text-white font-medium">Do you want a detailed estimate?</span>
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="estimate"
+                  value="yes"
+                  checked={selectedEstimateOption === "yes"}
+                  onChange={(e) => handleEstimateSelection(e.target.value)}
+                  className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 focus:ring-red-500 focus:ring-2"
+                />
+                <span className="text-white">Yes</span>
+              </label>
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="estimate"
+                  value="no"
+                  checked={selectedEstimateOption === "no"}
+                  onChange={(e) => handleEstimateSelection(e.target.value)}
+                  className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 focus:ring-red-500 focus:ring-2"
+                />
+                <span className="text-white">No</span>
+              </label>
             </div>
-          </label>
+          </div>
+        </div>
+      </div>
+
+      {/* Suggestion Field */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-semibold text-white">Add Suggestion</h3>
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+          <textarea
+            placeholder="Enter your suggestions or special requirements..."
+            value={slotAndAddress?.suggestion || ''}
+            onChange={(e) => setSlotAndAddress((prev) => ({
+              ...prev,
+              suggestion: e.target.value
+            }))}
+            className="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+            rows={4}
+          />
         </div>
       </div>
 
