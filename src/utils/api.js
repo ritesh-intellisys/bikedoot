@@ -31,7 +31,24 @@ export const apiRequest = async (endpoint, options = {}) => {
     const response = await fetch(url, config);
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // Try to get the error response body
+      let errorData;
+      try {
+        errorData = await response.json();
+        console.error('🔍 API Error Response:', errorData);
+        if (errorData.errors) {
+          console.error('🔍 Detailed Validation Errors:', errorData.errors);
+          Object.keys(errorData.errors).forEach(field => {
+            console.error(`🔍 Field "${field}" error:`, errorData.errors[field]);
+          });
+        }
+      } catch (jsonError) {
+        console.error('🔍 Could not parse error response as JSON');
+      }
+      
+      const error = new Error(`HTTP error! status: ${response.status}`);
+      error.response = { data: errorData, status: response.status };
+      throw error;
     }
     
     // Check if response is HTML (404 page) instead of JSON

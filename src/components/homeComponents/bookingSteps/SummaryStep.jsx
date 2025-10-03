@@ -47,7 +47,7 @@ const SummaryStep = ({
         businessid: parseInt(localStorage.getItem("businessId") || "1"),
         subscriberid: parseInt(localStorage.getItem("subscriberId") || "1"),
         subscribervehicleid: bikeData.vehicle_id || bikeData.id,
-        subscriberaddressid: slotAndAddress.address.id,
+        subscriberaddressid: slotAndAddress.address?.id,
         garageid: garageId,
         bookingdate: formattedDate,
         bookingslot: slotAndAddress.slot,
@@ -56,6 +56,20 @@ const SummaryStep = ({
         promocode: "SUMMER10",
         requiredestimate: slotAndAddress.estimate === "yes"
       };
+      
+      console.log("🔍 Creating booking with payload:", payload);
+      console.log("🔍 Debug values:");
+      console.log("  - businessid:", parseInt(localStorage.getItem("businessId") || "1"));
+      console.log("  - subscriberid:", parseInt(localStorage.getItem("subscriberId") || "1"));
+      console.log("  - subscribervehicleid:", bikeData.vehicle_id || bikeData.id);
+      console.log("  - subscriberaddressid:", slotAndAddress.address?.id);
+      console.log("  - garageid:", garageId);
+      console.log("  - bookingdate:", formattedDate);
+      console.log("  - bookingslot:", slotAndAddress.slot);
+      console.log("  - suggestion:", suggestion.trim());
+      console.log("  - bookingamount:", calculateTotal().toFixed(2));
+      console.log("  - promocode:", "SUMMER10");
+      console.log("  - requiredestimate:", slotAndAddress.estimate === "yes");
       
       const response = await createBooking(payload);
       
@@ -67,7 +81,13 @@ const SummaryStep = ({
       }
     } catch (error) {
       console.error('Error creating booking:', error);
-      setErrors({ booking: 'Failed to create booking. Please try again.' });
+      
+      // Check if it's a duplicate booking error
+      if (error.response?.data?.errors?.non_field_errors?.includes('A booking already exists with these details.')) {
+        setErrors({ booking: 'A booking with these details already exists. Please try with different date, time, or service selection.' });
+      } else {
+        setErrors({ booking: 'Failed to create booking. Please try again.' });
+      }
     } finally {
       setLoading(false);
     }

@@ -216,7 +216,7 @@ export const createBooking = async (payload) => {
     console.log('🔍 API response for booking creation:', response);
     
     // Handle different response structures
-    if (response.status === "success" || response.success === true) {
+    if (response.status === "success" || response.status === true || response.success === true) {
       return {
         success: true,
         data: response.data
@@ -235,7 +235,11 @@ export const createBooking = async (payload) => {
     if (error.response) {
       console.error('🔍 Error response data:', error.response.data);
       console.error('🔍 Error response status:', error.response.status);
+      console.error('🔍 Error response headers:', error.response.headers);
     }
+    
+    // Also log the original request details
+    console.error('🔍 Original payload that failed:', payload);
     
     throw error; // Re-throw the error to be handled by the component
   }
