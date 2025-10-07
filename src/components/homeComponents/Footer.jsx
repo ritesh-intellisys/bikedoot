@@ -12,7 +12,7 @@ function Footer() {
         <div className="max-w-xs sm:max-w-xs md:max-w-lg text-center">
           <img
             src="/Bikedoot.png"
-            alt="Bikedoot_logo"
+            alt="ServX24_logo"
             className={`h-14 sm:h-12 md:h-20 w-auto cursor-pointer block mx-auto ${isMobile ? 'ml-0' : 'sm:ml-0 md:ml-3'}`}
           />
         </div>
@@ -52,8 +52,8 @@ function Footer() {
       </div>
 
       {/* Copyright Text */}
-      <p className="mt-2 text-white text-sm">
-        Copyright &copy; 2025 Bikedoot | info@bikedoot.com
+          <p className="mt-2 text-white text-sm">
+        Copyright &copy; 2025 ServX24 | info@bikedoot.com
       </p>
       <p className="text-white text-sm mt-1">
         Call us:{" "}

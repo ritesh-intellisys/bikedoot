@@ -31,7 +31,7 @@ const Footer = ({ setCurrentPage, scrollToTop }) => {
       <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           <div className="footer-col">
-            <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-white">BikeDoot</h3>
+            <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-white">ServX24</h3>
             <p className="text-sm md:text-base text-gray-300 mb-4">Redefining cycling culture through innovation, quality, and community engagement.</p>
             <div className="footer-social flex space-x-3">
               <a href="#" className="w-8 h-8 md:w-10 md:h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
@@ -76,11 +76,11 @@ const Footer = ({ setCurrentPage, scrollToTop }) => {
             <ul className="footer-links space-y-2">
               <li className="flex items-center text-sm md:text-base text-gray-300">
                 <FontAwesomeIcon icon={faMapMarkerAlt} className="w-3 h-3 md:w-4 md:h-4 mr-2 text-red-500" /> 
-                123 Cycling Street, Bike City
+                Near, Hinjawadi - Wakad Rd, opp. Vijay Sales, Pune, Maharashtraa, 222001
               </li>
               <li className="flex items-center text-sm md:text-base text-gray-300">
                 <FontAwesomeIcon icon={faPhone} className="w-3 h-3 md:w-4 md:h-4 mr-2 text-red-500" /> 
-                (555) 123-4567
+                +91 62076 27817
               </li>
               <li className="flex items-center text-sm md:text-base text-gray-300">
                 <FontAwesomeIcon icon={faEnvelope} className="w-3 h-3 md:w-4 md:h-4 mr-2 text-red-500" /> 
@@ -95,7 +95,8 @@ const Footer = ({ setCurrentPage, scrollToTop }) => {
         </div>
         
         <div className="footer-bottom border-t border-gray-800 mt-6 md:mt-8 pt-4 md:pt-6">
-          <p className="text-center text-xs md:text-sm text-gray-400">&copy; 2023 BikeDoot. All Rights Reserved.</p>
+          <p className="text-center text-xs md:text-sm text-gray-400">Copyright © 2025 ServX24 | info@bikedoot.com</p>
+          <p className="text-center text-xs md:text-sm text-gray-400 mt-1">Call us: +91 62076 27817</p>
         </div>
       </div>
     </footer>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ServXLogo from '../../assets/ServXLogo-removebg-preview.png';
 import { ChevronDownIcon, MagnifyingGlassIcon, UserIcon, MapPinIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { getCurrentLocation, getCityFromCoordinates, storeLocationData, getStoredLocationData } from '../../utils/geolocation';
 import { isAuthenticated, clearAuthData } from '../../services/authService';
@@ -148,8 +149,10 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
           {/* Left Group: Logo + Search Bar */}
           <div className="flex items-center space-x-6">
             {/* Logo */}
-            <h1 
-              className="text-lg md:text-xl font-bold text-white cursor-pointer hover:text-red-500 transition-colors"
+            <img
+              src={ServXLogo}
+              alt="ServX24 logo"
+              className="h-32 md:h-36 w-auto cursor-pointer"
               onClick={() => {
                 setCurrentPage('home');
                 if (onBackToMain) {
@@ -159,9 +162,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
                   scrollToTop();
                 }
               }}
-            >
-              <span className="text-red-500">Bike</span>Doot
-            </h1>
+            />
 
             {/* Search Bar */}
             <div className="hidden md:flex w-60 lg:w-80">
