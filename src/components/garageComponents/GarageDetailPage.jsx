@@ -417,13 +417,13 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                     <span>Book Now</span>
                   </button>
                   
-                  <button
-                    onClick={handleCallClick}
+                  <a
+                    href={`tel:${getSanitizedPhone()}`}
                     className="flex-1 border border-gray-600 hover:bg-gray-700 text-gray-300 py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1"
                   >
                     <PhoneIcon className="w-4 h-4" />
                     <span>Call</span>
-                  </button>
+                  </a>
                   
                   <button
                     onClick={handleDirectionClick}
@@ -499,13 +499,13 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                     <span>Book Now</span>
                   </button>
                   
-                  <button
-                    onClick={handleCallClick}
+                  <a
+                    href={`tel:${getSanitizedPhone()}`}
                     className="flex-1 border border-gray-600 hover:bg-gray-700 text-gray-300 py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1"
                   >
                     <PhoneIcon className="w-4 h-4" />
                     <span>Call</span>
-                  </button>
+                  </a>
                   
                   <button
                     onClick={handleDirectionClick}
