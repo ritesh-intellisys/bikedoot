@@ -21,6 +21,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
   const [garageData, setGarageData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   
   // Fallback images for garage cover images
   const fallbackImages = [
@@ -142,10 +143,20 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
     }
   };
 
+  const getSanitizedPhone = () => {
+    const rawPhone = garageData?.phone || garage?.phone;
+    if (!rawPhone) return '';
+    return String(rawPhone).replace(/[^+\d]/g, '');
+  };
+
   const handleCallClick = () => {
-    const phone = garageData?.phone || garage?.phone;
-    if (phone) {
-      window.open(`tel:${phone}`, '_self');
+    const sanitized = getSanitizedPhone();
+    if (!sanitized || sanitized.replace(/\D/g, '').length === 0) return;
+    // Open modal on laptop/desktop screens, dial directly on mobile
+    if (window.innerWidth >= 1024) {
+      setIsCallModalOpen(true);
+    } else {
+      window.open(`tel:${sanitized}`, '_self');
     }
   };
 
@@ -496,6 +507,34 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
               </div>
             </div>
           </div>
+          {/* Desktop Call Modal */}
+          {isCallModalOpen && (
+            <div className="hidden lg:flex fixed inset-0 z-30 items-center justify-center">
+              <div className="absolute inset-0 bg-black bg-opacity-60" onClick={() => setIsCallModalOpen(false)}></div>
+              <div className="relative bg-gray-900 border border-gray-700 rounded-xl shadow-2xl p-6 w-80">
+                <h3 className="text-white text-lg font-semibold mb-2">Call Garage</h3>
+                <p className="text-gray-300 text-sm mb-4">Phone number</p>
+                <div className="bg-gray-800 text-white px-3 py-2 rounded-md font-mono text-sm mb-4 select-all">
+                  {getSanitizedPhone()}
+                </div>
+                <div className="flex gap-2">
+                  <a
+                    href={`tel:${getSanitizedPhone()}`}
+                    className="flex-1 text-center bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium"
+                    onClick={() => setIsCallModalOpen(false)}
+                  >
+                    Call
+                  </a>
+                  <button
+                    className="flex-1 border border-gray-600 hover:bg-gray-800 text-gray-200 py-2 rounded-lg font-medium"
+                    onClick={() => setIsCallModalOpen(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Content Sections */}
