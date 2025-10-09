@@ -142,14 +142,14 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
     const lat = apiLoc?.latitude || apiLoc?.lat || garageData?.latitude || propLoc?.latitude || propLoc?.lat || garage?.latitude;
     const lng = apiLoc?.longitude || apiLoc?.lng || garageData?.longitude || propLoc?.longitude || propLoc?.lng || garage?.longitude;
     if (lat && lng) {
-      const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${lat},${lng}`)}`;
       window.open(mapsUrl, '_blank');
       return;
     }
     // Fallback: open by address if available
     const address = garageData?.address || garage?.address || '';
     if (address) {
-      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
       window.open(mapsUrl, '_blank');
     }
   };
@@ -167,7 +167,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
     if (window.innerWidth >= 1024) {
       setIsCallModalOpen(true);
     } else {
-      window.open(`tel:${sanitized}`, '_self');
+      window.location.href = `tel:${sanitized}`;
     }
   };
 
@@ -529,13 +529,18 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                   {getSanitizedPhone()}
                 </div>
                 <div className="flex gap-2">
-                  <a
-                    href={`tel:${getSanitizedPhone()}`}
+                  <button
                     className="flex-1 text-center bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium"
-                    onClick={() => setIsCallModalOpen(false)}
+                    onClick={() => {
+                      const num = getSanitizedPhone();
+                      if (num) {
+                        window.location.href = `tel:${num}`;
+                      }
+                      setIsCallModalOpen(false);
+                    }}
                   >
                     Call
-                  </a>
+                  </button>
                   <button
                     className="flex-1 border border-gray-600 hover:bg-gray-800 text-gray-200 py-2 rounded-lg font-medium"
                     onClick={() => setIsCallModalOpen(false)}
