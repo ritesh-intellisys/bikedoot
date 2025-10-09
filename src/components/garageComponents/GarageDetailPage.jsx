@@ -136,9 +136,20 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
   }, [selectedTab]);
 
   const handleDirectionClick = () => {
-    if (garage?.location?.latitude && garage?.location?.longitude) {
-      const { latitude, longitude } = garage.location;
-      const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+    // Prefer API data, then prop fallback
+    const apiLoc = garageData?.location;
+    const propLoc = garage?.location;
+    const lat = apiLoc?.latitude || apiLoc?.lat || garageData?.latitude || propLoc?.latitude || propLoc?.lat || garage?.latitude;
+    const lng = apiLoc?.longitude || apiLoc?.lng || garageData?.longitude || propLoc?.longitude || propLoc?.lng || garage?.longitude;
+    if (lat && lng) {
+      const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+      window.open(mapsUrl, '_blank');
+      return;
+    }
+    // Fallback: open by address if available
+    const address = garageData?.address || garage?.address || '';
+    if (address) {
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
       window.open(mapsUrl, '_blank');
     }
   };
