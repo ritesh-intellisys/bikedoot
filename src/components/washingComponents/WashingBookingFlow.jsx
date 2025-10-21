@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import StepperNavigation from '../homeComponents/StepperNavigation';
+import DemoBookingFlow from '../homeComponents/demoB';
 import WashingSelectBikeStep from './bookingSteps/WashingSelectBikeStep';
 import WashingSelectServiceStep from './bookingSteps/WashingSelectServiceStep';
 import WashingSlotAndAddressStep from './bookingSteps/WashingSlotAndAddressStep';
@@ -70,6 +71,48 @@ const WashingBookingFlow = () => {
       serviceTypes: ['basic-wash', 'express'],
       priceRange: 'budget',
       description: "Quick and efficient car wash services for busy professionals"
+    },
+    3: {
+      id: 3,
+      name: "Elite Detailing Studio",
+      location: "Baner",
+      address: "789, Business Hub, Baner, Pune",
+      phone: "+91 98765 43212",
+      rating: 4.9,
+      distance: 3.5,
+      operatingHours: "9:00 AM - 7:00 PM",
+      image: "https://images.unsplash.com/photo-1652454449601-e83b62eabe94?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      services: [
+        { name: "Ceramic Coating", price: "₹4,999" },
+        { name: "Paint Correction", price: "₹3,999" },
+        { name: "Leather Treatment", price: "₹1,999" },
+        { name: "Engine Bay Cleaning", price: "₹799" }
+      ],
+      vehicleTypes: ['car'],
+      serviceTypes: ['premium-detailing', 'ceramic-coating'],
+      priceRange: 'premium',
+      description: "Luxury car detailing with professional-grade equipment"
+    },
+    4: {
+      id: 4,
+      name: "BikeWash Pro",
+      location: "Wakad",
+      address: "321, Service Center, Wakad, Pune",
+      phone: "+91 98765 43213",
+      rating: 4.6,
+      distance: 1.8,
+      operatingHours: "8:00 AM - 8:00 PM",
+      image: "https://images.unsplash.com/photo-1632823469901-5d2cfff5ba50?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      services: [
+        { name: "Bike Wash", price: "₹149" },
+        { name: "Chain Cleaning", price: "₹199" },
+        { name: "Polish & Wax", price: "₹299" },
+        { name: "Seat Cleaning", price: "₹99" }
+      ],
+      vehicleTypes: ['bike'],
+      serviceTypes: ['bike-specific'],
+      priceRange: 'budget',
+      description: "Specialized bike cleaning and maintenance services"
     }
   };
   
@@ -114,15 +157,15 @@ const WashingBookingFlow = () => {
     setErrors({});
     
     if (activeStep === 0 && !bikeData) {
-      setErrors({ bike: "Please select a bike to continue" });
+      setErrors({ bike: "Please select your vehicle to continue with the booking" });
       return;
     }
     if (activeStep === 1 && !selectedService) {
-      setErrors({ service: "Please select at least one service to continue" });
+      setErrors({ service: "Please choose at least one service for your vehicle" });
       return;
     }
     if (activeStep === 2 && !slotAndAddress) {
-      setErrors({ slot: "Please select date, time, and address to continue" });
+      setErrors({ slot: "Please complete your booking details to proceed" });
       return;
     }
     
@@ -183,8 +226,8 @@ const WashingBookingFlow = () => {
           <p className="text-gray-400 mb-6">Please select a washing center first to start booking.</p>
           <button
             onClick={() => {
-              if (returnTo === 'washing-list' && vehicleType) {
-                navigate(`/?vehicleType=${vehicleType}`);
+              if (returnTo === 'washing-list') {
+                navigate(`/?returnTo=washing-list`);
               } else {
                 navigate("/");
               }
@@ -211,6 +254,11 @@ const WashingBookingFlow = () => {
   }
   
   try {
+    // Use demo booking flow for two-wheelers
+    if (vehicleType === 'bike' || vehicleType === 'two-wheeler') {
+      return <DemoBookingFlow />;
+    }
+
     return (
       <div className="min-h-screen bg-black">
       {/* Header */}
@@ -224,9 +272,9 @@ const WashingBookingFlow = () => {
             <button
               onClick={() => {
                 // Return to washing list if that's where we came from, otherwise go to home
-                if (returnTo === 'washing-list' && vehicleType) {
-                  // Navigate back to washing list with vehicle type
-                  navigate(`/?vehicleType=${vehicleType}`);
+                if (returnTo === 'washing-list') {
+                  // Navigate back to washing list
+                  navigate(`/?returnTo=washing-list`);
                 } else {
                   navigate("/");
                 }
@@ -282,19 +330,21 @@ const WashingBookingFlow = () => {
       </div>
       
       {/* Error Display */}
-      {Object.keys(errors).length > 0 && (
+      {Object.keys(errors).length > 0 && Object.values(errors).some(error => error && error.trim()) && (
         <div className="fixed bottom-4 right-4 max-w-sm">
           <div className="bg-red-600 text-white p-4 rounded-lg shadow-lg">
             <div className="flex items-center">
               <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
-              <span className="font-medium">Please fix the following errors:</span>
+              <span className="font-medium">Please complete the following:</span>
             </div>
             <ul className="mt-2 text-sm">
-              {Object.values(errors).map((error, index) => (
-                <li key={index}>• {error}</li>
-              ))}
+              {Object.values(errors)
+                .filter(error => error && error.trim())
+                .map((error, index) => (
+                  <li key={index}>• {error}</li>
+                ))}
             </ul>
           </div>
         </div>
@@ -310,8 +360,8 @@ const WashingBookingFlow = () => {
           <p className="text-gray-400 mb-4">Something went wrong. Please try again.</p>
           <button 
             onClick={() => {
-              if (returnTo === 'washing-list' && vehicleType) {
-                navigate(`/?vehicleType=${vehicleType}`);
+              if (returnTo === 'washing-list') {
+                navigate(`/?returnTo=washing-list`);
               } else {
                 navigate("/");
               }

@@ -246,19 +246,21 @@ const BookingFlow = () => {
       </div>
       
       {/* Error Display */}
-      {Object.keys(errors).length > 0 && (
+      {Object.keys(errors).length > 0 && Object.values(errors).some(error => error && error.trim()) && (
         <div className="fixed bottom-4 right-4 max-w-sm">
           <div className="bg-red-600 text-white p-4 rounded-lg shadow-lg">
             <div className="flex items-center">
               <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
-              <span className="font-medium">Please fix the following errors:</span>
+              <span className="font-medium">Please complete the following:</span>
             </div>
             <ul className="mt-2 text-sm">
-              {Object.values(errors).map((error, index) => (
-                <li key={index}>• {error}</li>
-              ))}
+              {Object.values(errors)
+                .filter(error => error && error.trim())
+                .map((error, index) => (
+                  <li key={index}>• {error}</li>
+                ))}
             </ul>
           </div>
         </div>

@@ -59,11 +59,16 @@ const Home = ({ setCurrentPage }) => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const vehicleType = urlParams.get('vehicleType');
+    const returnTo = urlParams.get('returnTo');
+    
     if (vehicleType) {
       console.log('📍 Returning from booking flow, showing garage list for:', vehicleType);
       setSelectedVehicleType(vehicleType);
       setShowGarageListing(true);
       setSelectedServiceId(1);
+    } else if (returnTo === 'washing-list') {
+      console.log('📍 Returning from washing booking flow, showing washing service');
+      setShowWashingService(true);
     }
   }, []);
 

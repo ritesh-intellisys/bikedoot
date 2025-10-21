@@ -149,20 +149,25 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
           {/* Left Group: Logo + Search Bar */}
           <div className="flex items-center space-x-6">
             {/* Logo */}
-            <img
-              src={ServXLogo}
-              alt="ServX24 logo"
-              className="h-32 md:h-36 w-auto cursor-pointer"
-              onClick={() => {
-                setCurrentPage('home');
-                if (onBackToMain) {
-                  onBackToMain();
-                }
-                if (scrollToTop) {
-                  scrollToTop();
-                }
-              }}
-            />
+            <div className="flex flex-col items-center">
+              <img
+                src={ServXLogo}
+                alt="ServX24 logo"
+                className="h-6 md:h-6 sm:h-4 w-auto cursor-pointer"
+                onClick={() => {
+                  setCurrentPage('home');
+                  if (onBackToMain) {
+                    onBackToMain();
+                  }
+                  if (scrollToTop) {
+                    scrollToTop();
+                  }
+                }}
+              />
+              <div className="text-white text-xs md:text-xs sm:text-xs font-medium mt-1 cursor-pointer text-center">
+                Search.Compare.Book
+              </div>
+            </div>
 
             {/* Search Bar */}
             <div className="hidden md:flex w-60 lg:w-80">

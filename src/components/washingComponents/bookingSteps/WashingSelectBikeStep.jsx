@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { fetchUserVehicles } from '../../../services/bookingService';
-import AddBikeModal from '../../homeComponents/bookingSteps/AddBikeModal';
+// import { fetchUserVehicles } from '../../../services/bookingService';
+// import AddBikeModal from '../../homeComponents/bookingSteps/AddBikeModal';
 
 const WashingSelectBikeStep = ({ 
   bikeData, 
@@ -15,34 +15,58 @@ const WashingSelectBikeStep = ({
   const [isAddBikeModalOpen, setIsAddBikeModalOpen] = useState(false);
   const [selectedBikeId, setSelectedBikeId] = useState(null);
   
-  // Fetch user vehicles on component mount
+  // Demo vehicles data - no API calls
+  const demoVehicles = [
+    {
+      id: 1,
+      name: 'Honda Activa 6G',
+      brand: 'Honda',
+      model: 'Activa 6G',
+      cc: '110cc',
+      image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg',
+      year: 2023,
+      registration_number: 'MH12AB1234'
+    },
+    {
+      id: 2,
+      name: 'Bajaj Pulsar 150',
+      brand: 'Bajaj',
+      model: 'Pulsar 150',
+      cc: '150cc',
+      image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg',
+      year: 2022,
+      registration_number: 'MH12CD5678'
+    },
+    {
+      id: 3,
+      name: 'TVS Apache RTR 160',
+      brand: 'TVS',
+      model: 'Apache RTR 160',
+      cc: '160cc',
+      image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg',
+      year: 2023,
+      registration_number: 'MH12EF9012'
+    }
+  ];
+
+  // Load demo vehicles on component mount
   useEffect(() => {
-    const loadVehicles = async () => {
-      setLoading(true);
-      try {
-        const subscriberId = localStorage.getItem("subscriberId") || "1";
-        const userVehicles = await fetchUserVehicles(subscriberId);
-        console.log('🔍 User vehicles data structure:', userVehicles);
-        if (userVehicles.length > 0) {
-          console.log('🔍 First vehicle structure:', userVehicles[0]);
-          console.log('🔍 Vehicle properties:', Object.keys(userVehicles[0]));
-        }
-        setVehicles(userVehicles);
-        
-        // Auto-select first vehicle if none selected
-        if (userVehicles.length > 0 && !bikeData) {
-          setSelectedBikeId(userVehicles[0].id);
-          setBikeData(userVehicles[0]);
-        }
-      } catch (error) {
-        console.error('Error fetching vehicles:', error);
-        setErrors({ vehicles: 'Failed to load vehicles. Please try again.' });
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    try {
+      console.log('🔍 Loading demo vehicles for washing service');
+      setVehicles(demoVehicles);
+      
+      // Auto-select first vehicle if none selected
+      if (demoVehicles.length > 0 && !bikeData) {
+        setSelectedBikeId(demoVehicles[0].id);
+        setBikeData(demoVehicles[0]);
       }
-    };
-    
-    loadVehicles();
+    } catch (error) {
+      console.error('Error loading demo vehicles:', error);
+      setErrors({ vehicles: 'Unable to load vehicles. Please refresh the page and try again.' });
+    } finally {
+      setLoading(false);
+    }
   }, [setBikeData, setLoading, setErrors]);
   
   const handleBikeSelect = (vehicle) => {
@@ -51,37 +75,14 @@ const WashingSelectBikeStep = ({
     setErrors({});
   };
   
-  const handleAddBikeSuccess = async (newVehicle) => {
-    // For washing booking, we'll bypass the API call and just use the vehicle data locally
-    // This prevents the "Failed to add vehicle" error while still allowing the flow to continue
-    console.log('🔍 Washing booking - bypassing vehicle addition API, using local data:', newVehicle);
+  const handleAddBikeSuccess = (newVehicle) => {
+    // For washing booking, we'll use demo data and add the vehicle locally
+    console.log('🔍 Washing booking - adding demo vehicle:', newVehicle);
     
-    try {
-      // Try to refresh the vehicles list, but don't fail if it doesn't work
-      const subscriberId = localStorage.getItem("subscriberId") || "1";
-      const userVehicles = await fetchUserVehicles(subscriberId);
-      setVehicles(userVehicles);
-      
-      // Find the newly added vehicle in the updated list
-      const addedVehicle = userVehicles.find(v => v.id === newVehicle.id || v.vehicle_id === newVehicle.vehicle_id);
-      if (addedVehicle) {
-        setSelectedBikeId(addedVehicle.id);
-        setBikeData(addedVehicle);
-      } else {
-        // Fallback to the newVehicle data if not found in API response
-        setVehicles(prev => [...prev, newVehicle]);
-        setSelectedBikeId(newVehicle.id);
-        setBikeData(newVehicle);
-      }
-    } catch (error) {
-      console.error('Error refreshing vehicles list (bypassed for washing):', error);
-      // For washing booking, we'll just use the local data and continue
-      console.log('🔍 Using local vehicle data for washing booking:', newVehicle);
-      setVehicles(prev => [...prev, newVehicle]);
-      setSelectedBikeId(newVehicle.id);
-      setBikeData(newVehicle);
-    }
-    
+    // Add the new vehicle to the demo list
+    setVehicles(prev => [...prev, newVehicle]);
+    setSelectedBikeId(newVehicle.id);
+    setBikeData(newVehicle);
     setIsAddBikeModalOpen(false);
   };
   
@@ -175,13 +176,41 @@ const WashingSelectBikeStep = ({
         </div>
       )}
       
-      {/* Add Vehicle Modal */}
+      {/* Add Vehicle Modal - Demo Version */}
       {isAddBikeModalOpen && (
-        <AddBikeModal
-          isOpen={isAddBikeModalOpen}
-          onClose={() => setIsAddBikeModalOpen(false)}
-          onSuccess={handleAddBikeSuccess}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-xl max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Add New Vehicle</h3>
+            <p className="text-gray-400 mb-4">This is a demo version. In the real app, you would be able to add your vehicle here.</p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setIsAddBikeModalOpen(false)}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  // Add a demo vehicle
+                  const newVehicle = {
+                    id: Date.now(),
+                    name: 'Demo Bike',
+                    brand: 'Demo Brand',
+                    model: 'Demo Model',
+                    cc: '150cc',
+                    image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg',
+                    year: new Date().getFullYear(),
+                    registration_number: `DEMO-${Date.now()}`
+                  };
+                  handleAddBikeSuccess(newVehicle);
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Add Demo Vehicle
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
