@@ -31,7 +31,7 @@ const Footer = ({ setCurrentPage, scrollToTop }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           <div className="footer-col">
             <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-white">ServX24</h3>
-            <p className="text-sm md:text-base text-gray-300 mb-4">Redefining cycling culture through innovation, quality, and community engagement.</p>
+            <p className="text-sm md:text-base text-gray-300 mb-4">Elevating vehicle maintenance through innovation, quality service, and community connection.</p>
             <div className="footer-social flex space-x-3">
               <a href="#" className="w-8 h-8 md:w-10 md:h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
                 <FontAwesomeIcon icon={faFacebook} className="text-sm md:text-base" />
