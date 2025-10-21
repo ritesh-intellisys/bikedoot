@@ -211,9 +211,15 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
     e.stopPropagation();
     console.log("Book Now clicked for washing center:", center.id, center.name);
     
-    // Show a simple booking message for now
-    // This keeps the washing service completely independent
-    alert(`Booking ${center.name}\n\nServices Available:\n${center.services.map(s => `${s.name} - ${s.price}`).join('\n')}\n\nContact: ${center.phone}`);
+    // Navigate to washing booking flow
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      onShowLoginPopup();
+      return;
+    }
+    
+    // Navigate to washing booking flow with center data
+    window.location.href = `/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`;
   };
 
   const handleCloseDetail = () => {
@@ -222,9 +228,15 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
   };
 
   const handleBookNowFromDetail = (center) => {
-    // Show a simple booking message for now
-    // This keeps the washing service completely independent
-    alert(`Booking ${center.name}\n\nServices Available:\n${center.services.map(s => `${s.name} - ${s.price}`).join('\n')}\n\nContact: ${center.phone}`);
+    // Navigate to washing booking flow
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      onShowLoginPopup();
+      return;
+    }
+    
+    // Navigate to washing booking flow with center data
+    window.location.href = `/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`;
   };
 
   const renderStars = (rating) => {

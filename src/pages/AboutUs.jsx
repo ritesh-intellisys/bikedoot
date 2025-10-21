@@ -453,7 +453,7 @@ const AboutUs = ({ setCurrentPage }) => {
               <ul className="footer-links">
                 <li><FontAwesomeIcon icon={faMapMarkerAlt} /> 123 Cycling Street, Bike City</li>
                 <li><FontAwesomeIcon icon={faPhone} /> (555) 123-4567</li>
-                <li><FontAwesomeIcon icon={faEnvelope} /> info@bikedoot.com</li>
+                <li><FontAwesomeIcon icon={faEnvelope} /> info@servx24.com</li>
                 <li><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM - 6PM</li>
               </ul>
             </div>

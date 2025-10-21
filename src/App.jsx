@@ -6,6 +6,7 @@ import ContactUs from './pages/ContactUs'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
 import BookingFlow from './components/homeComponents/BookingFlow'
+import WashingBookingFlow from './components/washingComponents/WashingBookingFlow'
 import { isAuthenticated, initializeSession } from './services/authService'
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
         <Routes>
           <Route path="/" element={renderPage()} />
           <Route path="/booking" element={<BookingFlow />} />
+          <Route path="/washing-booking" element={<WashingBookingFlow />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

@@ -114,7 +114,7 @@ const ContactUs = ({ setCurrentPage }) => {
     {
       icon: faEnvelope,
       title: "Email Us",
-      details: "info@bikedoot.com",
+      details: "info@servx24.com",
       description: "We'll respond within 24 hours",
       color: "#FFD166"
     },
@@ -428,7 +428,7 @@ const ContactUs = ({ setCurrentPage }) => {
               <a href="tel:+919876543210" className="btn">
                 <FontAwesomeIcon icon={faPhone} /> Call Now
               </a>
-              <a href="mailto:info@bikedoot.com" className="btn btn-secondary">
+              <a href="mailto:info@servx24.com" className="btn btn-secondary">
                 <FontAwesomeIcon icon={faEnvelope} /> Email Us
               </a>
               <a href="#" className="btn btn-outline">
@@ -482,7 +482,7 @@ const ContactUs = ({ setCurrentPage }) => {
               <ul className="footer-links">
                 <li><FontAwesomeIcon icon={faMapMarkerAlt} /> 123 Cycling Street, Bike City</li>
                 <li><FontAwesomeIcon icon={faPhone} /> +91 98765 43210</li>
-                <li><FontAwesomeIcon icon={faEnvelope} /> info@bikedoot.com</li>
+                <li><FontAwesomeIcon icon={faEnvelope} /> info@servx24.com</li>
                 <li><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM - 6PM</li>
               </ul>
             </div>

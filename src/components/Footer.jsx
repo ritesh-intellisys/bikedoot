@@ -84,7 +84,7 @@ const Footer = ({ setCurrentPage, scrollToTop }) => {
               </li>
               <li className="flex items-center text-sm md:text-base text-gray-300">
                 <FontAwesomeIcon icon={faEnvelope} className="w-3 h-3 md:w-4 md:h-4 mr-2 text-red-500" /> 
-                info@bikedoot.com
+              info@servx24.com
               </li>
               <li className="flex items-center text-sm md:text-base text-gray-300">
                 <FontAwesomeIcon icon={faClock} className="w-3 h-3 md:w-4 md:h-4 mr-2 text-red-500" /> 
@@ -95,7 +95,7 @@ const Footer = ({ setCurrentPage, scrollToTop }) => {
         </div>
         
         <div className="footer-bottom border-t border-gray-800 mt-6 md:mt-8 pt-4 md:pt-6">
-          <p className="text-center text-xs md:text-sm text-gray-400">Copyright © 2025 ServX24 | info@bikedoot.com</p>
+          <p className="text-center text-xs md:text-sm text-gray-400">Copyright © 2025 ServX24 | info@servx24.com</p>
           <p className="text-center text-xs md:text-sm text-gray-400 mt-1">Call us: +91 62076 27817</p>
         </div>
       </div>

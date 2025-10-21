@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
-import { createBooking } from '../../../services/bookingService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSprayCan, faCar, faMotorcycle, faTruck } from '@fortawesome/free-solid-svg-icons';
 
-const SummaryStep = ({ 
+const WashingSummaryStep = ({ 
   bikeData, 
   selectedService, 
   slotAndAddress, 
   suggestion, 
   setSuggestion,
-  garageId,
+  washingCenterInfo,
   loading, 
   setLoading, 
   errors, 
@@ -25,7 +26,7 @@ const SummaryStep = ({
   
   const applyPromoCode = () => {
     const total = calculateTotal();
-    const discount = total * 0.1; // 10% discount for SUMMER10
+    const discount = total * 0.1; // 10% discount for WASH10
     return {
       originalTotal: total,
       discount: discount,
@@ -44,53 +45,50 @@ const SummaryStep = ({
       // Format date like old website (extract date from date string)
       const formattedDate = slotAndAddress.date.split(' ')[0];
       
+      // Mock booking payload for washing service
       const payload = {
         businessid: parseInt(localStorage.getItem("businessId") || "1"),
         subscriberid: parseInt(localStorage.getItem("subscriberId") || "1"),
         subscribervehicleid: bikeData.vehicle_id || bikeData.id,
         subscriberaddressid: slotAndAddress.address?.id,
-        garageid: garageId,
+        washingcenterid: washingCenterInfo?.id,
         bookingdate: formattedDate,
         bookingslot: slotAndAddress.slot,
         suggestion: suggestion.trim(),
         bookingamount: calculateTotal().toFixed(2),
-        promocode: "SUMMER10",
+        promocode: "WASH10",
         requiredestimate: slotAndAddress.estimate === "yes",
-        servicetype: serviceType || undefined
+        servicetype: serviceType || undefined,
+        servicecategory: "washing-detailing"
       };
       
-      console.log("🔍 Creating booking with payload:", payload);
-      console.log("🔍 Debug values:");
-      console.log("  - businessid:", parseInt(localStorage.getItem("businessId") || "1"));
-      console.log("  - subscriberid:", parseInt(localStorage.getItem("subscriberId") || "1"));
-      console.log("  - subscribervehicleid:", bikeData.vehicle_id || bikeData.id);
-      console.log("  - subscriberaddressid:", slotAndAddress.address?.id);
-      console.log("  - garageid:", garageId);
-      console.log("  - bookingdate:", formattedDate);
-      console.log("  - bookingslot:", slotAndAddress.slot);
-      console.log("  - suggestion:", suggestion.trim());
-      console.log("  - bookingamount:", calculateTotal().toFixed(2));
-      console.log("  - promocode:", "SUMMER10");
-      console.log("  - requiredestimate:", slotAndAddress.estimate === "yes");
-      console.log("  - servicetype:", serviceType);
+      console.log("🔍 Creating washing booking with payload:", payload);
       
-      const response = await createBooking(payload);
+      // Mock API call - replace with real API later
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      if (response.success) {
-        setBookingData(response.data);
+      // Mock successful response
+      const mockResponse = {
+        success: true,
+        data: {
+          booking_id: `WASH${Date.now()}`,
+          booking_date: slotAndAddress.date,
+          booking_slot: slotAndAddress.slot,
+          total_amount: calculateTotal().toFixed(2),
+          washing_center: washingCenterInfo?.name,
+          services: selectedService?.map(s => s.name).join(', ')
+        }
+      };
+      
+      if (mockResponse.success) {
+        setBookingData(mockResponse.data);
         setBookingSuccess(true);
       } else {
         setErrors({ booking: 'Failed to create booking. Please try again.' });
       }
     } catch (error) {
-      console.error('Error creating booking:', error);
-      
-      // Check if it's a duplicate booking error
-      if (error.response?.data?.errors?.non_field_errors?.includes('A booking already exists with these details.')) {
-        setErrors({ booking: 'A booking with these details already exists. Please try with different date, time, or service selection.' });
-      } else {
-        setErrors({ booking: 'Failed to create booking. Please try again.' });
-      }
+      console.error('Error creating washing booking:', error);
+      setErrors({ booking: 'Failed to create booking. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -112,15 +110,24 @@ const SummaryStep = ({
     const ampm = hourNum >= 12 ? 'PM' : 'AM';
     return `${displayHour}:00 ${ampm}`;
   };
+
+  const getVehicleTypeIcon = (vehicleType) => {
+    switch(vehicleType) {
+      case 'car': return faCar;
+      case 'bike': return faMotorcycle;
+      case 'truck': return faTruck;
+      default: return faCar;
+    }
+  };
   
   if (bookingSuccess && bookingData) {
     return (
       <div className="text-center py-12">
         <div className="max-w-md mx-auto">
           <CheckCircleIcon className="w-20 h-20 text-green-500 mx-auto mb-6" />
-          <h2 className="text-3xl font-bold text-white mb-4">Booking Confirmed!</h2>
+          <h2 className="text-3xl font-bold text-white mb-4">Washing Booking Confirmed!</h2>
           <p className="text-gray-400 mb-6">
-            Your service has been successfully booked. You will receive a confirmation SMS shortly.
+            Your washing service has been successfully booked. You will receive a confirmation SMS shortly.
           </p>
           
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 mb-6">
@@ -137,6 +144,14 @@ const SummaryStep = ({
               <div className="flex justify-between">
                 <span className="text-gray-400">Time:</span>
                 <span className="text-white">{formatTime(bookingData.booking_slot)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Washing Center:</span>
+                <span className="text-white">{bookingData.washing_center}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Services:</span>
+                <span className="text-white">{bookingData.services}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Total Amount:</span>
@@ -162,7 +177,7 @@ const SummaryStep = ({
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-white mb-2">Review Your Booking</h2>
+        <h2 className="text-2xl font-bold text-white mb-2">Review Your Washing Booking</h2>
         <p className="text-gray-400">Please review all details before confirming</p>
       </div>
       
@@ -173,10 +188,10 @@ const SummaryStep = ({
         </div>
       )}
       
-      {/* Bike Details - Card Format like old website */}
+      {/* Bike Details - Card Format */}
       <div className="flex justify-center">
         <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-xs w-full">
-          <h3 className="text-lg font-semibold text-white mb-4 text-center">Selected Bike</h3>
+          <h3 className="text-lg font-semibold text-white mb-4 text-center">Selected Vehicle</h3>
           <div className="flex flex-col items-center space-y-3">
             <div className="w-32 h-20 bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
               <img
@@ -192,10 +207,31 @@ const SummaryStep = ({
         </div>
       </div>
       
-      {/* Services - Card Format like old website */}
+      {/* Washing Center Details */}
+      {washingCenterInfo && (
+        <div className="flex justify-center">
+          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
+            <h3 className="text-lg font-semibold text-white mb-4">Washing Center</h3>
+            <div className="flex items-center space-x-4">
+              <img
+                src={washingCenterInfo.image}
+                alt={washingCenterInfo.name}
+                className="w-16 h-16 rounded-lg object-cover"
+              />
+              <div>
+                <h4 className="text-white font-medium">{washingCenterInfo.name}</h4>
+                <p className="text-gray-400">{washingCenterInfo.location}</p>
+                <p className="text-sm text-gray-400">{washingCenterInfo.distance}km away</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Services - Card Format */}
       <div className="flex justify-center">
         <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
-          <h3 className="text-lg font-semibold text-white mb-4">Selected Service</h3>
+          <h3 className="text-lg font-semibold text-white mb-4">Selected Washing Services</h3>
           {selectedService && selectedService.length > 0 ? (
             <div className="space-y-3">
               {selectedService.map((service) => (
@@ -207,6 +243,10 @@ const SummaryStep = ({
                   {service.description && (
                     <p className="text-gray-400 text-sm whitespace-pre-line">{service.description}</p>
                   )}
+                  <div className="flex items-center space-x-2 mt-2">
+                    <span className="text-xs text-gray-500">Duration: {service.duration}</span>
+                    <span className="text-xs text-gray-500">Category: {service.category}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -216,7 +256,7 @@ const SummaryStep = ({
         </div>
       </div>
       
-      {/* Schedule - Card Format like old website */}
+      {/* Schedule - Card Format */}
       {slotAndAddress?.date && slotAndAddress?.slot && (
         <div className="flex justify-center">
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
@@ -228,7 +268,7 @@ const SummaryStep = ({
         </div>
       )}
 
-      {/* Address - Card Format like old website */}
+      {/* Address - Card Format */}
       {slotAndAddress?.address && (
         <div className="flex justify-center">
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
@@ -239,7 +279,7 @@ const SummaryStep = ({
                 <span className="text-white">{slotAndAddress.address.city}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Locality:</span>
+                <span className="text-gray-400">Address:</span>
                 <span className="text-white">{slotAndAddress.address.address}</span>
               </div>
               <div className="flex justify-between">
@@ -251,7 +291,7 @@ const SummaryStep = ({
         </div>
       )}
       
-      {/* Additional Details - Card Format like old website */}
+      {/* Additional Details - Card Format */}
       <div className="flex justify-center">
         <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
           <h3 className="text-lg font-semibold text-white mb-4">Additional Details</h3>
@@ -263,7 +303,7 @@ const SummaryStep = ({
              )}
             {suggestion && suggestion.trim() !== "" && (
               <p className="text-white">
-                <strong>Suggestion:</strong> {suggestion}
+                <strong>Special Instructions:</strong> {suggestion}
               </p>
             )}
             {(!slotAndAddress?.estimate && (!suggestion || suggestion.trim() === "")) && (
@@ -280,14 +320,14 @@ const SummaryStep = ({
           <textarea
             value={suggestion}
             onChange={(e) => setSuggestion(e.target.value)}
-            placeholder="Any special instructions or requests for the mechanic..."
+            placeholder="Any special instructions or requests for the washing service..."
             rows={3}
             className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
           />
         </div>
       </div>
       
-      {/* Final Price - Simple format like old website */}
+      {/* Final Price - Simple format */}
       {selectedService && selectedService.length > 0 && (
         <div className="flex justify-center">
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full text-center">
@@ -296,7 +336,7 @@ const SummaryStep = ({
           </div>
         </div>
       )}
-      
+
       {/* Service Type Selection (UI only, no API) */}
       <div className="flex justify-center">
         <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-lg w-full">
@@ -326,7 +366,7 @@ const SummaryStep = ({
           )}
         </div>
       </div>
-
+      
       {/* Confirm Booking Button */}
       <div className="text-center">
         <button
@@ -334,7 +374,7 @@ const SummaryStep = ({
           disabled={loading}
           className="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg"
         >
-          {loading ? 'Confirming Booking...' : 'Confirm Booking'}
+          {loading ? 'Confirming Washing Booking...' : 'Confirm Washing Booking'}
         </button>
         <p className="text-gray-500 text-sm mt-3">
           By confirming, you agree to our terms and conditions
@@ -344,5 +384,4 @@ const SummaryStep = ({
   );
 };
 
-export default SummaryStep;
-
+export default WashingSummaryStep;

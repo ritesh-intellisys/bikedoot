@@ -8,6 +8,33 @@ const BrandSelectionPopup = ({ isOpen, onClose, onBrandSelect }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Custom sorting function to prioritize popular brands
+  const sortBrandsByPopularity = (brands) => {
+    const popularBrands = [
+      'Honda', 'Bajaj', 'TVS', 'Hero', 'Yamaha', 'Royal Enfield', 'KTM', 'Suzuki',
+      'Kawasaki', 'Ducati', 'BMW', 'Harley-Davidson', 'Aprilia', 'Triumph', 'Benelli'
+    ];
+    
+    return brands.sort((a, b) => {
+      const aIndex = popularBrands.findIndex(brand => 
+        brand.toLowerCase() === a.name.toLowerCase()
+      );
+      const bIndex = popularBrands.findIndex(brand => 
+        brand.toLowerCase() === b.name.toLowerCase()
+      );
+      
+      // If both brands are in the popular list, sort by their position in the list
+      if (aIndex !== -1 && bIndex !== -1) {
+        return aIndex - bIndex;
+      }
+      // If only one is popular, prioritize it
+      if (aIndex !== -1) return -1;
+      if (bIndex !== -1) return 1;
+      // If neither is popular, sort alphabetically
+      return a.name.localeCompare(b.name);
+    });
+  };
+
   // Load brands when popup opens
   useEffect(() => {
     const loadBrands = async () => {
@@ -17,8 +44,13 @@ const BrandSelectionPopup = ({ isOpen, onClose, onBrandSelect }) => {
           console.log('🔍 Loading bike brands for popup...');
           const brandsData = await fetchBikeBrands();
           console.log('🔍 Brands data received:', brandsData);
-          setBrands(brandsData);
-          setFilteredBrands(brandsData);
+          
+          // Sort brands by popularity
+          const sortedBrands = sortBrandsByPopularity(brandsData);
+          console.log('🔍 Brands sorted by popularity:', sortedBrands);
+          
+          setBrands(sortedBrands);
+          setFilteredBrands(sortedBrands);
         } catch (error) {
           console.error('Error loading brands:', error);
         } finally {
@@ -38,7 +70,9 @@ const BrandSelectionPopup = ({ isOpen, onClose, onBrandSelect }) => {
       const filtered = brands.filter(brand => 
         brand.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
-      setFilteredBrands(filtered);
+      // Maintain sorting even when filtering
+      const sortedFiltered = sortBrandsByPopularity(filtered);
+      setFilteredBrands(sortedFiltered);
     }
   }, [searchQuery, brands]);
 

@@ -53,7 +53,7 @@ function Footer() {
 
       {/* Copyright Text */}
           <p className="mt-2 text-white text-sm">
-        Copyright &copy; 2025 ServX24 | info@bikedoot.com
+        Copyright &copy; 2025 ServX24 | info@servx24.com
       </p>
       <p className="text-white text-sm mt-1">
         Call us:{" "}
