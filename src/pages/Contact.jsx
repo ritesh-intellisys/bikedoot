@@ -115,7 +115,7 @@ const ContactUs = () => {
   ];
 
   return (
-    <div className="bikedoot-contact">
+    <div className="servx24-contact">
       {/* Header */}
       <header className={isScrolled ? 'scrolled' : ''}>
         <div className="container header-container">
@@ -160,7 +160,7 @@ const ContactUs = () => {
         <div className="container">
           <div className="hero-content">
             <div className="hero-text">
-              <h1>Connect With BikeDoot</h1>
+              <h1>Connect With ServX24</h1>
               <p>We're here to help you with all your cycling needs. Get in touch with our team of experts.</p>
               <div className="hero-buttons">
                 <a href="#contact-form" className="btn">Send Message</a>
@@ -168,7 +168,7 @@ const ContactUs = () => {
               </div>
             </div>
             <div className="hero-image">
-              <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="BikeDoot Contact" />
+              <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 Contact" />
             </div>
           </div>
         </div>
@@ -365,13 +365,13 @@ const ContactUs = () => {
                 <div className="locations-grid">
                   <div className="location-card">
                     <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="BikeDoot Main Store" />
+                      <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 Main Store" />
                       <div className="location-overlay">
                         <span className="location-tag">Flagship Store</span>
                       </div>
                     </div>
                     <div className="location-info">
-                      <h4>BikeDoot Main Store</h4>
+                      <h4>ServX24 Main Store</h4>
                       <p><i className="fas fa-map-marker-alt"></i> 123 Cycling Street, Bike City, 560001</p>
                       <p><i className="fas fa-phone"></i> +91 98765 43210</p>
                       <p><i className="fas fa-clock"></i> Mon-Sat: 9AM-6PM</p>
@@ -381,13 +381,13 @@ const ContactUs = () => {
                   
                   <div className="location-card">
                     <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="BikeDoot West Branch" />
+                      <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 West Branch" />
                       <div className="location-overlay">
                         <span className="location-tag">Service Center</span>
                       </div>
                     </div>
                     <div className="location-info">
-                      <h4>BikeDoot West Branch</h4>
+                      <h4>ServX24 West Branch</h4>
                       <p><i className="fas fa-map-marker-alt"></i> 456 Rider's Avenue, West City, 560002</p>
                       <p><i className="fas fa-phone"></i> +91 98765 43211</p>
                       <p><i className="fas fa-clock"></i> Mon-Sat: 9AM-6PM</p>
@@ -397,13 +397,13 @@ const ContactUs = () => {
                   
                   <div className="location-card">
                     <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1511994298241-608e28f14fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="BikeDoot East Branch" />
+                      <img src="https://images.unsplash.com/photo-1511994298241-608e28f14fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 East Branch" />
                       <div className="location-overlay">
                         <span className="location-tag">Sales & Service</span>
                       </div>
                     </div>
                     <div className="location-info">
-                      <h4>BikeDoot East Branch</h4>
+                      <h4>ServX24 East Branch</h4>
                       <p><i className="fas fa-map-marker-alt"></i> 789 Pedal Road, East City, 560003</p>
                       <p><i className="fas fa-phone"></i> +91 98765 43212</p>
                       <p><i className="fas fa-clock"></i> Mon-Sat: 9AM-6PM</p>
@@ -452,7 +452,7 @@ const ContactUs = () => {
         <div className="container">
           <div className="footer-grid">
             <div className="footer-col">
-              <h3>BikeDoot</h3>
+              <h3>ServX24</h3>
               <p>Redefining cycling culture through innovation, quality, and community engagement.</p>
               <div className="footer-social">
                 <a href="#"><i className="fab fa-facebook-f"></i></a>
@@ -497,7 +497,7 @@ const ContactUs = () => {
           </div>
           
           <div className="footer-bottom">
-            <p>&copy; 2023 BikeDoot. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            <p>&copy; 2023 ServX24. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
           </div>
         </div>
       </footer>

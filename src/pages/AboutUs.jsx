@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './AboutUs.css';
 import Header from '../components/homeComponents/Header';
+import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAuthenticated } from '../services/authService';
@@ -39,7 +39,6 @@ const AboutUs = ({ setCurrentPage }) => {
   const [selectedCity, setSelectedCity] = useState('Mumbai');
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const statsSectionRef = useRef(null);
-  const teamSectionRef = useRef(null);
 
   const handleBookNow = () => {
     if (isAuthenticated()) {
@@ -85,18 +84,6 @@ const AboutUs = ({ setCurrentPage }) => {
         }
       }
 
-      // Check if team section is in view
-      if (teamSectionRef.current) {
-        const rect = teamSectionRef.current.getBoundingClientRect();
-        const teamMembers = document.querySelectorAll('.team-member');
-        if (rect.top < window.innerHeight * 0.8) {
-          teamMembers.forEach((member, index) => {
-            setTimeout(() => {
-              member.classList.add('animate');
-            }, index * 100);
-          });
-        }
-      }
 
       // Check if values section is in view
       if (valuesSectionRef.current) {
@@ -145,16 +132,15 @@ const AboutUs = ({ setCurrentPage }) => {
   };
 
   const stats = [
-    { number: '12000', label: 'Happy Customers', icon: faUsers },
-    { number: '50', label: 'Cities Served', icon: faMapMarkerAlt },
-    { number: '8', label: 'Years Experience', icon: faCalendarAlt },
-    { number: '24', label: 'Support Services', icon: faTools }
+    { number: '25,000+', label: 'Happy Customers', icon: faUsers },
+    { number: '150+', label: 'Cities Served', icon: faMapMarkerAlt },
+    { number: '8+', label: 'Years Experience', icon: faCalendarAlt },
+    { number: '500+', label: 'Partner Garages', icon: faTools }
   ];
 
   const services = [
     {
       name: "Inspection Service",
-      price: "₹99",
       description: "Comprehensive bike inspection to identify issues and maintenance needs",
       icon: faSearch,
       image: "https://images.unsplash.com/photo-1570129476815-ba368ac77013?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80",
@@ -162,7 +148,6 @@ const AboutUs = ({ setCurrentPage }) => {
     },
     {
       name: "General Service",
-      price: "₹149",
       description: "Basic maintenance service to keep your bike in optimal condition",
       icon: faCog,
       image: "https://plus.unsplash.com/premium_photo-1661779071501-629999b46de0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80",
@@ -170,7 +155,6 @@ const AboutUs = ({ setCurrentPage }) => {
     },
     {
       name: "Combo Service",
-      price: "₹799",
       description: "Complete premium service package for thorough bike maintenance",
       icon: faStar,
       image: "https://plus.unsplash.com/premium_photo-1661750362435-00f8fef16292?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80",
@@ -178,36 +162,6 @@ const AboutUs = ({ setCurrentPage }) => {
     }
   ];
 
-  const teamMembers = [
-    { 
-      name: 'Alex Johnson', 
-      role: 'Founder & CEO', 
-      image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
-      bio: 'Former professional cyclist with a passion for sustainable transportation.',
-      social: { twitter: '#', instagram: '#', linkedin: '#' }
-    },
-    { 
-      name: 'Sarah Williams', 
-      role: 'Head of Design', 
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
-      bio: 'Industrial designer focused on creating ergonomic and stylish bikes.',
-      social: { twitter: '#', instagram: '#', linkedin: '#' }
-    },
-    { 
-      name: 'Michael Chen', 
-      role: 'Lead Engineer', 
-      image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
-      bio: 'Mechanical engineer with 15 years experience in bicycle design.',
-      social: { twitter: '#', instagram: '#', linkedin: '#' }
-    },
-    { 
-      name: 'Emily Rodriguez', 
-      role: 'Community Manager', 
-      image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
-      bio: 'Organizer of cycling events and community outreach programs.',
-      social: { twitter: '#', instagram: '#', linkedin: '#' }
-    }
-  ];
 
   const values = [
     {
@@ -237,7 +191,7 @@ const AboutUs = ({ setCurrentPage }) => {
   ];
 
   return (
-    <div className="bikedoot-about">
+    <div className="min-h-screen bg-black text-white">
 
       {/* Header */}
       <Header 
@@ -249,58 +203,98 @@ const AboutUs = ({ setCurrentPage }) => {
       />
 
       {/* Hero Section */}
-      <section className="about-hero">
-        <div className="floating-elements">
-          <div className="floating-element">🚴</div>
-          <div className="floating-element">⚡</div>
-          <div className="floating-element">🔧</div>
-          <div className="floating-element">🌙</div>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1511994298241-608e28f14fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80')`
+          }}
+        />
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-70"></div>
+        
+        {/* Floating Elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-20 left-10 text-4xl animate-bounce">🚴</div>
+          <div className="absolute top-32 right-20 text-3xl animate-pulse">⚡</div>
+          <div className="absolute bottom-40 left-20 text-3xl animate-bounce">🔧</div>
+          <div className="absolute bottom-20 right-10 text-4xl animate-pulse">🌙</div>
         </div>
-        <div className="container">
-        <div className="hero-content">
-  <h1>Redefining Vehicle Care</h1>
-  <p>At BikeDoot, we make vehicle ownership simpler with online garages, roadside assistance, trusted servicing, and EV support—all in one place.</p>
-  <div className="hero-buttons">
-    <a href="#" className="btn">Explore Our Services</a>
-    <a href="#" className="btn btn-secondary">Find a Garage</a>
-  </div>
-</div>
 
+        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+              REDEFINING
+            </span>
+            <br />
+            <span className="text-white">VEHICLE CARE</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            At ServX24, we make vehicle ownership simpler with online garages, roadside assistance, trusted servicing, and EV support—all in one place.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={handleBookNow}
+              className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              EXPLORE OUR SERVICES
+            </button>
+            <button 
+              onClick={() => setCurrentPage('home')}
+              className="border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black font-semibold py-3 px-8 rounded-lg transition-all duration-200"
+            >
+              FIND A GARAGE
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="services-section" ref={servicesSectionRef}>
-        <div className="container">
-          <div className="section-title">
-            <h2>Top Quality Services at the Best Prices</h2>
-            <p>Powered by Our Trusted Partners</p>
+      <section className="py-16 md:py-20 px-4 bg-gray-900" ref={servicesSectionRef}>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Top Quality Services at the Best Prices
+            </h2>
+            <p className="text-gray-400 text-lg">Powered by Our Trusted Partners</p>
           </div>
           
-          <div className="services-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <div key={index} className="service-card">
-                <div className="service-image">
-                  <img src={service.image} alt={service.name} />
-                  <div className="service-overlay">
-                    <div className="service-logo">
-                      <FontAwesomeIcon icon={faBicycle} />
+              <div key={index} className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:transform hover:scale-105">
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={service.image} 
+                    alt={service.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-red-600 p-4 rounded-full">
+                      <FontAwesomeIcon icon={faBicycle} className="text-white text-2xl" />
                     </div>
                   </div>
                 </div>
-                <div className="service-content">
-                  <h3>{service.name}</h3>
-                  <div className="service-price">{service.price}</div>
-                  <p>{service.description}</p>
-                  <ul className="service-features">
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-xl font-bold text-white">{service.name}</h3>
+                    <span className="text-2xl font-bold text-red-500">{service.price}</span>
+                  </div>
+                  <p className="text-gray-300 mb-4">{service.description}</p>
+                  <ul className="space-y-2 mb-6">
                     {service.features.map((feature, idx) => (
-                      <li key={idx}>
-                        <FontAwesomeIcon icon={faCheck} />
+                      <li key={idx} className="flex items-center text-gray-300">
+                        <FontAwesomeIcon icon={faCheck} className="text-green-500 mr-2" />
                         {feature}
                       </li>
                     ))}
                   </ul>
-                  <button className="btn service-btn" onClick={handleBookNow}>Book Now</button>
+                  <button 
+                    onClick={handleBookNow}
+                    className="w-full bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    Book Now
+                  </button>
                 </div>
               </div>
             ))}
@@ -309,16 +303,16 @@ const AboutUs = ({ setCurrentPage }) => {
       </section>
 
       {/* Stats Section */}
-      <section className="stats-section" ref={statsSectionRef}>
-        <div className="container">
-          <div className="stats-grid">
+      <section className="py-16 md:py-20 px-4 bg-black" ref={statsSectionRef}>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <div key={index} className="stat-item">
-                <div className="stat-icon">
-                  <FontAwesomeIcon icon={stat.icon} />
+              <div key={index} className="text-center">
+                <div className="bg-red-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <FontAwesomeIcon icon={stat.icon} className="text-white text-2xl" />
                 </div>
-                <div className="stat-number" data-target={stat.number}>0</div>
-                <div className="stat-label">{stat.label}</div>
+                <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.number}</div>
+                <div className="text-gray-400 text-sm md:text-base">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -326,71 +320,60 @@ const AboutUs = ({ setCurrentPage }) => {
       </section>
 
       {/* Mission Section */}
-      <section className="mission-section">
-        <div className="container">
-          <div className="mission-content">
-          <div className="mission-text">
-  <h2>Our <span>Mission</span></h2>
-  <p>At BikeDoot, we’re redefining how people take care of their vehicles with our online garage platform.</p>
-  <p>Our mission is to make it easy for users to find the nearest garage, access trusted partner garages, get reliable roadside assistance, and book all types of vehicle servicing, including EV maintenance.</p>
-  <p>We also provide a safe and convenient space to buy and sell vehicles—making BikeDoot your one-stop solution for smarter, hassle-free vehicle care.</p>
-  <a href="#" className="btn">Learn More</a>
-</div>
-
-            <div className="mission-image">
-              <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80" alt="BikeDoot Mission" />
+      <section className="py-16 md:py-20 px-4 bg-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                Our <span className="text-red-600">Mission</span>
+              </h2>
+              <div className="space-y-4 text-gray-300">
+                <p>At ServX24, we're redefining how people take care of their vehicles with our online garage platform.</p>
+                <p>Our mission is to make it easy for users to find the nearest garage, access trusted partner garages, get reliable roadside assistance, and book all types of vehicle servicing, including EV maintenance.</p>
+                <p>We also provide a safe and convenient space to buy and sell vehicles—making ServX24 your one-stop solution for smarter, hassle-free vehicle care.</p>
+              </div>
+              <button 
+                onClick={() => setCurrentPage('home')}
+                className="mt-6 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                Learn More
+              </button>
+            </div>
+            <div className="relative">
+              <img 
+                src="https://images.pexels.com/photos/13065690/pexels-photo-13065690.jpeg" 
+                alt="ServX24 Mission"
+                className="rounded-xl shadow-2xl"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="team-section" ref={teamSectionRef}>
-        <div className="container">
-          <div className="section-title">
-            <h2>Our Team</h2>
-            <p>Meet the passionate individuals behind BikeDoot</p>
-          </div>
-          
-          <div className="team-grid">
-            {teamMembers.map((member, index) => (
-              <div key={index} className="team-member">
-                <div className="member-image">
-                  <img src={member.image} alt={member.name} />
-                  <div className="member-overlay">
-                    <div className="social-links">
-                      <a href={member.social.twitter}><FontAwesomeIcon icon={faTwitter} /></a>
-                      <a href={member.social.instagram}><FontAwesomeIcon icon={faInstagram} /></a>
-                      <a href={member.social.linkedin}><FontAwesomeIcon icon={faLinkedin} /></a>
-                    </div>
-                  </div>
-                </div>
-                <div className="member-info">
-                  <h3>{member.name}</h3>
-                  <p>{member.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Values Section */}
-      <section className="values-section" ref={valuesSectionRef}>
-        <div className="container">
-          <div className="section-title">
-            <h2>Our Values</h2>
-            <p>The principles that guide everything we do</p>
+      <section className="py-16 md:py-20 px-4 bg-gray-900" ref={valuesSectionRef}>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Our Values</h2>
+            <p className="text-gray-400 text-lg">The principles that guide everything we do</p>
           </div>
           
-          <div className="values-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <div key={index} className="value-card">
-                <div className="value-icon" style={{ color: value.color }}>
-                  <FontAwesomeIcon icon={value.icon} />
+              <div key={index} className="bg-gray-800 rounded-xl p-6 text-center hover:bg-gray-700 transition-all duration-300 hover:transform hover:scale-105">
+                <div 
+                  className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: `${value.color}20` }}
+                >
+                  <FontAwesomeIcon 
+                    icon={value.icon} 
+                    className="text-2xl"
+                    style={{ color: value.color }}
+                  />
                 </div>
-                <h3>{value.title}</h3>
-                <p>{value.description}</p>
+                <h3 className="text-xl font-bold text-white mb-3">{value.title}</h3>
+                <p className="text-gray-300">{value.description}</p>
               </div>
             ))}
           </div>
@@ -398,72 +381,33 @@ const AboutUs = ({ setCurrentPage }) => {
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
-        <div className="container">
-          <div className="cta-content">
-            <h2>Join the BikeDoot Revolution</h2>
-            <p>Experience the difference of cycling with BikeDoot. Explore our collection, join our community, or become a partner today.</p>
-            <div className="hero-buttons">
-              <a href="#" className="btn">Shop Now</a>
-              <a href="#" className="btn btn-secondary">Contact Us</a>
-            </div>
+      <section className="py-16 md:py-20 px-4 bg-black">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Join the ServX24 Revolution
+          </h2>
+          <p className="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+            Experience the difference of cycling with ServX24. Explore our collection, join our community, or become a partner today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={() => setCurrentPage('home')}
+              className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              Shop Now
+            </button>
+            <button 
+              onClick={() => setCurrentPage('contact')}
+              className="border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black font-semibold py-3 px-8 rounded-lg transition-all duration-200"
+            >
+              Contact Us
+            </button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer>
-        <div className="container">
-          <div className="footer-grid">
-            <div className="footer-col">
-              <h3>BikeDoot</h3>
-              <p>Redefining cycling culture through innovation, quality, and community engagement.</p>
-              <div className="footer-social">
-                <a href="#"><FontAwesomeIcon icon={faFacebook} /></a>
-                <a href="#"><FontAwesomeIcon icon={faTwitter} /></a>
-                <a href="#"><FontAwesomeIcon icon={faInstagram} /></a>
-                <a href="#"><FontAwesomeIcon icon={faYoutube} /></a>
-              </div>
-            </div>
-            
-                         <div className="footer-col">
-               <h3>Quick Links</h3>
-               <ul className="footer-links">
-                 <li><a href="#" onClick={() => setCurrentPage('home')}>Home</a></li>
-                 <li><a href="#">Bikes</a></li>
-                 <li><a href="#">Accessories</a></li>
-                 <li><a href="#">Services</a></li>
-                 <li><a href="#">About Us</a></li>
-               </ul>
-             </div>
-            
-            <div className="footer-col">
-              <h3>Customer Service</h3>
-              <ul className="footer-links">
-                <li><a href="#">Contact Us</a></li>
-                <li><a href="#">FAQs</a></li>
-                <li><a href="#">Returns & Warranty</a></li>
-                <li><a href="#">Shipping Information</a></li>
-                <li><a href="#">Size Guide</a></li>
-              </ul>
-            </div>
-            
-            <div className="footer-col">
-              <h3>Contact Info</h3>
-              <ul className="footer-links">
-                <li><FontAwesomeIcon icon={faMapMarkerAlt} /> 123 Cycling Street, Bike City</li>
-                <li><FontAwesomeIcon icon={faPhone} /> (555) 123-4567</li>
-                <li><FontAwesomeIcon icon={faEnvelope} /> info@servx24.com</li>
-                <li><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM - 6PM</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="footer-bottom">
-            <p>&copy; 2023 BikeDoot. All Rights Reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer setCurrentPage={setCurrentPage} scrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
       
       {/* Scroll to Top Button */}
       <ScrollToTop />

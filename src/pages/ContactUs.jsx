@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ContactUs.css';
 import Header from '../components/homeComponents/Header';
+import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -100,7 +101,7 @@ const ContactUs = ({ setCurrentPage }) => {
     {
       icon: faMapMarkerAlt,
       title: "Visit Our Store",
-      details: "123 Cycling Street, Bike City, 560001",
+      details: "Near, Hinjawadi - Wakad Rd, opp. Vijay Sales, Pune, Maharashtraa, 2220011",
       description: "Come visit us for a test ride or consultation",
       color: "#FF6B6B"
     },
@@ -128,7 +129,7 @@ const ContactUs = ({ setCurrentPage }) => {
   ];
 
   return (
-    <div className="bikedoot-contact">
+    <div className="servx24-contact">
       {/* Header */}
       <Header 
         selectedCity={selectedCity} 
@@ -152,16 +153,14 @@ const ContactUs = ({ setCurrentPage }) => {
         <div className="container">
           <div className="hero-content">
             <div className="hero-text">
-              <h1>Connect With BikeDoot</h1>
-              <p>We're here to help you with all your cycling needs. Get in touch with our team of experts.</p>
+              <h1>Connect With ServX24</h1>
+              <p>We're here to help you with all your Vehicle needs. Get in touch with our team of experts.</p>
               <div className="hero-buttons">
                 <a href="#contact-form" className="btn">Send Message</a>
                 <a href="#locations" className="btn btn-secondary">Visit Our Store</a>
               </div>
             </div>
-            <div className="hero-image">
-              <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="BikeDoot Contact" />
-            </div>
+            
           </div>
         </div>
       </section>
@@ -357,14 +356,14 @@ const ContactUs = ({ setCurrentPage }) => {
                 <div className="locations-grid">
                   <div className="location-card">
                     <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="BikeDoot Main Store" />
+                      <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 Main Store" />
                       <div className="location-overlay">
                         <span className="location-tag">Flagship Store</span>
                       </div>
                     </div>
                     <div className="location-info">
-                      <h4>BikeDoot Main Store</h4>
-                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> 123 Cycling Street, Bike City, 560001</p>
+                      <h4>ServX24 Main Store</h4>
+                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Near, Hinjawadi - Wakad Rd, opp. Vijay Sales, Pune, Maharashtraa, 222001</p>
                       <p><FontAwesomeIcon icon={faPhone} /> +91 98765 43210</p>
                       <p><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM-6PM</p>
                       <button className="btn location-btn">Get Directions</button>
@@ -373,13 +372,13 @@ const ContactUs = ({ setCurrentPage }) => {
                   
                   <div className="location-card">
                     <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="BikeDoot West Branch" />
+                      <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 West Branch" />
                       <div className="location-overlay">
                         <span className="location-tag">Service Center</span>
                       </div>
                     </div>
                     <div className="location-info">
-                      <h4>BikeDoot West Branch</h4>
+                      <h4>ServX24 West Branch</h4>
                       <p><FontAwesomeIcon icon={faMapMarkerAlt} /> 456 Rider's Avenue, West City, 560002</p>
                       <p><FontAwesomeIcon icon={faPhone} /> +91 98765 43211</p>
                       <p><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM-6PM</p>
@@ -389,13 +388,13 @@ const ContactUs = ({ setCurrentPage }) => {
                   
                   <div className="location-card">
                     <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1511994298241-608e28f14fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="BikeDoot East Branch" />
+                      <img src="https://images.unsplash.com/photo-1511994298241-608e28f14fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 East Branch" />
                       <div className="location-overlay">
                         <span className="location-tag">Sales & Service</span>
                       </div>
                     </div>
                     <div className="location-info">
-                      <h4>BikeDoot East Branch</h4>
+                      <h4>ServX24 East Branch</h4>
                       <p><FontAwesomeIcon icon={faMapMarkerAlt} /> 789 Pedal Road, East City, 560003</p>
                       <p><FontAwesomeIcon icon={faPhone} /> +91 98765 43212</p>
                       <p><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM-6PM</p>
@@ -440,59 +439,7 @@ const ContactUs = ({ setCurrentPage }) => {
       </section>
 
       {/* Footer */}
-      <footer>
-        <div className="container">
-          <div className="footer-grid">
-            <div className="footer-col">
-              <h3>BikeDoot</h3>
-              <p>Redefining cycling culture through innovation, quality, and community engagement.</p>
-              <div className="footer-social">
-                <a href="#"><FontAwesomeIcon icon={faFacebook} /></a>
-                <a href="#"><FontAwesomeIcon icon={faTwitter} /></a>
-                <a href="#"><FontAwesomeIcon icon={faInstagram} /></a>
-                <a href="#"><FontAwesomeIcon icon={faYoutube} /></a>
-                <a href="#"><FontAwesomeIcon icon={faWhatsapp} /></a>
-              </div>
-            </div>
-            
-            <div className="footer-col">
-              <h3>Quick Links</h3>
-              <ul className="footer-links">
-                <li><a href="#" onClick={() => setCurrentPage('home')}><FontAwesomeIcon icon={faChevronRight} /> Home</a></li>
-                <li><a href="#"><FontAwesomeIcon icon={faChevronRight} /> Bikes</a></li>
-                <li><a href="#"><FontAwesomeIcon icon={faChevronRight} /> Accessories</a></li>
-                <li><a href="#"><FontAwesomeIcon icon={faChevronRight} /> Services</a></li>
-                <li><a href="#" onClick={() => setCurrentPage('about')}><FontAwesomeIcon icon={faChevronRight} /> About Us</a></li>
-              </ul>
-            </div>
-            
-            <div className="footer-col">
-              <h3>Customer Service</h3>
-              <ul className="footer-links">
-                <li><a href="#" onClick={() => setCurrentPage('contact')}><FontAwesomeIcon icon={faChevronRight} /> Contact Us</a></li>
-                <li><a href="#"><FontAwesomeIcon icon={faChevronRight} /> FAQs</a></li>
-                <li><a href="#"><FontAwesomeIcon icon={faChevronRight} /> Returns & Warranty</a></li>
-                <li><a href="#"><FontAwesomeIcon icon={faChevronRight} /> Shipping Information</a></li>
-                <li><a href="#"><FontAwesomeIcon icon={faChevronRight} /> Size Guide</a></li>
-              </ul>
-            </div>
-            
-            <div className="footer-col">
-              <h3>Contact Info</h3>
-              <ul className="footer-links">
-                <li><FontAwesomeIcon icon={faMapMarkerAlt} /> 123 Cycling Street, Bike City</li>
-                <li><FontAwesomeIcon icon={faPhone} /> +91 98765 43210</li>
-                <li><FontAwesomeIcon icon={faEnvelope} /> info@servx24.com</li>
-                <li><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM - 6PM</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="footer-bottom">
-            <p>&copy; 2023 BikeDoot. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-          </div>
-        </div>
-      </footer>
+      <Footer setCurrentPage={setCurrentPage} scrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
       
       {/* Scroll to Top Button */}
       <ScrollToTop />

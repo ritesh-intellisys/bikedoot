@@ -153,7 +153,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
               <img
                 src={ServXLogo}
                 alt="ServX24 logo"
-                className="h-6 md:h-6 sm:h-4 w-auto cursor-pointer"
+                className="h-6 md:h-6 sm:h-6 w-auto cursor-pointer"
                 onClick={() => {
                   setCurrentPage('home');
                   if (onBackToMain) {
@@ -164,7 +164,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
                   }
                 }}
               />
-              <div className="text-white text-xs md:text-xs sm:text-xs font-medium mt-1 cursor-pointer text-center">
+              <div className="text-white text-xs md:text-sm sm:text-xs font-medium mt-1 cursor-pointer text-center">
                 Search.Compare.Book
               </div>
             </div>

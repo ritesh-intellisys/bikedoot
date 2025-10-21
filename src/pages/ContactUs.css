@@ -1,6 +1,6 @@
 /* ContactUs.css */
 
-.bikedoot-contact {
+.servx24-contact {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   color: var(--light);
@@ -27,24 +27,7 @@
     align-items: center;
   }
   
-  .logo {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: white;
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo span {
-    color: var(--primary);
-  }
-  
-  .logo svg {
-    margin-right: 10px;
-    font-size: 32px;
-    color: var(--secondary);
-  }
+  /* Logo styles removed - using Header component instead */
   
   .nav-links {
     display: flex;

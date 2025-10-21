@@ -12,16 +12,16 @@ function AboutUs() {
               Find & Compare Local Mechanics
             </h1>
             <p className="text-lg sm:text-xl md:text-xl mb-4">
-              Looking for a reliable bike service or repair nearby? Bikedoot makes it easy to find trusted mechanics in your area—saving you time, money, and effort.
+              Looking for a reliable bike service or repair nearby? ServX24 makes it easy to find trusted mechanics in your area—saving you time, money, and effort.
             </p>
             <p className="text-gray-600 text-lg sm:text-xl md:text-xl mb-4">
-              As the only online platform dedicated to bike servicing, Bikedoot offers a simple and easy-to-use experience, providing all the information you need to make the right choice.
+              As the only online platform dedicated to bike servicing, ServX24 offers a simple and easy-to-use experience, providing all the information you need to make the right choice.
             </p>
           </div>
           <div>
             <img
               src="/assets/images/aboutUs/image 109.png"
-              alt="Bikedoot_logo"
+              alt="ServX24_logo"
               className="w-50 sm:w-55 md:w-64 h-auto cursor-pointer"
             />
           </div>
@@ -71,7 +71,7 @@ function AboutUs() {
       <div className={`flex flex-col items-center justify-center gap-1 sm:gap-4 p-4 ${isMobile ? 'mt-0' : ''}`}>
         <div className="max-w-2xl flex flex-col items-center justify-center">
           <h2 className="text-blue-600 font-bold text-xl sm:text-2xl md:text-3xl mb-4">
-            Why Choose Bikedoot?
+            Why Choose ServX24?
           </h2>
           <p className="text-gray-600 text-lg sm:text-xl md:text-2xl text-center">
             We connect you with verified mechanics and provide transparent pricing

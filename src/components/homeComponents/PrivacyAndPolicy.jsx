@@ -12,7 +12,7 @@ function PrivacyAndPolicy() {
 
         {/* Section Content */}
         <p className="mb-4">
-          Welcome to Bikedoot. Your privacy is important to us. This Privacy Policy explains how we collect, use, share, and protect your personal information when you use our website and services.
+          Welcome to ServX24. Your privacy is important to us. This Privacy Policy explains how we collect, use, share, and protect your personal information when you use our website and services.
         </p>
 
         <p className="mb-2">
@@ -111,7 +111,7 @@ function PrivacyAndPolicy() {
           If you have any questions about this Privacy Policy, please contact us at:
         </p>
         <div className="pl-4">
-          <p><strong>Email:</strong> privacy@bikedoot.com</p>
+          <p><strong>Email:</strong> privacy@servx24.com</p>
           <p><strong>Phone:</strong> +91 6207627817</p>
           <p><strong>Address:</strong> Plot No. 21, Knowledge Park-III, Greater Noida, Uttar Pradesh 201306, India</p>
         </div>

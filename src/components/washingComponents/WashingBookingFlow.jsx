@@ -17,6 +17,7 @@ const WashingBookingFlow = () => {
   const returnTo = urlParams.get('returnTo') || location.state?.returnTo;
   const vehicleType = urlParams.get('vehicleType') || location.state?.vehicleType;
   
+  
   // Main booking state
   const [activeStep, setActiveStep] = useState(0);
   const [bikeData, setBikeData] = useState(null);
@@ -113,6 +114,49 @@ const WashingBookingFlow = () => {
       serviceTypes: ['bike-specific'],
       priceRange: 'budget',
       description: "Specialized bike cleaning and maintenance services"
+    },
+    5: {
+      id: 5,
+      name: "CleanRide Auto Care",
+      location: "Kothrud",
+      address: "555, Auto Plaza, Kothrud, Pune",
+      phone: "+91 98765 43214",
+      rating: 4.4,
+      distance: 2.3,
+      operatingHours: "7:30 AM - 8:30 PM",
+      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      services: [
+        { name: "Standard Wash", price: "₹249" },
+        { name: "Deep Cleaning", price: "₹499" },
+        { name: "Tire & Rim Care", price: "₹199" },
+        { name: "Interior Vacuum", price: "₹149" }
+      ],
+      vehicleTypes: ['car', 'bike'],
+      serviceTypes: ['basic-wash', 'deep-cleaning'],
+      priceRange: 'moderate',
+      description: "Comprehensive auto care services for all vehicle types"
+    },
+    6: {
+      id: 6,
+      name: "SparkleWash Studio",
+      location: "Viman Nagar",
+      address: "777, Business District, Viman Nagar, Pune",
+      phone: "+91 98765 43215",
+      rating: 4.7,
+      distance: 1.5,
+      operatingHours: "8:00 AM - 9:00 PM",
+      image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      services: [
+        { name: "Premium Wash", price: "₹399" },
+        { name: "Paint Protection", price: "₹1,999" },
+        { name: "Interior Detailing", price: "₹799" },
+        { name: "Engine Cleaning", price: "₹599" },
+        { name: "Bike Special Care", price: "₹299" }
+      ],
+      vehicleTypes: ['car', 'bike'],
+      serviceTypes: ['premium-wash', 'paint-protection', 'interior'],
+      priceRange: 'premium',
+      description: "Premium car and bike care with eco-friendly products and professional service"
     }
   };
   
@@ -122,11 +166,12 @@ const WashingBookingFlow = () => {
       console.log("WashingBookingFlow mounted with washingCenterId:", washingCenterId);
       console.log("Location state:", location.state);
       
+      // Check authentication but don't redirect immediately
       const token = localStorage.getItem("authToken");
       if (!token) {
-        console.log("No authentication token, redirecting to login");
-        navigate("/login");
-        return;
+        console.log("No authentication token found, but continuing with booking flow");
+        // Don't redirect to login here - let the user complete the flow
+        // Authentication will be checked at the final booking step
       }
       
       if (!washingCenterId) {
@@ -141,7 +186,7 @@ const WashingBookingFlow = () => {
         setWashingCenterInfo(centerData);
         console.log("Washing center info loaded:", centerData);
       } else {
-        console.error("Failed to load washing center information");
+        console.error("Failed to load washing center information for ID:", washingCenterId);
         navigate("/");
       }
       

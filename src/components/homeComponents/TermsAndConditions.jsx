@@ -16,7 +16,7 @@ function TermsAndConditions() {
           Your Agreement
         </h2>
         <p className="text-base sm:text-lg mb-4">
-          Welcome to Bikedoot, your trusted bike servicing and booking platform.
+          Welcome to ServX24, your trusted bike servicing and booking platform.
           By using our app, you agree to the following terms and conditions.
         </p>
 
@@ -26,16 +26,16 @@ function TermsAndConditions() {
         </h3>
         <p className="text-sm sm:text-base mb-4">
           These Terms of Use constitute a legally binding agreement made between
-          you, whether personally or on behalf of an entity ("you") and Bikedoot
+          you, whether personally or on behalf of an entity ("you") and ServX24
           Service Private Limited ("Company," "we," "us," or "our"), concerning
           your access to and use of the{" "}
           <a
-            href="https://www.bikedoot.com"
+            href="https://www.servx24.com"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline"
           >
-            https://www.bikedoot.com
+            https://www.servx24.com
           </a>{" "}
           website as well as any other media form, media channel, mobile
           website, or mobile application related, linked, or otherwise
@@ -68,7 +68,7 @@ function TermsAndConditions() {
         </p>
 
         <div className="pl-1 sm:pl-2 text-sm sm:text-base">
-          <p className="font-semibold text-base sm:text-lg">Bikedoot Service Private Limited</p>
+          <p className="font-semibold text-base sm:text-lg">ServX24 Service Private Limited</p>
           <p>Plot No. 21</p>
           <p>Knowledge Park-III</p>
           <p>Greater Noida, Uttar Pradesh 201306</p>
@@ -77,10 +77,10 @@ function TermsAndConditions() {
           <p>
             <strong>Email:</strong>{" "}
             <a
-              href="mailto:support@bikedoot.com"
+              href="mailto:support@servx24.com"
               className="text-blue-600 hover:underline break-words"
             >
-              support@bikedoot.com
+              support@servx24.com
             </a>
           </p>
         </div>
