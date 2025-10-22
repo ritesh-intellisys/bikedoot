@@ -51,6 +51,7 @@ const Home = ({ setCurrentPage }) => {
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [loginPopupGarageId, setLoginPopupGarageId] = useState(null);
+  const [loginPopupWashingCenterId, setLoginPopupWashingCenterId] = useState(null);
 
   // Ref for ServiceCategories component to access its modal functions
   const serviceCategoriesRef = useRef(null);
@@ -239,6 +240,15 @@ const Home = ({ setCurrentPage }) => {
   const handleShowLoginPopup = (garageId) => {
     console.log("🔍 Showing login popup for garage:", garageId);
     setLoginPopupGarageId(garageId);
+    setLoginPopupWashingCenterId(null);
+    setShowLoginPopup(true);
+  };
+
+  // Handle login popup from washing service
+  const handleShowWashingLoginPopup = (washingCenterId) => {
+    console.log("🔍 Showing login popup for washing center:", washingCenterId);
+    setLoginPopupWashingCenterId(washingCenterId);
+    setLoginPopupGarageId(null);
     setShowLoginPopup(true);
   };
 
@@ -248,13 +258,21 @@ const Home = ({ setCurrentPage }) => {
     if (loginPopupGarageId) {
       // Login popup from garage card
       window.location.href = `/booking?garageId=${loginPopupGarageId}&returnTo=garage-list&vehicleType=${selectedVehicleType}`;
-    } else {
+    } else if (loginPopupWashingCenterId) {
+      // Login popup from washing service
+      window.location.href = `/washing-booking?washingCenterId=${loginPopupWashingCenterId}&returnTo=washing-list&vehicleType=all`;
+    } else if (selectedGarage) {
       // Login popup from garage detail
       closeGarageDetail();
       window.location.href = `/booking?garageId=${selectedGarage.id}&returnTo=garage-list&vehicleType=${selectedVehicleType}`;
+    } else {
+      // Fallback - refresh the page to retry booking
+      console.log("Login successful, refreshing page");
+      window.location.reload();
     }
     setShowLoginPopup(false);
     setLoginPopupGarageId(null);
+    setLoginPopupWashingCenterId(null);
   };
 
   // Scroll to top of page
@@ -513,7 +531,7 @@ const Home = ({ setCurrentPage }) => {
             selectedCity={selectedCity}
             onBackToMain={backToMain}
             onWashingCenterClick={() => {}} // No redirect to garage sections
-            onShowLoginPopup={() => {}} // No login popup for now
+            onShowLoginPopup={handleShowWashingLoginPopup}
           />
         ) : showGarageDetail && selectedGarage ? (
           <GarageDetailPage

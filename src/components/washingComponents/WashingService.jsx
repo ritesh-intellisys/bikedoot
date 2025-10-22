@@ -231,7 +231,7 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
       const token = localStorage.getItem("authToken");
       if (!token) {
         console.log("No auth token found, showing login popup");
-        onShowLoginPopup();
+        onShowLoginPopup(center.id);
         return;
       }
       
@@ -258,7 +258,7 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
       const token = localStorage.getItem("authToken");
       if (!token) {
         console.log("No auth token found, showing login popup");
-        onShowLoginPopup();
+        onShowLoginPopup(center.id);
         return;
       }
       
