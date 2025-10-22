@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronDownIcon, MapPinIcon, StarIcon, ClockIcon, PhoneIcon } from '@heroicons/react/24/outline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSprayCan, faCar, faMotorcycle, faTruck, faStar } from '@fortawesome/free-solid-svg-icons';
@@ -7,6 +8,7 @@ import WashingCenterDetail from './WashingCenterDetail';
 // Independent Washing & Detailing Service Component
 // Uses only mock data - no API calls or redirects to garage sections
 const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onShowLoginPopup }) => {
+  const navigate = useNavigate();
   const [washingCenters, setWashingCenters] = useState([]);
   const [filteredCenters, setFilteredCenters] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +18,7 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
   const [priceRange, setPriceRange] = useState('all');
   const [rating, setRating] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState(null);
   const [showCenterDetail, setShowCenterDetail] = useState(false);
 
@@ -157,6 +160,18 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSortOpen && !event.target.closest('.sort-dropdown')) {
+        setIsSortOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isSortOpen]);
+
   // Initialize washing centers
   useEffect(() => {
     setWashingCenters(mockWashingCenters);
@@ -219,7 +234,7 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
     }
     
     // Navigate to washing booking flow with center data
-    window.location.href = `/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`;
+    navigate(`/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`);
   };
 
   const handleCloseDetail = () => {
@@ -236,7 +251,7 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
     }
     
     // Navigate to washing booking flow with center data
-    window.location.href = `/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`;
+    navigate(`/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`);
   };
 
   const renderStars = (rating) => {
@@ -283,10 +298,9 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
             onClick={onBackToMain}
             className="flex items-center text-white hover:text-red-500 transition-colors"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Services
           </button>
           <h1 className="text-xl font-bold text-white">
             <FontAwesomeIcon icon={faSprayCan} className="mr-2" />
@@ -305,18 +319,82 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
             <p className="text-lg text-gray-400">Find professional car wash and detailing services</p>
           </div>
 
+          {/* Mobile Filter and Sort Buttons - Outside of sidebar */}
+          <div className="lg:hidden mb-6 flex justify-between">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="inline-flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 border border-gray-600 hover:border-gray-500"
+            >
+              <span className="mr-2">Filters</span>
+              <ChevronDownIcon className={`w-4 h-4 transform transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {/* Sort Dropdown */}
+            <div className="relative sort-dropdown">
+              <button
+                onClick={() => setIsSortOpen(!isSortOpen)}
+                className="inline-flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 border border-gray-600 hover:border-gray-500"
+              >
+                <span className="mr-2">
+                  {sortBy === 'distance' ? 'Distance' : sortBy === 'rating' ? 'Rating' : 'Name'}
+                </span>
+                <ChevronDownIcon className={`w-4 h-4 transform transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {/* Sort Dropdown Menu */}
+              {isSortOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-50">
+                  <div className="py-2">
+                    <button
+                      onClick={() => {
+                        setSortBy('distance');
+                        setIsSortOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
+                        sortBy === 'distance' ? 'text-red-400 bg-gray-700' : 'text-white'
+                      }`}
+                    >
+                      Distance
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSortBy('rating');
+                        setIsSortOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
+                        sortBy === 'rating' ? 'text-red-400 bg-gray-700' : 'text-white'
+                      }`}
+                    >
+                      Rating
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSortBy('name');
+                        setIsSortOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
+                        sortBy === 'name' ? 'text-red-400 bg-gray-700' : 'text-white'
+                      }`}
+                    >
+                      Name
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
-            <div className="lg:col-span-1">
+            <div className={`lg:col-span-1 ${isFilterOpen ? 'block' : 'hidden lg:block'}`}>
               <div className="bg-gray-800 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-6">
+                <div className="hidden lg:flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-white">Filters</h3>
-                  <button
-                    onClick={() => setIsFilterOpen(!isFilterOpen)}
-                    className="lg:hidden text-gray-400 hover:text-white"
-                  >
-                    <ChevronDownIcon className={`w-5 h-5 transform transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
-                  </button>
+                </div>
+                
+                {/* Mobile Filter Header - Only show when filters are open */}
+                <div className={`lg:hidden flex items-center justify-between mb-6 ${isFilterOpen ? 'block' : 'hidden'}`}>
+                  <h3 className="text-lg font-semibold text-white">Filters</h3>
                 </div>
 
                 <div className={`space-y-6 ${isFilterOpen ? 'block' : 'hidden lg:block'}`}>
@@ -385,7 +463,7 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
             </div>
 
             {/* Washing Centers Grid */}
-            <div className="lg:col-span-3">
+            <div className={`${isFilterOpen ? 'lg:col-span-3' : 'col-span-1 lg:col-span-3'}`}>
               {filteredCenters.length === 0 ? (
                 <div className="text-center py-12">
                   <FontAwesomeIcon icon={faSprayCan} className="text-6xl text-gray-600 mb-4" />

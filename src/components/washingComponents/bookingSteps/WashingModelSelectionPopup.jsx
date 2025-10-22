@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { fetchBikeModels } from '../../../services/bookingService';
 
 const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBrand }) => {
   const [models, setModels] = useState([]);
@@ -9,14 +8,58 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  // Demo models data for washing service
+  const getDemoModels = (brandId) => {
+    const modelsByBrand = {
+      1: [ // Honda
+        { id: 1, name: 'Activa 6G', cc: '110cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 2, name: 'Shine', cc: '125cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 3, name: 'Unicorn', cc: '160cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 4, name: 'CBR 150R', cc: '150cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' }
+      ],
+      2: [ // Bajaj
+        { id: 5, name: 'Pulsar 150', cc: '150cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 6, name: 'Pulsar 220', cc: '220cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 7, name: 'Dominar 400', cc: '400cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 8, name: 'Avenger', cc: '220cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' }
+      ],
+      3: [ // TVS
+        { id: 9, name: 'Apache RTR 160', cc: '160cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 10, name: 'Apache RTR 200', cc: '200cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 11, name: 'Jupiter', cc: '110cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 12, name: 'Ntorq', cc: '125cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' }
+      ],
+      4: [ // Hero
+        { id: 13, name: 'Splendor Plus', cc: '100cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 14, name: 'Passion Pro', cc: '110cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 15, name: 'Xpulse 200', cc: '200cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 16, name: 'Karizma', cc: '223cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' }
+      ],
+      5: [ // Yamaha
+        { id: 17, name: 'FZ-S', cc: '149cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 18, name: 'R15 V4', cc: '155cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 19, name: 'MT-15', cc: '155cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 20, name: 'Ray ZR', cc: '125cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' }
+      ],
+      6: [ // Royal Enfield
+        { id: 21, name: 'Classic 350', cc: '350cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 22, name: 'Bullet 350', cc: '350cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 23, name: 'Himalayan', cc: '411cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' },
+        { id: 24, name: 'Meteor 350', cc: '350cc', image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg' }
+      ]
+    };
+    
+    return modelsByBrand[brandId] || [];
+  };
+
   // Load models when popup opens and brand is selected
   useEffect(() => {
     const loadModels = async () => {
       if (isOpen && selectedBrand) {
         setLoading(true);
         try {
-          console.log('🔍 Loading bike models for brand:', selectedBrand);
-          const modelsData = await fetchBikeModels(selectedBrand.id);
+          console.log('🔍 Loading demo bike models for washing service:', selectedBrand);
+          const modelsData = getDemoModels(selectedBrand.id);
           console.log('🔍 Models data received:', modelsData);
           setModels(modelsData);
           setFilteredModels(modelsData);
@@ -44,36 +87,31 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
   }, [searchQuery, models]);
 
   const handleModelClick = async (model) => {
-    console.log('🔍 Model selected for washing booking:', model);
+    console.log('🔍 Model selected for washing:', model);
     
     setSaving(true);
     
     try {
-      // For washing booking, we'll bypass the API call and create the vehicle data locally
-      // This prevents the "Failed to add vehicle" error while still allowing the flow to continue
-      console.log('🔍 Washing booking - bypassing vehicle creation API, using local data');
-      
-      // Create bike data for washing booking without API call
+      // Create bike data for washing booking (demo version)
       const bikeData = {
         id: model.id,
         vehicle_id: model.id,
         name: model.name,
         image: model.image || "https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg",
-        cc_id: model.cc_id || 1,
+        cc_id: 1,
         cc: model.cc || "110cc",
         brand: selectedBrand.name,
         model: model.name,
         year: new Date().getFullYear(),
-        registration_number: `TEMP-${Date.now()}`,
+        registration_number: `WASH-${Date.now()}`,
         modelData: model,
         brandData: selectedBrand
       };
       
-      console.log('✅ Vehicle data created for washing booking (bypassed API):', bikeData);
+      console.log('✅ Demo bike created for washing:', bikeData);
       onModelSelect(bikeData);
     } catch (error) {
-      console.error('❌ Error creating vehicle data for washing:', error);
-      alert('Failed to prepare vehicle data. Please try again.');
+      console.error('❌ Error creating demo bike:', error);
     } finally {
       setSaving(false);
     }
@@ -90,9 +128,9 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-gray-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 border-b border-gray-700 gap-4">
           <div>
-            <h2 className="text-xl font-bold text-white">Select Vehicle Model</h2>
+            <h2 className="text-xl font-bold text-white">Select Bike Model</h2>
             {selectedBrand && (
               <p className="text-gray-400 text-sm mt-1">
                 {selectedBrand.name} Models
@@ -101,19 +139,19 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
           </div>
           <div className="flex items-center gap-4">
             {/* Search Input */}
-            <div className="relative">
+            <div className="relative flex-1 sm:flex-none">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search model"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 w-64"
+                className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 w-full sm:w-64"
               />
             </div>
             <button
               onClick={handleClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
             >
               <XMarkIcon className="w-6 h-6" />
             </button>

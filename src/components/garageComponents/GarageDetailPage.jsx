@@ -195,7 +195,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
               onClick={onClose}
             className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white px-6 py-2 rounded-lg"
             >
-            Back to Garages
+            ←
             </button>
           </div>
       </div>
@@ -217,7 +217,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
             onClick={onClose}
             className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white px-6 py-2 rounded-lg"
           >
-            Back to Garages
+            ←
           </button>
         </div>
       </div>
@@ -230,6 +230,14 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
         <div className="bg-gray-900 shadow-sm border-b border-gray-800">
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
+              <button
+                onClick={onClose}
+                className="flex items-center text-gray-400 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
               <div className="flex items-center space-x-4">
                 <img
                   src={displayGarage?.image || getFallbackImage(displayGarage?.id)}
@@ -267,15 +275,6 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                   )}
                 </div>
               </div>
-              <button
-                onClick={onClose}
-                className="flex items-center text-gray-400 hover:text-white transition-colors"
-              >
-                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Back to Garages
-              </button>
             </div>
           </div>
         </div>

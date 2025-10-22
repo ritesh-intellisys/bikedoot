@@ -233,12 +233,12 @@ const LoginPopup = ({ isOpen, onClose, onLoginSuccess }) => {
                 )}
               </div>
 
-              {/* Back to Mobile */}
+              {/* Back Button */}
               <button
                 onClick={handleBackToMobile}
                 className="w-full text-sm text-gray-400 hover:text-white transition-colors mt-2"
               >
-                ← Back to mobile number
+                ←
               </button>
             </>
           )}

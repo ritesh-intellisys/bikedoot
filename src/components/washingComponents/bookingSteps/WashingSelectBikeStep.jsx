@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon } from '@heroicons/react/24/outline';
-// import { fetchUserVehicles } from '../../../services/bookingService';
-// import AddBikeModal from '../../homeComponents/bookingSteps/AddBikeModal';
+import WashingAddBikeModal from './WashingAddBikeModal';
 
 const WashingSelectBikeStep = ({ 
   bikeData, 
@@ -176,42 +175,12 @@ const WashingSelectBikeStep = ({
         </div>
       )}
       
-      {/* Add Vehicle Modal - Demo Version */}
-      {isAddBikeModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-xl max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Add New Vehicle</h3>
-            <p className="text-gray-400 mb-4">This is a demo version. In the real app, you would be able to add your vehicle here.</p>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => setIsAddBikeModalOpen(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  // Add a demo vehicle
-                  const newVehicle = {
-                    id: Date.now(),
-                    name: 'Demo Bike',
-                    brand: 'Demo Brand',
-                    model: 'Demo Model',
-                    cc: '150cc',
-                    image: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg',
-                    year: new Date().getFullYear(),
-                    registration_number: `DEMO-${Date.now()}`
-                  };
-                  handleAddBikeSuccess(newVehicle);
-                }}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-              >
-                Add Demo Vehicle
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Add Vehicle Modal - Matching Garage UI */}
+      <WashingAddBikeModal
+        isOpen={isAddBikeModalOpen}
+        onClose={() => setIsAddBikeModalOpen(false)}
+        onSuccess={handleAddBikeSuccess}
+      />
     </div>
   );
 };

@@ -215,7 +215,7 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
                 onClick={handleBackToBrands}
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                ← Back to brands
+                ←
               </button>
             </div>
           )}

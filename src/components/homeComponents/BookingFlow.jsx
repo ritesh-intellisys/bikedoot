@@ -155,7 +155,7 @@ const BookingFlow = () => {
             }}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            {returnTo === 'garage-list' ? 'Go Back to Garages' : 'Go Back to Home'}
+            ←
           </button>
         </div>
       </div>
@@ -284,7 +284,7 @@ const BookingFlow = () => {
             }}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
           >
-            {returnTo === 'garage-list' ? 'Go Back to Garages' : 'Go Back Home'}
+            ←
           </button>
         </div>
       </div>

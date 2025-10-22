@@ -18,6 +18,7 @@ const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
   const [garageType, setGarageType] = useState('all'); // 'all' or 'authorized'
   const [selectedBrand, setSelectedBrand] = useState('');
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [noResultsMessage, setNoResultsMessage] = useState(null);
   const brandDropdownRef = useRef(null);
 
@@ -49,6 +50,7 @@ const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
 
   // Geolocation setup with improved handling
   useEffect(() => {
@@ -242,9 +244,20 @@ const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
             <p className="text-lg text-gray-400">Find specialized garages for bikes and scooters</p>
           </div>
 
+          {/* Mobile Filter Button - Outside of sidebar */}
+          <div className="lg:hidden mb-6">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="inline-flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 border border-gray-600 hover:border-gray-500"
+            >
+              <span className="mr-2">Filters</span>
+              <ChevronDownIcon className={`w-4 h-4 transform transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
-            <div className="lg:col-span-1">
+            <div className={`lg:col-span-1 ${isFilterOpen ? 'block' : 'hidden lg:block'}`}>
               <FilterSystem
                 filterData={filterData}
                 onApplyFilters={handleFilterApply}
@@ -254,7 +267,7 @@ const TwoWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMa
             </div>
 
             {/* Garage Grid */}
-            <div className="lg:col-span-3">
+            <div className={`${isFilterOpen ? 'lg:col-span-3' : 'col-span-1 lg:col-span-3'}`}>
               {/* Garage Type Toggle and Controls */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 {/* Left Group: Garage Type Toggle + Brand Dropdown */}

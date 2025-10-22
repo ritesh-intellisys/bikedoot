@@ -279,7 +279,7 @@ const WashingBookingFlow = () => {
             }}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            {returnTo === 'washing-list' ? 'Go Back to Washing Centers' : 'Go Back to Home'}
+            ←
           </button>
         </div>
       </div>
@@ -413,7 +413,7 @@ const WashingBookingFlow = () => {
             }}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
           >
-            {returnTo === 'washing-list' ? 'Go Back to Washing Centers' : 'Go Back Home'}
+            ←
           </button>
         </div>
       </div>
