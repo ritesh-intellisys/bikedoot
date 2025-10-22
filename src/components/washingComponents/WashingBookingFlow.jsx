@@ -27,6 +27,8 @@ const WashingBookingFlow = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [washingCenterInfo, setWashingCenterInfo] = useState(null);
+  const [initializationError, setInitializationError] = useState(null);
+  const [initializationTimeout, setInitializationTimeout] = useState(false);
   
   const steps = ["Select Bike", "Service", "Slot & Address", "Summary"];
   
@@ -162,12 +164,27 @@ const WashingBookingFlow = () => {
   
   // Check authentication and fetch washing center info
   useEffect(() => {
+    console.log("WashingBookingFlow useEffect triggered");
+    console.log("washingCenterId:", washingCenterId);
+    console.log("location.search:", location.search);
+    console.log("location.state:", location.state);
+    
+    // Reset error state
+    setInitializationError(null);
+    setInitializationTimeout(false);
+    
+    // Set a timeout to prevent infinite hanging
+    const timeoutId = setTimeout(() => {
+      console.error("Initialization timeout - component may be hanging");
+      setInitializationTimeout(true);
+      setInitializationError("Initialization timeout - please try again");
+    }, 10000); // 10 second timeout
+    
     try {
-      console.log("WashingBookingFlow mounted with washingCenterId:", washingCenterId);
-      console.log("Location state:", location.state);
-      
       // Check authentication but don't redirect immediately
       const token = localStorage.getItem("authToken");
+      console.log("Auth token check:", token ? "Found" : "Not found");
+      
       if (!token) {
         console.log("No authentication token found, but continuing with booking flow");
         // Don't redirect to login here - let the user complete the flow
@@ -175,26 +192,43 @@ const WashingBookingFlow = () => {
       }
       
       if (!washingCenterId) {
-        console.log("No washingCenterId, redirecting to home");
+        console.error("No washingCenterId found, redirecting to home");
+        setInitializationError("No washing center ID provided");
+        clearTimeout(timeoutId);
         navigate("/");
         return;
       }
       
+      console.log("Fetching washing center data for ID:", washingCenterId);
       // Fetch washing center information (mock for now)
       const centerData = mockWashingCenters[washingCenterId];
       if (centerData) {
+        console.log("Washing center data found:", centerData);
         setWashingCenterInfo(centerData);
-        console.log("Washing center info loaded:", centerData);
+        console.log("Washing center info set successfully");
+        clearTimeout(timeoutId);
       } else {
         console.error("Failed to load washing center information for ID:", washingCenterId);
+        console.error("Available centers:", Object.keys(mockWashingCenters));
+        setInitializationError(`Washing center with ID ${washingCenterId} not found`);
+        clearTimeout(timeoutId);
         navigate("/");
+        return;
       }
       
-      console.log("WashingBookingFlow ready with washingCenterId:", washingCenterId);
+      console.log("WashingBookingFlow useEffect completed successfully");
     } catch (error) {
       console.error("Error in WashingBookingFlow useEffect:", error);
+      console.error("Error stack:", error.stack);
+      setInitializationError(error.message || "Failed to initialize booking flow");
+      clearTimeout(timeoutId);
       navigate("/");
     }
+    
+    // Cleanup timeout on unmount
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [washingCenterId, navigate, location.state]);
   
   // Navigation logic with validation
@@ -269,6 +303,30 @@ const WashingBookingFlow = () => {
         <div className="text-white text-center">
           <h2 className="text-2xl font-bold mb-4">Invalid Booking Request</h2>
           <p className="text-gray-400 mb-6">Please select a washing center first to start booking.</p>
+          <button
+            onClick={() => {
+              if (returnTo === 'washing-list') {
+                navigate(`/?returnTo=washing-list`);
+              } else {
+                navigate("/");
+              }
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
+          >
+            ←
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show initialization error if any
+  if (initializationError) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-center max-w-md mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-4 text-red-500">Booking Error</h2>
+          <p className="text-gray-400 mb-6">{initializationError}</p>
           <button
             onClick={() => {
               if (returnTo === 'washing-list') {

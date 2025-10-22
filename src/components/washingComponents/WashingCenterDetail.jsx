@@ -830,34 +830,34 @@ const WashingCenterDetail = ({ center, onClose, onBookNow }) => {
             </div>
 
             {/* Review Guidelines */}
-            <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-xl p-6 border border-blue-500/30">
-              <h4 className="text-white font-semibold mb-4">Review Guidelines</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center text-gray-300 text-sm">
-                    <span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>
+            <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-xl p-4 sm:p-6 border border-blue-500/30">
+              <h4 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Review Guidelines</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-1 sm:space-y-2">
+                  <div className="flex items-center text-gray-300 text-xs sm:text-sm">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-400 rounded-full mr-2 sm:mr-3"></span>
                     Reviews are verified after service completion
                   </div>
-                  <div className="flex items-center text-gray-300 text-sm">
-                    <span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>
+                  <div className="flex items-center text-gray-300 text-xs sm:text-sm">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-400 rounded-full mr-2 sm:mr-3"></span>
                     We encourage honest feedback
                   </div>
-                  <div className="flex items-center text-gray-300 text-sm">
-                    <span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>
+                  <div className="flex items-center text-gray-300 text-xs sm:text-sm">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-400 rounded-full mr-2 sm:mr-3"></span>
                     Photos are welcome in reviews
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center text-gray-300 text-sm">
-                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>
+                <div className="space-y-1 sm:space-y-2">
+                  <div className="flex items-center text-gray-300 text-xs sm:text-sm">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full mr-2 sm:mr-3"></span>
                     We respond to all reviews within 24 hours
                   </div>
-                  <div className="flex items-center text-gray-300 text-sm">
-                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>
+                  <div className="flex items-center text-gray-300 text-xs sm:text-sm">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full mr-2 sm:mr-3"></span>
                     Your feedback helps us improve
                   </div>
-                  <div className="flex items-center text-gray-300 text-sm">
-                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>
+                  <div className="flex items-center text-gray-300 text-xs sm:text-sm">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full mr-2 sm:mr-3"></span>
                     Thank you for choosing our services
                   </div>
                 </div>

@@ -226,15 +226,23 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
     e.stopPropagation();
     console.log("Book Now clicked for washing center:", center.id, center.name);
     
-    // Navigate to washing booking flow
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      onShowLoginPopup();
-      return;
+    try {
+      // Navigate to washing booking flow
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.log("No auth token found, showing login popup");
+        onShowLoginPopup();
+        return;
+      }
+      
+      console.log("Auth token found, navigating to washing booking...");
+      // Navigate to washing booking flow with center data
+      // Use replace: false to ensure proper navigation
+      navigate(`/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`, { replace: false });
+      console.log("Navigation called successfully");
+    } catch (error) {
+      console.error("Error in handleBookNow:", error);
     }
-    
-    // Navigate to washing booking flow with center data
-    navigate(`/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`);
   };
 
   const handleCloseDetail = () => {
@@ -243,15 +251,25 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
   };
 
   const handleBookNowFromDetail = (center) => {
-    // Navigate to washing booking flow
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      onShowLoginPopup();
-      return;
-    }
+    console.log("Book Now clicked from detail for washing center:", center.id, center.name);
     
-    // Navigate to washing booking flow with center data
-    navigate(`/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`);
+    try {
+      // Navigate to washing booking flow
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.log("No auth token found, showing login popup");
+        onShowLoginPopup();
+        return;
+      }
+      
+      console.log("Auth token found, navigating to washing booking from detail...");
+      // Navigate to washing booking flow with center data
+      // Use replace: false to ensure proper navigation
+      navigate(`/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`, { replace: false });
+      console.log("Navigation called successfully from detail");
+    } catch (error) {
+      console.error("Error in handleBookNowFromDetail:", error);
+    }
   };
 
   const renderStars = (rating) => {
