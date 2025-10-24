@@ -181,15 +181,8 @@ const WashingBookingFlow = () => {
     }, 10000); // 10 second timeout
     
     try {
-      // Check authentication but don't redirect immediately
-      const token = localStorage.getItem("authToken");
-      console.log("Auth token check:", token ? "Found" : "Not found");
-      
-      if (!token) {
-        console.log("No authentication token found, but continuing with booking flow");
-        // Don't redirect to login here - let the user complete the flow
-        // Authentication will be checked at the final booking step
-      }
+      // Skip authentication check for washing services - allow direct access
+      console.log("Skipping authentication check for washing booking flow");
       
       if (!washingCenterId) {
         console.error("No washingCenterId found, redirecting to home");

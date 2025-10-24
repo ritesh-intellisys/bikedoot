@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBicycle, faMapMarkerAlt, faPhone, faEnvelope, faClock, faSearch,
+  faMapMarkerAlt, faPhone, faEnvelope, faClock, faSearch,
   faShoppingCart, faUser, faTimes, faBars, faCheck, faPaperPlane,
   faQuestionCircle, faChevronDown, faChevronUp, faAmbulance,
   faMapMarkedAlt, faComments, faChevronRight
@@ -108,7 +108,7 @@ const ContactUs = ({ setCurrentPage }) => {
     {
       icon: faPhone,
       title: "Call Us",
-      details: "+91 98765 43210",
+      details: "+91 62076 27817",
       description: "Mon-Sat: 9AM - 6PM | Sun: Closed",
       color: "#4ECDC4"
     },
@@ -157,7 +157,6 @@ const ContactUs = ({ setCurrentPage }) => {
               <p>We're here to help you with all your Vehicle needs. Get in touch with our team of experts.</p>
               <div className="hero-buttons">
                 <a href="#contact-form" className="btn">Send Message</a>
-                <a href="#locations" className="btn btn-secondary">Visit Our Store</a>
               </div>
             </div>
             
@@ -203,12 +202,6 @@ const ContactUs = ({ setCurrentPage }) => {
               onClick={() => setActiveTab('faq')}
             >
               <FontAwesomeIcon icon={faQuestionCircle} /> FAQ
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'locations' ? 'active' : ''}`}
-              onClick={() => setActiveTab('locations')}
-            >
-              <FontAwesomeIcon icon={faMapMarkerAlt} /> Our Locations
             </button>
           </div>
           
@@ -307,7 +300,7 @@ const ContactUs = ({ setCurrentPage }) => {
                 <div className="form-info">
                   <h3>Why Contact Us?</h3>
                   <ul>
-                    <li><FontAwesomeIcon icon={faCheck} /> Expert advice from cycling enthusiasts</li>
+                    <li><FontAwesomeIcon icon={faCheck} /> Expert advice from automotive professionals</li>
                     <li><FontAwesomeIcon icon={faCheck} /> Quick response within 24 hours</li>
                     <li><FontAwesomeIcon icon={faCheck} /> Custom solutions for your needs</li>
                     <li><FontAwesomeIcon icon={faCheck} /> Best prices guaranteed</li>
@@ -318,7 +311,7 @@ const ContactUs = ({ setCurrentPage }) => {
                     <h4><FontAwesomeIcon icon={faAmbulance} /> Emergency Service?</h4>
                     <p>Call our hotline for immediate assistance</p>
                     <a href="tel:+919876543210" className="emergency-btn">
-                      <FontAwesomeIcon icon={faPhone} /> +91 98765 43210
+                      <FontAwesomeIcon icon={faPhone} /> +91 62076 27817
                     </a>
                   </div>
                 </div>
@@ -347,72 +340,6 @@ const ContactUs = ({ setCurrentPage }) => {
               </div>
             )}
             
-            {/* Locations Section */}
-            {activeTab === 'locations' && (
-              <div className="locations-section">
-                <h3>Our Store Locations</h3>
-                <p>Visit us at any of our conveniently located stores</p>
-                
-                <div className="locations-grid">
-                  <div className="location-card">
-                    <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 Main Store" />
-                      <div className="location-overlay">
-                        <span className="location-tag">Flagship Store</span>
-                      </div>
-                    </div>
-                    <div className="location-info">
-                      <h4>ServX24 Main Store</h4>
-                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Near, Hinjawadi - Wakad Rd, opp. Vijay Sales, Pune, Maharashtraa, 222001</p>
-                      <p><FontAwesomeIcon icon={faPhone} /> +91 98765 43210</p>
-                      <p><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM-6PM</p>
-                      <button className="btn location-btn">Get Directions</button>
-                    </div>
-                  </div>
-                  
-                  <div className="location-card">
-                    <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 West Branch" />
-                      <div className="location-overlay">
-                        <span className="location-tag">Service Center</span>
-                      </div>
-                    </div>
-                    <div className="location-info">
-                      <h4>ServX24 West Branch</h4>
-                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> 456 Rider's Avenue, West City, 560002</p>
-                      <p><FontAwesomeIcon icon={faPhone} /> +91 98765 43211</p>
-                      <p><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM-6PM</p>
-                      <button className="btn location-btn">Get Directions</button>
-                    </div>
-                  </div>
-                  
-                  <div className="location-card">
-                    <div className="location-image">
-                      <img src="https://images.unsplash.com/photo-1511994298241-608e28f14fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="ServX24 East Branch" />
-                      <div className="location-overlay">
-                        <span className="location-tag">Sales & Service</span>
-                      </div>
-                    </div>
-                    <div className="location-info">
-                      <h4>ServX24 East Branch</h4>
-                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> 789 Pedal Road, East City, 560003</p>
-                      <p><FontAwesomeIcon icon={faPhone} /> +91 98765 43212</p>
-                      <p><FontAwesomeIcon icon={faClock} /> Mon-Sat: 9AM-6PM</p>
-                      <button className="btn location-btn">Get Directions</button>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="map-container">
-                  <h4>Find Us on Map</h4>
-                  <div className="map-placeholder">
-                    <FontAwesomeIcon icon={faMapMarkedAlt} />
-                    <p>Interactive Map Would Appear Here</p>
-                    <small>Integration with Google Maps API</small>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </section>
@@ -424,7 +351,7 @@ const ContactUs = ({ setCurrentPage }) => {
             <h2>Still Have Questions?</h2>
             <p>Our customer support team is always ready to help you with any inquiries</p>
             <div className="cta-buttons">
-              <a href="tel:+919876543210" className="btn">
+              <a href="tel:+91 62076 27817" className="btn">
                 <FontAwesomeIcon icon={faPhone} /> Call Now
               </a>
               <a href="mailto:info@servx24.com" className="btn btn-secondary">

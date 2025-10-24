@@ -40,6 +40,23 @@ const GarageListing = ({ selectedCity, filterData, onGarageClick, setCurrentPage
     setLocationReady(true);
   }, []);
 
+  // Get city-specific coordinates
+  const getCityCoordinates = (cityName) => {
+    const cityCoords = {
+      'Mumbai': { lat: 19.0760, lng: 72.8777 },
+      'Delhi': { lat: 28.7041, lng: 77.1025 },
+      'Bangalore': { lat: 12.9716, lng: 77.5946 },
+      'Chennai': { lat: 13.0827, lng: 80.2707 },
+      'Pune': { lat: 18.5204, lng: 73.8567 },
+      'Hyderabad': { lat: 17.3850, lng: 78.4867 },
+      'Kolkata': { lat: 22.5726, lng: 88.3639 },
+      'Ahmedabad': { lat: 23.0225, lng: 72.5714 },
+      'Nagpur': { lat: 21.1458, lng: 79.0882 }
+    };
+    
+    return cityCoords[cityName] || { lat: 18.5204, lng: 73.8567 }; // Default to Pune
+  };
+
   // Fetch garages when filters or location change
   useEffect(() => {
     if (!locationReady) return;
@@ -47,27 +64,49 @@ const GarageListing = ({ selectedCity, filterData, onGarageClick, setCurrentPage
     const fetchGarages = async () => {
       setLoading(true);
       try {
-        const { latitude, longitude } = getStoredLocationData();
-        const lat = latitude || 17.74162;
-        const lng = longitude || 73.8567;
+        // Use city-specific coordinates instead of stored location
+        const cityCoords = getCityCoordinates(selectedCity);
+        const lat = cityCoords.lat;
+        const lng = cityCoords.lng;
 
+        // Special case: Add trailing space for Bangalore to match old website
+        let location = selectedCity;
+        if (location === 'Bangalore') {
+          location = 'Bangalore ';
+        }
+        
         const requestData = {
-          location: selectedCity,
+          location: location,
           latitude: lat,
           longitude: lng,
           filter: {
             sort: filters?.sort || [],
             ratings: filters?.ratings || [],
-            distance: filters?.distance || [],
+            distence: filters?.distance || [], // Keep old spelling like old website
             services: filters?.services || [],
           },
         };
 
+        console.log('🔄 Fetching garages for:', selectedCity, 'with coordinates:', lat, lng);
+        console.log('🔄 Request data:', requestData);
+        
         const response = await getGaragesByServiceCategory(requestData);
-        setGarages(response?.data || []);
-        setFilteredGarages(response?.data || []);
+        console.log('✅ Garage response:', response);
+        
+        if (response && response.data && response.data.length > 0) {
+          console.log('✅ Found', response.data.length, 'garages for', selectedCity);
+          setGarages(response.data);
+          setFilteredGarages(response.data);
+        } else {
+          console.warn('⚠️ No garage data received from API for', selectedCity);
+          setGarages([]);
+          setFilteredGarages([]);
+        }
       } catch (error) {
-        console.error("Failed to fetch garages:", error);
+        console.error("❌ Failed to fetch garages from API:", error);
+        console.log('🔄 No garages available for', selectedCity);
+        setGarages([]);
+        setFilteredGarages([]);
       } finally {
         setLoading(false);
       }
@@ -122,13 +161,38 @@ const GarageListing = ({ selectedCity, filterData, onGarageClick, setCurrentPage
           <div className="lg:col-span-3">
             {filteredGarages.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-400 text-lg">No garages found matching your criteria.</p>
-                <button
-                  onClick={() => setFilters(null)}
-                  className="mt-4 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  Clear Filters
-                </button>
+                {garages.length === 0 ? (
+                  // No garages available for this city
+                  <div className="bg-gray-800 rounded-xl p-8 max-w-md mx-auto">
+                    <div className="text-6xl mb-4">🚧</div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Coming Soon!</h3>
+                    <p className="text-gray-400 text-lg mb-4">
+                      We are expanding our services to <span className="text-red-500 font-semibold">{selectedCity}</span>
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      Stay tuned! We'll be launching in your city soon.
+                    </p>
+                    <div className="mt-6">
+                      <button
+                        onClick={() => window.location.href = '/'}
+                        className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                      >
+                        Explore Other Cities
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // Garages exist but filters removed them
+                  <div>
+                    <p className="text-gray-400 text-lg">No garages found matching your criteria.</p>
+                    <button
+                      onClick={() => setFilters(null)}
+                      className="mt-4 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

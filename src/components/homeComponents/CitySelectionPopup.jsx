@@ -174,7 +174,7 @@ const CitySelectionPopup = ({ isOpen, onClose, onCitySelect, selectedCity }) => 
       // Get current location
       const { latitude, longitude } = await getCurrentLocation();
       
-      // Get city from coordinates
+      // Get city from coordinates using simplified approach
       const cityData = await getCityFromCoordinates(latitude, longitude);
       
       // Store location data

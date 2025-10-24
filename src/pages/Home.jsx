@@ -22,7 +22,7 @@ import WashingService from '../components/washingComponents/WashingService';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { fetchLandingPageData } from '../services/landingpage';
-import { cleanupLocationData, getCurrentLocation, getCityFromCoordinates, storeLocationData } from '../utils/geolocation';
+import { getCurrentLocation, getCityFromCoordinates, storeLocationData } from '../utils/geolocation';
 import LoginPopup from '../components/homeComponents/LoginPopup';
 
 const Home = ({ setCurrentPage }) => {
@@ -73,11 +73,8 @@ const Home = ({ setCurrentPage }) => {
     }
   }, []);
 
-  // Geolocation setup - improved with better error handling and city detection
+  // Geolocation setup - simplified approach like old website
   useEffect(() => {
-    // Clean up any incorrect location data first
-    cleanupLocationData();
-    
     // Check if we already have location data
     if (sessionStorage.getItem("latitude") && sessionStorage.getItem("longitude")) {
       console.log("📍 Using existing location data");
@@ -85,7 +82,7 @@ const Home = ({ setCurrentPage }) => {
       return;
     }
 
-    // Enhanced geolocation with better error handling
+    // Simple geolocation approach (like old website)
     const initializeLocation = async () => {
       setIsDetectingLocation(true);
       try {
@@ -95,23 +92,16 @@ const Home = ({ setCurrentPage }) => {
         console.log("📍 Coordinates obtained:", { latitude, longitude });
         
         // Get city information from coordinates
-        try {
-          const cityData = await getCityFromCoordinates(latitude, longitude);
-          console.log("📍 City data:", cityData);
-          
-          // Store location data with city information
-          storeLocationData(latitude, longitude, cityData);
-          
-          // Update selected city if we got a valid city
-          if (cityData.city) {
-            setSelectedCity(cityData.city);
-            console.log("📍 Updated selected city to:", cityData.city);
-          }
-        } catch (cityError) {
-          console.warn("📍 Failed to get city data, using coordinates only:", cityError);
-          // Store just coordinates if city detection fails
-          sessionStorage.setItem("latitude", latitude.toString());
-          sessionStorage.setItem("longitude", longitude.toString());
+        const cityData = await getCityFromCoordinates(latitude, longitude);
+        console.log("📍 City data:", cityData);
+        
+        // Store location data with city information
+        storeLocationData(latitude, longitude, cityData);
+        
+        // Update selected city if we got a valid city
+        if (cityData.city) {
+          setSelectedCity(cityData.city);
+          console.log("📍 Updated selected city to:", cityData.city);
         }
         
         setLocationReady(true);
@@ -126,10 +116,10 @@ const Home = ({ setCurrentPage }) => {
         sessionStorage.setItem("selectedCity", "Pune");
         
         console.log("📍 Using fallback location: Pune");
-      setLocationReady(true);
+        setLocationReady(true);
       } finally {
         setIsDetectingLocation(false);
-    }
+      }
     };
 
     initializeLocation();

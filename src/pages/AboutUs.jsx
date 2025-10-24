@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAuthenticated } from '../services/authService';
 import LoginPopup from '../components/homeComponents/LoginPopup';
 import { 
-  faBicycle,
   faUsers,
   faMapMarkerAlt,
   faCalendarAlt,
@@ -23,7 +22,9 @@ import {
   faEnvelope,
   faClock,
   faTimes,
-  faBars
+  faBars,
+  faShieldAlt,
+  faEye
 } from '@fortawesome/free-solid-svg-icons';
 import { 
   faTwitter, 
@@ -141,21 +142,21 @@ const AboutUs = ({ setCurrentPage }) => {
   const services = [
     {
       name: "Inspection Service",
-      description: "Comprehensive bike inspection to identify issues and maintenance needs",
+      description: "Comprehensive vehicle inspection to identify issues and maintenance needs",
       icon: faSearch,
       image: "https://images.unsplash.com/photo-1570129476815-ba368ac77013?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80",
       features: ["Full diagnostic check", "Safety assessment", "Performance evaluation", "Detailed report"]
     },
     {
       name: "General Service",
-      description: "Basic maintenance service to keep your bike in optimal condition",
+      description: "Basic maintenance service to keep your vehicle in optimal condition",
       icon: faCog,
       image: "https://plus.unsplash.com/premium_photo-1661779071501-629999b46de0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80",
-      features: ["Chain lubrication", "Brake adjustment", "Tire pressure check", "Gear tuning"]
+      features: ["Oil change", "Brake inspection", "Tire pressure check", "Engine tuning"]
     },
     {
       name: "Combo Service",
-      description: "Complete premium service package for thorough bike maintenance",
+      description: "Complete premium service package for thorough vehicle maintenance",
       icon: faStar,
       image: "https://plus.unsplash.com/premium_photo-1661750362435-00f8fef16292?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80",
       features: ["Full cleaning", "Component replacement", "Advanced tuning", "1 month warranty"]
@@ -165,26 +166,26 @@ const AboutUs = ({ setCurrentPage }) => {
 
   const values = [
     {
-      title: "Sustainability",
-      description: "We're committed to eco-friendly practices and promoting cycling as a sustainable transportation solution.",
-      icon: faLeaf,
+      title: "Reliability",
+      description: "We connect you with verified, trusted garages that deliver consistent, high-quality automotive services.",
+      icon: faShieldAlt,
       color: "#4CAF50"
     },
     {
-      title: "Innovation",
-      description: "We continuously push boundaries to develop better products and services for the cycling community.",
-      icon: faLightbulb,
+      title: "Transparency",
+      description: "Clear pricing, detailed service breakdowns, and honest communication throughout your vehicle service journey.",
+      icon: faEye,
       color: "#2196F3"
     },
     {
-      title: "Community",
-      description: "We believe in building strong, inclusive cycling communities that support and inspire each other.",
-      icon: faHandshake,
+      title: "Convenience",
+      description: "Book services online, track progress in real-time, and get your vehicle serviced at your preferred location.",
+      icon: faClock,
       color: "#FF9800"
     },
     {
       title: "Quality",
-      description: "We never compromise on quality, ensuring that every product meets our high standards of excellence.",
+      description: "We partner only with certified garages that meet our strict standards for service quality and customer satisfaction.",
       icon: faMedal,
       color: "#E91E63"
     }
@@ -271,7 +272,7 @@ const AboutUs = ({ setCurrentPage }) => {
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-red-600 p-4 rounded-full">
-                      <FontAwesomeIcon icon={faBicycle} className="text-white text-2xl" />
+                      <FontAwesomeIcon icon={faTools} className="text-white text-2xl" />
                     </div>
                   </div>
                 </div>
@@ -387,7 +388,7 @@ const AboutUs = ({ setCurrentPage }) => {
             Join the ServX24 Revolution
           </h2>
           <p className="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
-            Experience the difference of cycling with ServX24. Explore our collection, join our community, or become a partner today.
+            Experience the difference of professional automotive service with ServX24. Find trusted garages, book services, or become a partner today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 

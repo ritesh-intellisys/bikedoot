@@ -227,17 +227,8 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
     console.log("Book Now clicked for washing center:", center.id, center.name);
     
     try {
-      // Navigate to washing booking flow
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        console.log("No auth token found, showing login popup");
-        onShowLoginPopup(center.id);
-        return;
-      }
-      
-      console.log("Auth token found, navigating to washing booking...");
-      // Navigate to washing booking flow with center data
-      // Use replace: false to ensure proper navigation
+      // Direct navigation to washing booking flow - no auth check
+      console.log("Navigating directly to washing booking...");
       navigate(`/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`, { replace: false });
       console.log("Navigation called successfully");
     } catch (error) {
@@ -254,17 +245,8 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
     console.log("Book Now clicked from detail for washing center:", center.id, center.name);
     
     try {
-      // Navigate to washing booking flow
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        console.log("No auth token found, showing login popup");
-        onShowLoginPopup(center.id);
-        return;
-      }
-      
-      console.log("Auth token found, navigating to washing booking from detail...");
-      // Navigate to washing booking flow with center data
-      // Use replace: false to ensure proper navigation
+      // Direct navigation to washing booking flow - no auth check
+      console.log("Navigating directly to washing booking from detail...");
       navigate(`/washing-booking?washingCenterId=${center.id}&returnTo=washing-list&vehicleType=all`, { replace: false });
       console.log("Navigation called successfully from detail");
     } catch (error) {
