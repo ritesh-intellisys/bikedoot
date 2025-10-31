@@ -8,6 +8,117 @@
   overflow-x: hidden;
 }
 
+/* Light Theme Styles */
+.servx24-contact.theme-light {
+  color: #1a1a1a;
+  background: #ffffff;
+}
+
+.servx24-contact.theme-light .contact-methods {
+  background: #f8f9fa;
+}
+
+.servx24-contact.theme-light .content-tabs {
+  background: #ffffff;
+}
+
+.servx24-contact.theme-light .method-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.servx24-contact.theme-light .method-card h3 {
+  color: #1a1a1a;
+}
+
+.servx24-contact.theme-light .method-description {
+  color: #4b5563;
+}
+
+.servx24-contact.theme-light .form-container,
+.servx24-contact.theme-light .form-info {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.servx24-contact.theme-light .form-header h3 {
+  color: #1a1a1a;
+}
+
+.servx24-contact.theme-light .form-header p {
+  color: #6b7280;
+}
+
+.servx24-contact.theme-light .form-group label {
+  color: #374151;
+}
+
+.servx24-contact.theme-light .form-group input,
+.servx24-contact.theme-light .form-group select,
+.servx24-contact.theme-light .form-group textarea {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #1a1a1a;
+}
+
+.servx24-contact.theme-light .form-info h3 {
+  color: #1a1a1a;
+}
+
+.servx24-contact.theme-light .form-info li {
+  color: #4b5563;
+}
+
+.servx24-contact.theme-light .success-message h3 {
+  color: #1a1a1a;
+}
+
+.servx24-contact.theme-light .success-message p {
+  color: #6b7280;
+}
+
+.servx24-contact.theme-light .faq-section h3 {
+  color: #1a1a1a;
+}
+
+.servx24-contact.theme-light .faq-section > p {
+  color: #6b7280;
+}
+
+.servx24-contact.theme-light .faq-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.servx24-contact.theme-light .faq-question h4 {
+  color: #1a1a1a;
+}
+
+.servx24-contact.theme-light .faq-answer {
+  color: #4b5563;
+}
+
+.servx24-contact.theme-light .section-title h2 {
+  color: #1a1a1a;
+}
+
+.servx24-contact.theme-light .section-title p {
+  color: #6b7280;
+}
+
+.servx24-contact.theme-light .tabs-header {
+  border-bottom-color: #e5e7eb;
+}
+
+.servx24-contact.theme-light .tab-btn {
+  color: #6b7280;
+}
+
+.servx24-contact.theme-light .tab-btn:hover {
+  color: #ff3864;
+}
+
 :root {
     --primary: #ff3864;
     --secondary: #00d9ff;

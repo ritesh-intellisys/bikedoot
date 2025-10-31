@@ -13,8 +13,10 @@ import {
   ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import { fetchGarageById } from '../../services/garageDetailService';
+import { useTheme } from '../context/ThemeContext';
 
 const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
+  const { theme } = useTheme();
   const [selectedTab, setSelectedTab] = useState('about');
   const [selectedTime, setSelectedTime] = useState('9:00 AM');
   const [showTimeMenu, setShowTimeMenu] = useState(false);
@@ -174,10 +176,10 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className={`min-h-screen ${theme === 'light' ? 'bg-white' : 'bg-black'} flex items-center justify-center`}>
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading garage details...</p>
+          <p className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>Loading garage details...</p>
         </div>
       </div>
     );
@@ -186,11 +188,11 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className={`min-h-screen ${theme === 'light' ? 'bg-white' : 'bg-black'} flex items-center justify-center`}>
           <div className="text-center">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-xl font-bold text-white mb-2">Error Loading Garage</h2>
-          <p className="text-gray-300 mb-4">{error}</p>
+          <h2 className={`text-xl font-bold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Error Loading Garage</h2>
+          <p className={`mb-4 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>{error}</p>
             <button
               onClick={onClose}
             className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white px-6 py-2 rounded-lg"
@@ -208,11 +210,11 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
   // Show error if no garage data available
   if (!displayGarage) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className={`min-h-screen ${theme === 'light' ? 'bg-white' : 'bg-black'} flex items-center justify-center`}>
         <div className="text-center">
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-xl font-bold text-white mb-2">Garage Not Found</h2>
-          <p className="text-gray-300 mb-4">This garage information is not available.</p>
+          <h2 className={`text-xl font-bold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Garage Not Found</h2>
+          <p className={`mb-4 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>This garage information is not available.</p>
           <button
             onClick={onClose}
             className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white px-6 py-2 rounded-lg"
@@ -225,14 +227,14 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
         {/* Header */}
-        <div className="bg-gray-900 shadow-sm border-b border-gray-800">
+        <div className={`${theme === 'light' ? 'bg-gray-100 border-gray-200' : 'bg-gray-900 border-gray-800'} shadow-sm border-b`}>
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <button
                 onClick={onClose}
-                className="flex items-center text-gray-400 hover:text-white transition-colors"
+                className={`flex items-center transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -252,7 +254,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                   }}
                 />
                 <div>
-                  <h1 className="text-xl font-bold text-white">{displayGarage?.name}</h1>
+                  <h1 className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{displayGarage?.name}</h1>
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
@@ -261,12 +263,12 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                           className={`w-4 h-4 ${
                             i < Math.floor(displayGarage?.rating || 4.5) 
                               ? 'text-yellow-400 fill-current' 
-                              : 'text-gray-600'
+                              : theme === 'light' ? 'text-gray-300' : 'text-gray-600'
                           }`}
                         />
                       ))}
                     </div>
-                    <span className="text-sm text-gray-300">{displayGarage?.rating || 4.5} ({displayGarage?.reviewCount || 0} reviews)</span>
+                    <span className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>{displayGarage?.rating || 4.5} ({displayGarage?.reviewCount || 0} reviews)</span>
                   </div>
                   {displayGarage?.verified && (
                     <span className="inline-block bg-green-900 text-green-300 text-xs px-2 py-1 rounded-full mt-1">
@@ -280,7 +282,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
         </div>
 
         {/* Tabs */}
-        <div className="bg-gray-800 border-b border-gray-700">
+        <div className={`${theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-gray-800 border-gray-700'} border-b`}>
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex space-x-8">
               {[
@@ -294,7 +296,9 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                   className={`py-4 px-2 border-b-2 font-medium text-sm ${
                     selectedTab === tab.id
                       ? 'border-red-500 text-red-500'
-                      : 'border-transparent text-gray-400 hover:text-white'
+                      : theme === 'light' 
+                        ? 'border-transparent text-gray-600 hover:text-gray-900' 
+                        : 'border-transparent text-gray-400 hover:text-white'
                   }`}
                 >
                   {tab.label}
@@ -356,21 +360,21 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
 
           {/* Mobile Information Card - Below Banner */}
           <div className="block sm:hidden p-4">
-            <div className="bg-gray-900 rounded-lg shadow-xl p-4 border border-gray-700">
+            <div className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-700'} rounded-lg shadow-xl p-4 border`}>
               <div className="flex items-center space-x-2 mb-3">
                 <div className="bg-green-600 text-white w-5 h-5 rounded flex items-center justify-center">
                   <StarIcon className="w-3 h-3" />
                 </div>
-                <span className="text-sm font-medium text-white">4.5k+ in Google</span>
+                <span className={`text-sm font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>4.5k+ in Google</span>
               </div>
               
-              <div className="text-sm text-gray-300 mb-3">
+              <div className={`text-sm mb-3 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
                 <div className="flex items-center space-x-2">
                   <MapPinIcon className="w-4 h-4" />
                   <span>{displayGarage?.address}</span>
                 </div>
                 {displayGarage?.distance && (
-                  <div className="text-xs text-gray-400 mt-1">
+                  <div className={`text-xs mt-1 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
                     {displayGarage.distance} km away
                   </div>
                 )}
@@ -381,14 +385,14 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                 <div className="relative">
                   <button
                     onClick={() => setShowTimeMenu(!showTimeMenu)}
-                    className="flex items-center space-x-1 text-gray-300 hover:text-white"
+                    className={`flex items-center space-x-1 ${theme === 'light' ? 'text-gray-700 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
                   >
                     <span>{selectedTime}</span>
                     <ChevronDownIcon className="w-4 h-4" />
                   </button>
                   
                   {showTimeMenu && (
-                    <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 min-w-32">
+                    <div className={`absolute top-full right-0 mt-1 ${theme === 'light' ? 'bg-white border-gray-300' : 'bg-gray-800 border-gray-700'} border rounded-lg shadow-lg z-30 min-w-32`}>
                       {timeSlots.map((time) => (
                         <button
                           key={time}
@@ -396,7 +400,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                             setSelectedTime(time);
                             setShowTimeMenu(false);
                           }}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-700 text-sm text-white"
+                          className={`block w-full text-left px-4 py-2 text-sm ${theme === 'light' ? 'hover:bg-gray-100 text-gray-900' : 'hover:bg-gray-700 text-white'}`}
                         >
                           {time}
                         </button>
@@ -406,7 +410,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                 </div>
               </div>
 
-              <div className="border-t border-gray-700 pt-3">
+              <div className={`border-t pt-3 ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
                 <div className="flex space-x-2">
                   <button
                     onClick={onBookNow}
@@ -418,7 +422,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                   
                   <a
                     href={`tel:${getSanitizedPhone()}`}
-                    className="flex-1 border border-gray-600 hover:bg-gray-700 text-gray-300 py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1"
+                    className={`flex-1 border py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1 ${theme === 'light' ? 'border-gray-300 hover:bg-gray-100 text-gray-700' : 'border-gray-600 hover:bg-gray-700 text-gray-300'}`}
                   >
                     <PhoneIcon className="w-4 h-4" />
                     <span>Call</span>
@@ -426,7 +430,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                   
                   <button
                     onClick={handleDirectionClick}
-                    className="flex-1 border border-gray-600 hover:bg-gray-700 text-gray-300 py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1"
+                    className={`flex-1 border py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1 ${theme === 'light' ? 'border-gray-300 hover:bg-gray-100 text-gray-700' : 'border-gray-600 hover:bg-gray-700 text-gray-300'}`}
                   >
                     <MapPinIcon className="w-4 h-4" />
                     <span>Direction</span>
@@ -438,21 +442,21 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
 
           {/* Desktop Overlay Card */}
           <div className="hidden sm:block absolute bottom-4 left-4 right-4 lg:right-auto lg:w-96 z-20">
-            <div className="bg-gray-900 rounded-lg shadow-xl p-4 border border-gray-700 backdrop-blur-sm bg-opacity-95">
+            <div className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-700'} rounded-lg shadow-xl p-4 border backdrop-blur-sm ${theme === 'light' ? 'bg-opacity-95' : 'bg-opacity-95'}`}>
               <div className="flex items-center space-x-2 mb-3">
                 <div className="bg-green-600 text-white w-5 h-5 rounded flex items-center justify-center">
                   <StarIcon className="w-3 h-3" />
                 </div>
-                <span className="text-sm font-medium text-white">4.5k+ in Google</span>
+                <span className={`text-sm font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>4.5k+ in Google</span>
               </div>
               
-              <div className="text-sm text-gray-300 mb-3">
+              <div className={`text-sm mb-3 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
                 <div className="flex items-center space-x-2">
                   <MapPinIcon className="w-4 h-4" />
                   <span>{displayGarage?.address}</span>
                 </div>
                 {displayGarage?.distance && (
-                  <div className="text-xs text-gray-400 mt-1">
+                  <div className={`text-xs mt-1 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
                     {displayGarage.distance} km away
                   </div>
                 )}
@@ -463,14 +467,14 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                 <div className="relative">
                   <button
                     onClick={() => setShowTimeMenu(!showTimeMenu)}
-                    className="flex items-center space-x-1 text-gray-300 hover:text-white"
+                    className={`flex items-center space-x-1 ${theme === 'light' ? 'text-gray-700 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
                   >
                     <span>{selectedTime}</span>
                     <ChevronDownIcon className="w-4 h-4" />
                   </button>
                   
                   {showTimeMenu && (
-                    <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 min-w-32">
+                    <div className={`absolute top-full right-0 mt-1 ${theme === 'light' ? 'bg-white border-gray-300' : 'bg-gray-800 border-gray-700'} border rounded-lg shadow-lg z-30 min-w-32`}>
                       {timeSlots.map((time) => (
                         <button
                           key={time}
@@ -478,7 +482,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                             setSelectedTime(time);
                             setShowTimeMenu(false);
                           }}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-700 text-sm text-white"
+                          className={`block w-full text-left px-4 py-2 text-sm ${theme === 'light' ? 'hover:bg-gray-100 text-gray-900' : 'hover:bg-gray-700 text-white'}`}
                         >
                           {time}
                         </button>
@@ -488,7 +492,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                 </div>
               </div>
 
-              <div className="border-t border-gray-700 pt-3">
+              <div className={`border-t pt-3 ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
                 <div className="flex space-x-2">
                   <button
                     onClick={onBookNow}
@@ -500,7 +504,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                   
                   <a
                     href={`tel:${getSanitizedPhone()}`}
-                    className="flex-1 border border-gray-600 hover:bg-gray-700 text-gray-300 py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1"
+                    className={`flex-1 border py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1 ${theme === 'light' ? 'border-gray-300 hover:bg-gray-100 text-gray-700' : 'border-gray-600 hover:bg-gray-700 text-gray-300'}`}
                   >
                     <PhoneIcon className="w-4 h-4" />
                     <span>Call</span>
@@ -508,7 +512,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                   
                   <button
                     onClick={handleDirectionClick}
-                    className="flex-1 border border-gray-600 hover:bg-gray-700 text-gray-300 py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1"
+                    className={`flex-1 border py-2 px-4 rounded-lg font-medium text-sm flex items-center justify-center space-x-1 ${theme === 'light' ? 'border-gray-300 hover:bg-gray-100 text-gray-700' : 'border-gray-600 hover:bg-gray-700 text-gray-300'}`}
                   >
                     <MapPinIcon className="w-4 h-4" />
                     <span>Direction</span>
@@ -521,10 +525,10 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
           {isCallModalOpen && (
             <div className="hidden lg:flex fixed inset-0 z-30 items-center justify-center">
               <div className="absolute inset-0 bg-black bg-opacity-60" onClick={() => setIsCallModalOpen(false)}></div>
-              <div className="relative bg-gray-900 border border-gray-700 rounded-xl shadow-2xl p-6 w-80">
-                <h3 className="text-white text-lg font-semibold mb-2">Call Garage</h3>
-                <p className="text-gray-300 text-sm mb-4">Phone number</p>
-                <div className="bg-gray-800 text-white px-3 py-2 rounded-md font-mono text-sm mb-4 select-all">
+              <div className={`relative ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-700'} border rounded-xl shadow-2xl p-6 w-80`}>
+                <h3 className={`text-lg font-semibold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Call Garage</h3>
+                <p className={`text-sm mb-4 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>Phone number</p>
+                <div className={`${theme === 'light' ? 'bg-gray-100 text-gray-900' : 'bg-gray-800 text-white'} px-3 py-2 rounded-md font-mono text-sm mb-4 select-all`}>
                   {getSanitizedPhone()}
                 </div>
                 <div className="flex gap-2">
@@ -541,7 +545,7 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                     Call
                   </button>
                   <button
-                    className="flex-1 border border-gray-600 hover:bg-gray-800 text-gray-200 py-2 rounded-lg font-medium"
+                    className={`flex-1 border py-2 rounded-lg font-medium ${theme === 'light' ? 'border-gray-300 hover:bg-gray-100 text-gray-700' : 'border-gray-600 hover:bg-gray-800 text-gray-200'}`}
                     onClick={() => setIsCallModalOpen(false)}
                   >
                     Close
@@ -555,15 +559,15 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
         {/* Content Sections */}
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* About Section */}
-          <div ref={aboutRef} className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-6 mb-6">
-            <h2 className="text-xl font-bold text-white mb-4">About</h2>
-            <p className="text-gray-300 leading-relaxed mb-4">
+          <div ref={aboutRef} className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-700'} rounded-lg shadow-sm border p-6 mb-6`}>
+            <h2 className={`text-xl font-bold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>About</h2>
+            <p className={`leading-relaxed mb-4 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
               {displayGarage?.description || "Professional automotive service center providing comprehensive maintenance and repair services for all types of vehicles. Our experienced technicians ensure quality service and customer satisfaction."}
             </p>
             
             {displayGarage?.brands && displayGarage.brands.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-white mb-2">Supported Brands</h3>
+                <h3 className={`text-lg font-semibold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Supported Brands</h3>
                 <div className="flex flex-wrap gap-2">
                   {displayGarage.brands.map((brand, index) => (
                     <span
@@ -579,10 +583,10 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
             
             {operatingHours && operatingHours.length > 0 && (
               <div className="mt-4">
-                <h3 className="text-lg font-semibold text-white mb-2">Operating Hours</h3>
+                <h3 className={`text-lg font-semibold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Operating Hours</h3>
                 <div className="space-y-1">
                   {operatingHours.map((hours, index) => (
-                    <div key={index} className="flex justify-between text-gray-300">
+                    <div key={index} className={`flex justify-between ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
                       <span>{hours.day}</span>
                       <span>{hours.time}</span>
                     </div>
@@ -593,8 +597,8 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
           </div>
 
           {/* Services Section */}
-          <div ref={servicesRef} className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-6 mb-6">
-            <h2 className="text-xl font-bold text-white mb-6">Services</h2>
+          <div ref={servicesRef} className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-700'} rounded-lg shadow-sm border p-6 mb-6`}>
+            <h2 className={`text-xl font-bold mb-6 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Services</h2>
             
             {/* Regular Services from API - Only show if data exists */}
             {displayGarage?.services?.service && displayGarage.services.service.length > 0 ? (
@@ -609,10 +613,10 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                     {serviceList?.map((item, idx) => (
                       <div
                         key={idx}
-                          className="bg-gray-800 rounded-lg p-3 flex items-center justify-between border border-gray-700"
+                          className={`${theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-gray-800 border-gray-700'} rounded-lg p-3 flex items-center justify-between border`}
                       >
-                          <span className="text-gray-300">{item.name}</span>
-                          <span className="font-semibold text-white">₹{item.price}</span>
+                          <span className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>{item.name}</span>
+                          <span className={`font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>₹{item.price}</span>
                       </div>
                     ))}
                   </div>
@@ -620,15 +624,15 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
               );
               })
             ) : (
-              <div className="text-gray-400 text-center py-8">
+              <div className={`text-center py-8 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
                 <p>No services available for this garage.</p>
               </div>
             )}
 
             {/* Add-on Services from API */}
             {displayGarage?.services?.addon && (
-              <div className="border-t border-gray-700 pt-6">
-                <h3 className="text-lg font-semibold text-white mb-3">Add-on Services</h3>
+              <div className={`border-t pt-6 ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
+                <h3 className={`text-lg font-semibold mb-3 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Add-on Services</h3>
                 {displayGarage.services.addon.map((serviceType, index) => {
                   const [engineType] = Object.keys(serviceType);
                   const serviceList = serviceType[engineType];
@@ -640,10 +644,10 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                         {serviceList?.map((item, idx) => (
                           <div
                             key={idx}
-                            className="bg-gray-800 rounded-lg p-3 flex items-center justify-between border border-gray-700"
+                            className={`${theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-gray-800 border-gray-700'} rounded-lg p-3 flex items-center justify-between border`}
                           >
-                            <span className="text-gray-300">{item.name}</span>
-                            <span className="font-semibold text-white">₹{item.price}</span>
+                            <span className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>{item.name}</span>
+                            <span className={`font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>₹{item.price}</span>
                           </div>
                         ))}
                       </div>
@@ -655,17 +659,17 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
           </div>
 
           {/* Reviews Section */}
-          <div ref={reviewsRef} className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-6">
-            <h2 className="text-xl font-bold text-white mb-6">Reviews</h2>
+          <div ref={reviewsRef} className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-700'} rounded-lg shadow-sm border p-6`}>
+            <h2 className={`text-xl font-bold mb-6 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Reviews</h2>
             
             {displayGarage?.reviews?.length === 0 || !displayGarage?.reviews ? (
-              <p className="text-gray-400">No reviews available.</p>
+              <p className={theme === 'light' ? 'text-gray-500' : 'text-gray-400'}>No reviews available.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {displayGarage.reviews.map((review, index) => (
-                  <div key={index} className="border border-gray-700 rounded-lg p-4 bg-gray-800">
+                  <div key={index} className={`border rounded-lg p-4 ${theme === 'light' ? 'border-gray-200 bg-gray-50' : 'border-gray-700 bg-gray-800'}`}>
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-white">{review.name || 'Anonymous'}</h4>
+                      <h4 className={`font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{review.name || 'Anonymous'}</h4>
                       <div className="flex items-center">
                         {[...Array(5)].map((_, i) => (
                           <StarIcon
@@ -673,14 +677,14 @@ const GarageDetailPage = ({ garage, onClose, onBookNow }) => {
                             className={`w-4 h-4 ${
                               i < (review.rating || 5) 
                                 ? 'text-yellow-400 fill-current' 
-                                : 'text-gray-600'
+                                : theme === 'light' ? 'text-gray-300' : 'text-gray-600'
                             }`}
                           />
                         ))}
                       </div>
                     </div>
-                    <p className="text-gray-300 text-sm mb-2">{review.comment || review.review}</p>
-                    <p className="text-xs text-gray-400">{review.date || 'Recently'}</p>
+                    <p className={`text-sm mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>{review.comment || review.review}</p>
+                    <p className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>{review.date || 'Recently'}</p>
                   </div>
                 ))}
               </div>

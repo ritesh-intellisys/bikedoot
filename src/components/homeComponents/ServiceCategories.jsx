@@ -14,8 +14,10 @@ import {
   faTimes,
   faSprayCan
 } from '@fortawesome/free-solid-svg-icons';
+import { useTheme } from '../context/ThemeContext';
 
 const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
+  const { theme } = useTheme();
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
 
   // Expose functions to parent component
@@ -157,27 +159,27 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
   };
 
   return (
-    <section className="py-12 px-4 bg-gray-900">
+    <section className={`py-12 px-4 ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`}>
       <div className="max-w-7xl mx-auto">
         <div id="services-section" className="text-center mb-8 md:mb-12">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 text-white">
+          <h2 className={`text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
             Services for All Vehicle Types
           </h2>
-          <p className="text-sm md:text-lg text-gray-400">Find the right service for your needs</p>
+          <p className={`text-sm md:text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Find the right service for your needs</p>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-3 md:gap-6">
           {serviceCategories.map((category) => (
             <div key={category.id} className="relative">
               <div
-                className="bg-gray-800 rounded-xl p-3 md:p-6 text-center hover:bg-gray-700 transition-all cursor-pointer transform hover:scale-105"
+                className={`${theme === 'light' ? 'bg-white border border-gray-200 hover:bg-gray-100' : 'bg-gray-800 hover:bg-gray-700'} rounded-xl p-3 md:p-6 text-center transition-all cursor-pointer transform hover:scale-105`}
                 onClick={() => handleCardClick(category)}
               >
                 <div className="text-2xl md:text-4xl mb-2 md:mb-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                   <FontAwesomeIcon icon={category.icon} />
                 </div>
-                <h3 className="text-sm md:text-lg font-semibold mb-1 md:mb-2 text-white">{category.title}</h3>
-                <p className="text-xs md:text-base text-gray-400 mb-2 md:mb-4">{category.description}</p>
+                <h3 className={`text-sm md:text-lg font-semibold mb-1 md:mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{category.title}</h3>
+                <p className={`text-xs md:text-base mb-2 md:mb-4 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{category.description}</p>
                 
                 {category.available ? (
                   <button 
@@ -187,7 +189,7 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
                     {category.hasDropdown ? 'SELECT VEHICLE' : 'FIND GARAGES'}
                   </button>
                 ) : (
-                  <span className="text-gray-500 text-xs md:text-sm">Coming Soon</span>
+                  <span className={`${theme === 'light' ? 'text-gray-500' : 'text-gray-500'} text-xs md:text-sm`}>Coming Soon</span>
                 )}
               </div>
 
@@ -202,11 +204,11 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
           onClick={handleModalBackdropClick}
         >
-          <div className="bg-gray-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[85vh] flex flex-col relative">
+          <div className={`${theme === 'light' ? 'bg-white' : 'bg-gray-900'} rounded-2xl shadow-2xl max-w-4xl w-full max-h-[85vh] flex flex-col relative`}>
             {/* Close Button */}
             <button
               onClick={() => setIsVehicleModalOpen(false)}
-              className="absolute top-4 right-4 text-white hover:text-red-200 transition-colors p-2 z-10"
+              className={`absolute top-4 right-4 transition-colors p-2 z-10 ${theme === 'light' ? 'text-gray-900 hover:text-red-600' : 'text-white hover:text-red-200'}`}
             >
               <FontAwesomeIcon icon={faTimes} className="text-2xl" />
             </button>
@@ -217,9 +219,9 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
                 {vehicleTypes.map((vehicle) => (
                   <div
                     key={vehicle.id}
-                    className={`bg-gray-800 rounded-xl p-6 text-center transition-all border-2 border-transparent group ${
+                    className={`${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'} rounded-xl p-6 text-center transition-all border-2 border-transparent group ${
                       vehicle.available 
-                        ? 'hover:bg-gray-700 cursor-pointer transform hover:scale-105 hover:border-red-500' 
+                        ? `${theme === 'light' ? 'hover:bg-gray-200' : 'hover:bg-gray-700'} cursor-pointer transform hover:scale-105 hover:border-red-500` 
                         : 'opacity-50 cursor-not-allowed'
                     }`}
                     onClick={() => handleVehicleTypeClick(vehicle)}
@@ -238,15 +240,15 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
                     }}>
                       <FontAwesomeIcon icon={vehicle.icon} />
                     </div>
-                    <h3 className={`text-lg font-bold mb-2 ${vehicle.available ? 'text-white' : 'text-gray-500'}`}>
+                    <h3 className={`text-lg font-bold mb-2 ${vehicle.available ? (theme === 'light' ? 'text-gray-900' : 'text-white') : 'text-gray-500'}`}>
                       {vehicle.title}
                     </h3>
-                    <p className={`text-base ${vehicle.available ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <p className={`text-base ${vehicle.available ? (theme === 'light' ? 'text-gray-700' : 'text-gray-400') : 'text-gray-600'}`}>
                       {vehicle.description}
                     </p>
                     {!vehicle.available && (
                       <div className="mt-2">
-                        <span className="text-xs text-gray-500 bg-gray-700 px-2 py-1 rounded">
+                        <span className={`text-xs text-gray-500 px-2 py-1 rounded ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-700'}`}>
                           Coming Soon
                         </span>
                       </div>
@@ -257,8 +259,8 @@ const ServiceCategories = forwardRef(({ onServiceClick }, ref) => {
             </div>
 
             {/* Modal Footer */}
-            <div className="bg-gray-800 px-6 py-3 border-t border-gray-700 flex-shrink-0">
-              <p className="text-center text-gray-400 text-xs">
+            <div className={`${theme === 'light' ? 'bg-gray-100 border-gray-200' : 'bg-gray-800 border-gray-700'} px-6 py-3 border-t flex-shrink-0`}>
+              <p className={`text-center text-xs ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                 Click on any vehicle type to find verified garages near you
               </p>
             </div>

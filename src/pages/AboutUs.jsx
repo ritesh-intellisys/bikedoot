@@ -5,6 +5,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAuthenticated } from '../services/authService';
 import LoginPopup from '../components/homeComponents/LoginPopup';
+import { useTheme } from '../components/context/ThemeContext';
 import { 
   faUsers,
   faMapMarkerAlt,
@@ -35,6 +36,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 
 const AboutUs = ({ setCurrentPage }) => {
+  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedCity, setSelectedCity] = useState('Mumbai');
@@ -192,7 +194,7 @@ const AboutUs = ({ setCurrentPage }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-white text-gray-900' : 'bg-black text-white'}`}>
 
       {/* Header */}
       <Header 
@@ -229,9 +231,9 @@ const AboutUs = ({ setCurrentPage }) => {
               REDEFINING
             </span>
             <br />
-            <span className="text-white">VEHICLE CARE</span>
+            <span className={theme === 'light' ? 'text-gray-900' : 'text-white'}>VEHICLE CARE</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className={`text-lg md:text-xl mb-8 max-w-3xl mx-auto ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
             At ServX24, we make vehicle ownership simpler with online garages, roadside assistance, trusted servicing, and EV support—all in one place.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -252,18 +254,18 @@ const AboutUs = ({ setCurrentPage }) => {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 md:py-20 px-4 bg-gray-900" ref={servicesSectionRef}>
+      <section className={`py-16 md:py-20 px-4 ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`} ref={servicesSectionRef}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
               Top Quality Services at the Best Prices
             </h2>
-            <p className="text-gray-400 text-lg">Powered by Our Trusted Partners</p>
+            <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Powered by Our Trusted Partners</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <div key={index} className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:transform hover:scale-105">
+              <div key={index} className={`${theme === 'light' ? 'bg-white border border-gray-200' : 'bg-gray-800'} rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:transform hover:scale-105`}>
                 <div className="relative h-48 overflow-hidden">
                   <img 
                     src={service.image} 
@@ -278,13 +280,13 @@ const AboutUs = ({ setCurrentPage }) => {
                 </div>
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-xl font-bold text-white">{service.name}</h3>
+                    <h3 className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{service.name}</h3>
                     <span className="text-2xl font-bold text-red-500">{service.price}</span>
                   </div>
-                  <p className="text-gray-300 mb-4">{service.description}</p>
+                  <p className={`mb-4 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>{service.description}</p>
                   <ul className="space-y-2 mb-6">
                     {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center text-gray-300">
+                      <li key={idx} className={`flex items-center ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
                         <FontAwesomeIcon icon={faCheck} className="text-green-500 mr-2" />
                         {feature}
                       </li>
@@ -304,7 +306,7 @@ const AboutUs = ({ setCurrentPage }) => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 md:py-20 px-4 bg-black" ref={statsSectionRef}>
+      <section className={`py-16 md:py-20 px-4 ${theme === 'light' ? 'bg-white' : 'bg-black'}`} ref={statsSectionRef}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -312,8 +314,8 @@ const AboutUs = ({ setCurrentPage }) => {
                 <div className="bg-red-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   <FontAwesomeIcon icon={stat.icon} className="text-white text-2xl" />
                 </div>
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.number}</div>
-                <div className="text-gray-400 text-sm md:text-base">{stat.label}</div>
+                <div className={`text-3xl md:text-4xl font-bold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{stat.number}</div>
+                <div className={`text-sm md:text-base ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -321,14 +323,14 @@ const AboutUs = ({ setCurrentPage }) => {
       </section>
 
       {/* Mission Section */}
-      <section className="py-16 md:py-20 px-4 bg-gray-900">
+      <section className={`py-16 md:py-20 px-4 ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className={`text-3xl md:text-4xl font-bold mb-6 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                 Our <span className="text-red-600">Mission</span>
               </h2>
-              <div className="space-y-4 text-gray-300">
+              <div className={`space-y-4 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
                 <p>At ServX24, we're redefining how people take care of their vehicles with our online garage platform.</p>
                 <p>Our mission is to make it easy for users to find the nearest garage, access trusted partner garages, get reliable roadside assistance, and book all types of vehicle servicing, including EV maintenance.</p>
                 <p>We also provide a safe and convenient space to buy and sell vehicles—making ServX24 your one-stop solution for smarter, hassle-free vehicle care.</p>
@@ -353,16 +355,16 @@ const AboutUs = ({ setCurrentPage }) => {
 
 
       {/* Values Section */}
-      <section className="py-16 md:py-20 px-4 bg-gray-900" ref={valuesSectionRef}>
+      <section className={`py-16 md:py-20 px-4 ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`} ref={valuesSectionRef}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Our Values</h2>
-            <p className="text-gray-400 text-lg">The principles that guide everything we do</p>
+            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Our Values</h2>
+            <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>The principles that guide everything we do</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <div key={index} className="bg-gray-800 rounded-xl p-6 text-center hover:bg-gray-700 transition-all duration-300 hover:transform hover:scale-105">
+              <div key={index} className={`${theme === 'light' ? 'bg-white border border-gray-200 hover:bg-gray-50' : 'bg-gray-800 hover:bg-gray-700'} rounded-xl p-6 text-center transition-all duration-300 hover:transform hover:scale-105`}>
                 <div 
                   className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: `${value.color}20` }}
@@ -373,8 +375,8 @@ const AboutUs = ({ setCurrentPage }) => {
                     style={{ color: value.color }}
                   />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{value.title}</h3>
-                <p className="text-gray-300">{value.description}</p>
+                <h3 className={`text-xl font-bold mb-3 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{value.title}</h3>
+                <p className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>{value.description}</p>
               </div>
             ))}
           </div>
@@ -382,12 +384,12 @@ const AboutUs = ({ setCurrentPage }) => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 md:py-20 px-4 bg-black">
+      <section className={`py-16 md:py-20 px-4 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+          <h2 className={`text-3xl md:text-4xl font-bold mb-6 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
             Join the ServX24 Revolution
           </h2>
-          <p className="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className={`text-lg mb-8 max-w-3xl mx-auto ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
             Experience the difference of professional automotive service with ServX24. Find trusted garages, book services, or become a partner today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

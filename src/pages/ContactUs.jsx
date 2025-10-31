@@ -4,6 +4,7 @@ import Header from '../components/homeComponents/Header';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTheme } from '../components/context/ThemeContext';
 import {
   faMapMarkerAlt, faPhone, faEnvelope, faClock, faSearch,
   faShoppingCart, faUser, faTimes, faBars, faCheck, faPaperPlane,
@@ -15,6 +16,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 
 const ContactUs = ({ setCurrentPage }) => {
+  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedCity, setSelectedCity] = useState('Mumbai');
@@ -129,7 +131,7 @@ const ContactUs = ({ setCurrentPage }) => {
   ];
 
   return (
-    <div className="servx24-contact">
+    <div className={`servx24-contact ${theme === 'light' ? 'theme-light' : 'theme-dark'}`}>
       {/* Header */}
       <Header 
         selectedCity={selectedCity} 

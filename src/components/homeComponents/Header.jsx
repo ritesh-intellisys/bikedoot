@@ -4,11 +4,16 @@ import { ChevronDownIcon, MagnifyingGlassIcon, UserIcon, MapPinIcon, ArrowRightO
 import { getCurrentLocation, getCityFromCoordinates, storeLocationData, getStoredLocationData } from '../../utils/geolocation';
 import { isAuthenticated, clearAuthData } from '../../services/authService';
 import CitySelectionPopup from './CitySelectionPopup';
+import { useTheme } from '../context/ThemeContext';
+import { SunIcon, MoonIcon } from '@heroicons/react/24/solid';
 
 const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBackToMain, isDetectingLocation }) => {
   const [isCityPopupOpen, setIsCityPopupOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Theme
+  const { theme, toggleTheme } = useTheme();
 
   // Check authentication status
   useEffect(() => {
@@ -143,7 +148,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
 
   return (
     <div>
-      <header className="bg-black shadow-lg border-b border-gray-800 fixed w-full top-0 z-50 mobile-menu-container">
+      <header className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-black border-gray-800'} shadow-lg border-b fixed w-full top-0 z-50 mobile-menu-container`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left Group: Logo + Search Bar */}
@@ -164,7 +169,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
                   }
                 }}
               />
-              <div className="text-white text-xs md:text-sm sm:text-xs font-medium mt-1 cursor-pointer text-center">
+              <div className={`${theme === 'light' ? 'text-gray-800' : 'text-white'} text-xs md:text-sm sm:text-xs font-medium mt-1 cursor-pointer text-center`}>
                 Search.Compare.Book
               </div>
             </div>
@@ -172,11 +177,11 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
             {/* Search Bar */}
             <div className="hidden md:flex w-60 lg:w-80">
               <div className="relative w-full">
-                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <MagnifyingGlassIcon className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${theme === 'light' ? 'text-gray-400' : 'text-gray-400'}`} />
                 <input
                   type="text"
                   placeholder="Search for garages, services..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm"
+                  className={`w-full pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-600 text-sm ${theme === 'light' ? 'bg-white text-gray-900 border-gray-300' : 'bg-gray-800 text-white border-gray-700'}`}
                 />
               </div>
             </div>
@@ -194,21 +199,21 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
                     onBackToMain();
                   }
                 }}
-                className="text-white hover:text-red-500 transition-colors duration-200 font-medium text-sm lg:text-base"
+                className={`${theme === 'light' ? 'text-gray-900 hover:text-red-600' : 'text-white hover:text-red-500'} transition-colors duration-200 font-medium text-sm lg:text-base`}
               >
                 Home
               </a>
               <a 
                 href="#" 
                 onClick={() => setCurrentPage('about')}
-                className="text-white hover:text-red-500 transition-colors duration-200 font-medium text-sm lg:text-base"
+                className={`${theme === 'light' ? 'text-gray-900 hover:text-red-600' : 'text-white hover:text-red-500'} transition-colors duration-200 font-medium text-sm lg:text-base`}
               >
                 About
               </a>
               <a 
                 href="#" 
                 onClick={() => setCurrentPage('contact')}
-                className="text-white hover:text-red-500 transition-colors duration-200 font-medium text-sm lg:text-base"
+                className={`${theme === 'light' ? 'text-gray-900 hover:text-red-600' : 'text-white hover:text-red-500'} transition-colors duration-200 font-medium text-sm lg:text-base`}
               >
                 Contact
               </a>
@@ -219,7 +224,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
               <button
                 onClick={() => setIsCityPopupOpen(true)}
                 disabled={isDetectingLocation}
-                className="flex items-center space-x-1 lg:space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-2 lg:px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-xs lg:text-sm"
+                className={`flex items-center space-x-1 lg:space-x-2 px-2 lg:px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-xs lg:text-sm ${theme === 'light' ? 'bg-gray-100 hover:bg-gray-200 text-gray-900 border border-gray-300' : 'bg-gray-800 hover:bg-gray-700 text-white'}`}
               >
                 <MapPinIcon className="w-3 h-3 lg:w-4 lg:h-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} />
                 <span className="hidden lg:inline">
@@ -241,14 +246,14 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
               <div className="flex items-center space-x-4">
                 <button 
                   onClick={() => setCurrentPage('profile')}
-                  className="text-white hover:text-red-500 transition-colors duration-200"
+                  className={`${theme === 'light' ? 'text-gray-900 hover:text-red-600' : 'text-white hover:text-red-500'} transition-colors duration-200`}
                   title="Profile"
                 >
                   <UserIcon className="w-6 h-6" />
                 </button>
                 <button 
                   onClick={handleLogout}
-                  className="text-white hover:text-red-500 transition-colors duration-200"
+                  className={`${theme === 'light' ? 'text-gray-900 hover:text-red-600' : 'text-white hover:text-red-500'} transition-colors duration-200`}
                   title="Logout"
                 >
                   <ArrowRightOnRectangleIcon className="w-6 h-6" />
@@ -263,11 +268,20 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
               </button>
             )}
 
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className={`${theme === 'light' ? 'text-gray-900 hover:text-red-600' : 'text-white hover:text-red-500'} p-2 rounded-md transition-colors`}
+              title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+            >
+              {theme === 'light' ? <MoonIcon className="w-5 h-5" /> : <SunIcon className="w-5 h-5" />}
+            </button>
+
             {/* Mobile Menu Button */}
             <div className="md:hidden">
               <button 
                 onClick={toggleMobileMenu}
-                className="text-white hover:text-red-500 p-2 transition-colors"
+                className={`${theme === 'light' ? 'text-gray-900 hover:text-red-600' : 'text-white hover:text-red-500'} p-2 transition-colors`}
               >
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -280,15 +294,15 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-gray-900 border-t border-gray-800 shadow-lg">
+        <div className={`md:hidden shadow-lg ${theme === 'light' ? 'bg-white border-t border-gray-200' : 'bg-gray-900 border-t border-gray-800'}`}>
           {/* Search Bar */}
           <div className="px-4 py-3 border-b border-gray-800">
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <MagnifyingGlassIcon className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${theme === 'light' ? 'text-gray-400' : 'text-gray-400'}`} />
               <input
                 type="text"
                 placeholder="Search for garages, services..."
-                className="w-full pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600"
+                className={`w-full pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-600 ${theme === 'light' ? 'bg-white text-gray-900 border-gray-300' : 'bg-gray-800 text-white border-gray-700'}`}
               />
             </div>
           </div>
@@ -297,19 +311,19 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
           <div className="px-4 py-3 space-y-2">
             <button
               onClick={() => handleMobileNavClick('home')}
-              className="flex items-center w-full text-left text-white hover:text-red-500 py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors"
+              className={`flex items-center w-full text-left py-2 px-3 rounded-lg transition-colors ${theme === 'light' ? 'text-gray-900 hover:text-red-600 hover:bg-gray-100' : 'text-white hover:text-red-500 hover:bg-gray-800'}`}
             >
               <span className="font-medium">Home</span>
             </button>
             <button
               onClick={() => handleMobileNavClick('about')}
-              className="flex items-center w-full text-left text-white hover:text-red-500 py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors"
+              className={`flex items-center w-full text-left py-2 px-3 rounded-lg transition-colors ${theme === 'light' ? 'text-gray-900 hover:text-red-600 hover:bg-gray-100' : 'text-white hover:text-red-500 hover:bg-gray-800'}`}
             >
               <span className="font-medium">About</span>
             </button>
             <button
               onClick={() => handleMobileNavClick('contact')}
-              className="flex items-center w-full text-left text-white hover:text-red-500 py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors"
+              className={`flex items-center w-full text-left py-2 px-3 rounded-lg transition-colors ${theme === 'light' ? 'text-gray-900 hover:text-red-600 hover:bg-gray-100' : 'text-white hover:text-red-500 hover:bg-gray-800'}`}
             >
               <span className="font-medium">Contact</span>
             </button>
@@ -318,14 +332,14 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
           {/* Location Section */}
           <div className="px-4 py-3 border-t border-gray-800">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-gray-300">Location</span>
+              <span className={`text-sm font-medium ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>Location</span>
             </div>
             <button
               onClick={() => {
                 setIsCityPopupOpen(true);
                 setIsMobileMenuOpen(false);
               }}
-              className="flex items-center justify-between w-full bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-lg transition-colors duration-200"
+              className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors duration-200 ${theme === 'light' ? 'bg-gray-100 hover:bg-gray-200 text-gray-900 border border-gray-300' : 'bg-gray-800 hover:bg-gray-700 text-white'}`}
             >
               <div className="flex items-center space-x-2">
                 <MapPinIcon className="w-4 h-4 text-red-500" />
@@ -344,7 +358,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
                     setCurrentPage('profile');
                     setIsMobileMenuOpen(false);
                   }}
-                  className="flex items-center w-full text-left text-white hover:text-red-500 py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors"
+                  className={`flex items-center w-full text-left py-2 px-3 rounded-lg transition-colors ${theme === 'light' ? 'text-gray-900 hover:text-red-600 hover:bg-gray-100' : 'text-white hover:text-red-500 hover:bg-gray-800'}`}
                 >
                   <UserIcon className="w-5 h-5 mr-3" />
                   <span className="font-medium">Profile</span>
@@ -354,7 +368,7 @@ const Header = ({ selectedCity, onCityChange, setCurrentPage, scrollToTop, onBac
                     handleLogout();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="flex items-center w-full text-left text-white hover:text-red-500 py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors"
+                  className={`flex items-center w-full text-left py-2 px-3 rounded-lg transition-colors ${theme === 'light' ? 'text-gray-900 hover:text-red-600 hover:bg-gray-100' : 'text-white hover:text-red-500 hover:bg-gray-800'}`}
                 >
                   <ArrowRightOnRectangleIcon className="w-5 h-5 mr-3" />
                   <span className="font-medium">Logout</span>

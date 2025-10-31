@@ -8,10 +8,12 @@ import Login from './pages/Login'
 import BookingFlow from './components/homeComponents/BookingFlow'
 import WashingBookingFlow from './components/washingComponents/WashingBookingFlow'
 import { isAuthenticated, initializeSession } from './services/authService'
+import { useTheme } from './components/context/ThemeContext'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { theme } = useTheme()
 
   // Initialize session management and check authentication status on app load
   useEffect(() => {
@@ -59,7 +61,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-black">
+      <div className={`min-h-screen ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
         <Routes>
           <Route path="/" element={renderPage()} />
           <Route path="/booking" element={<BookingFlow />} />

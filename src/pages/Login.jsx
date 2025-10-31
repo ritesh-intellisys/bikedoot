@@ -7,10 +7,12 @@ import {
   WrenchScrewdriverIcon,
   CurrencyDollarIcon
 } from '@heroicons/react/24/outline';
-import { sendSMS, verifyOtp } from '../services/smsService';
+// OTP temporarily disabled; login via mobile only
 import { setAuthData } from '../services/authService';
+import { useTheme } from '../components/context/ThemeContext';
 
 const Login = ({ setCurrentPage, setIsLoggedIn }) => {
+  const { theme } = useTheme();
   const [mobile, setMobile] = useState('');
   const [error, setError] = useState('');
   const [otp, setOtp] = useState(['', '', '', '']);
@@ -57,114 +59,61 @@ const Login = ({ setCurrentPage, setIsLoggedIn }) => {
     setError('');
 
     try {
-      const businessId = 3;
-      const response = await sendSMS(businessId, trimmedNumber);
+      // Directly authenticate using mobile only (temporary)
+      const token = `mobile_${trimmedNumber}_${Date.now()}`; // ensure sufficient length
+      const subscriberId = '0';
+      const businessId = 3; // keep existing business id context
 
-      if (response.status) {
-        setSuccessMessage('OTP sent successfully!');
-        setShowOtpField(true);
-        setResendTimer(30);
-        setError('');
-      } else {
-        setError(response.message || 'Failed to send OTP');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Something went wrong while sending OTP.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      setAuthData(token, subscriberId, businessId);
+      localStorage.setItem('mobileNumber', trimmedNumber);
+      setIsLoggedIn(true);
+      setSuccessMessage('Login successful!');
 
-  const handleSubmitOtp = async () => {
-    const otpString = otp.join('');
+      // Handle redirects consistent with previous flow
+      const urlParams = new URLSearchParams(window.location.search);
+      const returnTo = urlParams.get('returnTo');
+      const garageId = urlParams.get('garageId');
+      const vehicleType = urlParams.get('vehicleType');
 
-    if (otpString.length < 4) {
-      setError('Please enter a valid 4-digit OTP.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const businessId = 3;
-      const response = await verifyOtp({ businessid: businessId, mobile, otp: otpString });
-
-      if (response.status) {
-        const { token, subscriber_id, business_id } = response.data;
-
-        // Save authentication data
-        setAuthData(token, subscriber_id, business_id);
-        
-        // Store mobile number for profile reference
-        localStorage.setItem('mobileNumber', mobile);
-        
-        setIsLoggedIn(true);
-        setSuccessMessage('Login successful!');
-
-        // Check if user came from booking flow
-        const urlParams = new URLSearchParams(window.location.search);
-        const returnTo = urlParams.get('returnTo');
-        const garageId = urlParams.get('garageId');
-        const vehicleType = urlParams.get('vehicleType');
-        
-        // Also check sessionStorage for booking intent
-        const bookingIntent = sessionStorage.getItem('bookingIntent');
-        let bookingData = null;
-        
-        if (bookingIntent) {
-          try {
-            bookingData = JSON.parse(bookingIntent);
-            // Clear the booking intent after reading
-            sessionStorage.removeItem('bookingIntent');
-          } catch (e) {
-            console.error('Error parsing booking intent:', e);
-          }
+      const bookingIntent = sessionStorage.getItem('bookingIntent');
+      let bookingData = null;
+      if (bookingIntent) {
+        try {
+          bookingData = JSON.parse(bookingIntent);
+          sessionStorage.removeItem('bookingIntent');
+        } catch (e) {
+          console.error('Error parsing booking intent:', e);
         }
-        
-        // Redirect based on where user came from
-        setTimeout(() => {
-          if ((returnTo === 'booking' && garageId) || bookingData) {
-            // Redirect back to booking flow
-            const finalGarageId = garageId || bookingData?.garageId;
-            const finalVehicleType = vehicleType || bookingData?.vehicleType || 'two-wheeler';
-            window.location.href = `/booking?garageId=${finalGarageId}&returnTo=garage-list&vehicleType=${finalVehicleType}`;
-          } else if (returnTo === 'home' || bookingData?.returnTo === 'home') {
-            // Redirect to home page
-            setCurrentPage('home');
-          } else {
-            // Default redirect to profile
-            setCurrentPage('profile');
-          }
-        }, 1500);
-      } else {
-        setError(response.message || 'OTP verification failed.');
       }
+
+      setTimeout(() => {
+        if ((returnTo === 'booking' && garageId) || bookingData) {
+          const finalGarageId = garageId || bookingData?.garageId;
+          const finalVehicleType = vehicleType || bookingData?.vehicleType || 'two-wheeler';
+          window.location.href = `/booking?garageId=${finalGarageId}&returnTo=garage-list&vehicleType=${finalVehicleType}`;
+        } else if (returnTo === 'home' || bookingData?.returnTo === 'home') {
+          setCurrentPage('home');
+        } else {
+          setCurrentPage('profile');
+        }
+      }, 800);
     } catch (error) {
-      console.error('OTP submit error:', error);
-      setError('Something went wrong while verifying OTP.');
+      console.error('Login error:', error);
+      setError('Something went wrong while logging in.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleResendOtp = () => {
-    setResendTimer(30);
-    handleLoginSubmit();
-  };
-
-  const handleBackToMobile = () => {
-    setShowOtpField(false);
-    setOtp(['', '', '', '']);
-    setError('');
-    setSuccessMessage('');
-  };
+  // OTP flow disabled
+  const handleSubmitOtp = async () => {};
+  const handleResendOtp = () => {};
+  const handleBackToMobile = () => {};
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-white text-gray-900' : 'bg-black text-white'}`}>
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800">
+      <div className={`${theme === 'light' ? 'bg-gray-100 border-gray-200' : 'bg-gray-900 border-gray-800'} border-b`}>
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -175,8 +124,8 @@ const Login = ({ setCurrentPage, setIsLoggedIn }) => {
                 <XMarkIcon className="w-6 h-6" />
               </button>
               <div>
-                <h1 className="text-2xl font-bold text-white">Sign In</h1>
-                <p className="text-gray-400 mt-1">Enter your mobile number to continue</p>
+                <h1 className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Sign In</h1>
+                <p className={`mt-1 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Enter your mobile number to continue</p>
               </div>
             </div>
           </div>
@@ -186,8 +135,8 @@ const Login = ({ setCurrentPage, setIsLoggedIn }) => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Benefits Section */}
-          <div className="bg-gray-900 rounded-lg p-8 border border-gray-800">
-            <h2 className="text-xl font-bold text-white mb-6">Unlock These Benefits</h2>
+          <div className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-800'} rounded-lg p-8 border`}>
+            <h2 className={`text-xl font-bold mb-6 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Unlock These Benefits</h2>
             
             <div className="space-y-6">
               {[
@@ -211,12 +160,12 @@ const Login = ({ setCurrentPage, setIsLoggedIn }) => {
                 }
               ].map((benefit, index) => (
                 <div key={index} className="flex items-start space-x-4">
-                  <div className={`w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center ${benefit.color}`}>
+                  <div className={`w-12 h-12 ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'} rounded-lg flex items-center justify-center ${benefit.color}`}>
                     <benefit.icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold mb-1">{benefit.title}</h3>
-                    <p className="text-gray-400 text-sm">{benefit.desc}</p>
+                    <h3 className={`font-semibold mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{benefit.title}</h3>
+                    <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{benefit.desc}</p>
                   </div>
                 </div>
               ))}
@@ -236,75 +185,21 @@ const Login = ({ setCurrentPage, setIsLoggedIn }) => {
           </div>
 
           {/* Login Form */}
-          <div className="bg-gray-900 rounded-lg p-8 border border-gray-800">
+          <div className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-800'} rounded-lg p-8 border`}>
             <div className="mb-6">
-              <button
-                onClick={handleBackToMobile}
-                className={`text-gray-400 hover:text-white transition-colors mb-4 ${!showOtpField ? 'hidden' : ''}`}
-              >
-                ← Back to mobile number
-              </button>
+              {/* OTP disabled */}
               
-              <h3 className="text-lg font-semibold text-white mb-2">
-                {showOtpField ? 'Enter OTP' : 'Sign In'}
-              </h3>
-              <p className="text-gray-400 text-sm">
-                {showOtpField 
-                  ? `We've sent a 4-digit code to ${mobile}` 
-                  : 'Enter your mobile number to get started'
-                }
-              </p>
+              <h3 className={`text-lg font-semibold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Sign In</h3>
+              <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Enter your mobile number to get started</p>
             </div>
 
-            {showOtpField ? (
-              <>
-                {/* OTP Input */}
-                <div className="flex justify-center space-x-3 mb-6">
-                  {otp.map((digit, index) => (
-                    <input
-                      key={index}
-                      id={`otp-${index}`}
-                      type="text"
-                      value={digit}
-                      onChange={(e) => handleOtpChange(index, e.target.value)}
-                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      maxLength={1}
-                      className="w-16 h-16 text-center text-2xl font-bold bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
-                    />
-                  ))}
-                </div>
-
-                <button
-                  onClick={handleSubmitOtp}
-                  disabled={otp.some((digit) => digit === '') || isLoading}
-                  className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-colors mb-4"
-                >
-                  {isLoading ? 'Verifying...' : 'Submit OTP'}
-                </button>
-
-                {/* Resend OTP */}
-                <div className="text-center">
-                  {resendTimer > 0 ? (
-                    <p className="text-gray-400 text-sm">
-                      Resend OTP in {resendTimer}s
-                    </p>
-                  ) : (
-                    <button
-                      onClick={handleResendOtp}
-                      className="text-red-500 hover:text-red-400 text-sm font-medium"
-                    >
-                      Resend OTP
-                    </button>
-                  )}
-                </div>
-              </>
-            ) : (
+            {
               <>
                 {/* Mobile Input */}
                 <div className="mb-6">
-                  <label className="block text-gray-400 text-sm mb-2">Mobile Number</label>
+                  <label className={`block text-sm mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-400'}`}>Mobile Number</label>
                   <div className="relative">
-                    <PhoneIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <PhoneIcon className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`} />
                     <input
                       type="tel"
                       value={mobile}
@@ -313,7 +208,7 @@ const Login = ({ setCurrentPage, setIsLoggedIn }) => {
                         if (error) setError('');
                       }}
                       placeholder="Enter 10-digit mobile number"
-                      className="w-full pl-12 pr-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
+                      className={`w-full pl-12 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent ${theme === 'light' ? 'bg-white text-gray-900 border border-gray-300' : 'bg-gray-800 text-white border border-gray-700'}`}
                     />
                     {mobile && (
                       <button
@@ -334,10 +229,10 @@ const Login = ({ setCurrentPage, setIsLoggedIn }) => {
                   disabled={!mobile || isLoading}
                   className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-colors mb-4"
                 >
-                  {isLoading ? 'Sending OTP...' : 'Continue'}
+                  {isLoading ? 'Logging in...' : 'Continue'}
                 </button>
               </>
-            )}
+            }
 
             {/* Error Message */}
             {error && (
@@ -355,7 +250,7 @@ const Login = ({ setCurrentPage, setIsLoggedIn }) => {
             )}
 
             {/* Terms */}
-            <p className="text-gray-400 text-xs text-center mt-6">
+            <p className={`text-xs text-center mt-6 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
               By proceeding, you agree to our{' '}
               <span className="text-red-400 cursor-pointer hover:underline">Privacy Policy</span>,{' '}
               <span className="text-red-400 cursor-pointer hover:underline">User Agreement</span> and{' '}

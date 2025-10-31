@@ -18,8 +18,10 @@ import {
 import { fetchUserVehicles, fetchUserAddresses, createAddress, deleteUserVehicle, fetchCities } from '../services/bookingService';
 import AddVehicleModal from '../components/profileComponents/AddVehicleModal';
 import AddAddressModal from '../components/profileComponents/AddAddressModal';
+import { useTheme } from '../components/context/ThemeContext';
 
 const Profile = ({ setCurrentPage }) => {
+  const { theme } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [userData, setUserData] = useState({
@@ -215,9 +217,9 @@ const Profile = ({ setCurrentPage }) => {
 
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-white text-gray-900' : 'bg-black text-white'}`}>
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800">
+      <div className={`${theme === 'light' ? 'bg-gray-100 border-gray-200' : 'bg-gray-900 border-gray-800'} border-b`}>
         <div className="max-w-6xl mx-auto px-4 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 sm:space-x-4">
@@ -228,8 +230,8 @@ const Profile = ({ setCurrentPage }) => {
                 <ArrowLeftIcon className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-white">My Profile</h1>
-                <p className="text-gray-400 mt-1 text-sm sm:text-base">Manage your account and preferences</p>
+                <h1 className={`text-xl sm:text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>My Profile</h1>
+                <p className={`mt-1 text-sm sm:text-base ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Manage your account and preferences</p>
               </div>
             </div>
           </div>
@@ -237,7 +239,7 @@ const Profile = ({ setCurrentPage }) => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-gray-900 border-b border-gray-800">
+      <div className={`${theme === 'light' ? 'bg-gray-100 border-gray-200' : 'bg-gray-900 border-gray-800'} border-b`}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex overflow-x-auto space-x-2 sm:space-x-8">
             {[
@@ -251,7 +253,9 @@ const Profile = ({ setCurrentPage }) => {
                 className={`flex items-center space-x-1 sm:space-x-2 py-3 sm:py-4 px-2 sm:px-2 border-b-2 transition-colors whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-red-500 text-red-500'
-                    : 'border-transparent text-gray-400 hover:text-white'
+                    : theme === 'light' 
+                      ? 'border-transparent text-gray-600 hover:text-gray-900' 
+                      : 'border-transparent text-gray-400 hover:text-white'
                 }`}
               >
                 <tab.icon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -289,9 +293,9 @@ const Profile = ({ setCurrentPage }) => {
         {/* My Profile Tab */}
         {activeTab === 'profile' && (
           <div className="space-y-4 sm:space-y-6">
-            <div className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-800">
+            <div className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-800'} rounded-lg p-4 sm:p-6 border`}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
-                <h3 className="text-lg font-semibold text-white">Personal Information</h3>
+                <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Personal Information</h3>
                 {!isEditing && (
                   <button
                     onClick={handleEdit}
@@ -306,57 +310,57 @@ const Profile = ({ setCurrentPage }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {/* Name */}
                 <div>
-                  <label className="text-sm text-gray-400">Name</label>
+                  <label className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-400'}`}>Name</label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={editData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600 w-full mt-1"
+                      className={`px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-600 w-full mt-1 ${theme === 'light' ? 'bg-white text-gray-900 border-gray-300' : 'bg-gray-800 text-white border-gray-700'}`}
                     />
                   ) : (
-                    <p className="text-white mt-1">{userData.name}</p>
+                    <p className={`mt-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{userData.name}</p>
                   )}
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="text-sm text-gray-400">Email</label>
+                  <label className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-400'}`}>Email</label>
                   {isEditing ? (
                     <input
                       type="email"
                       value={editData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600 w-full mt-1"
+                      className={`px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-600 w-full mt-1 ${theme === 'light' ? 'bg-white text-gray-900 border-gray-300' : 'bg-gray-800 text-white border-gray-700'}`}
                     />
                   ) : (
-                    <p className="text-white mt-1">{userData.email}</p>
+                    <p className={`mt-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{userData.email}</p>
                   )}
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label className="text-sm text-gray-400">Phone</label>
+                  <label className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-400'}`}>Phone</label>
                   {isEditing ? (
                     <input
                       type="tel"
                       value={editData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600 w-full mt-1"
+                      className={`px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-600 w-full mt-1 ${theme === 'light' ? 'bg-white text-gray-900 border-gray-300' : 'bg-gray-800 text-white border-gray-700'}`}
                     />
                   ) : (
-                    <p className="text-white mt-1">{userData.phone}</p>
+                    <p className={`mt-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{userData.phone}</p>
                   )}
                 </div>
 
                 {/* City */}
                 <div>
-                  <label className="text-sm text-gray-400">City</label>
+                  <label className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-400'}`}>City</label>
                   {isEditing ? (
                     <select
                       value={editData.city}
                       onChange={(e) => handleInputChange('city', e.target.value)}
-                      className="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600 w-full mt-1"
+                      className={`px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-600 w-full mt-1 ${theme === 'light' ? 'bg-white text-gray-900 border-gray-300' : 'bg-gray-800 text-white border-gray-700'}`}
                     >
                       <option value="Pune">Pune</option>
                       <option value="Mumbai">Mumbai</option>
@@ -366,7 +370,7 @@ const Profile = ({ setCurrentPage }) => {
                       <option value="Hyderabad">Hyderabad</option>
                     </select>
                   ) : (
-                    <p className="text-white mt-1">{userData.city}</p>
+                    <p className={`mt-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{userData.city}</p>
                   )}
                 </div>
               </div>
@@ -397,9 +401,9 @@ const Profile = ({ setCurrentPage }) => {
         {/* My Vehicles Tab */}
         {activeTab === 'vehicles' && (
           <div className="space-y-4 sm:space-y-6">
-            <div className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-800">
+            <div className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-800'} rounded-lg p-4 sm:p-6 border`}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
-                <h3 className="text-lg font-semibold text-white">My Vehicles</h3>
+                <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>My Vehicles</h3>
                 <button 
                   onClick={() => setIsAddVehicleModalOpen(true)}
                   className="flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto"
@@ -411,7 +415,7 @@ const Profile = ({ setCurrentPage }) => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {vehicles.map(vehicle => (
-                  <div key={vehicle.id} className="bg-gray-800 rounded-lg p-4 border border-gray-700 relative group">
+                  <div key={vehicle.id} className={`${theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-gray-800 border-gray-700'} rounded-lg p-4 border relative group`}>
                     <button
                       onClick={() => handleDeleteVehicle(vehicle.id)}
                       className="absolute top-2 right-2 text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -419,13 +423,13 @@ const Profile = ({ setCurrentPage }) => {
                       <TrashIcon className="w-5 h-5" />
                     </button>
                     
-                    <div className="w-full h-32 bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
-                      <TruckIcon className="w-12 h-12 text-gray-400" />
+                    <div className={`w-full h-32 ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-700'} rounded-lg mb-4 flex items-center justify-center`}>
+                      <TruckIcon className={`w-12 h-12 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`} />
                     </div>
                     
-                    <h4 className="text-white font-medium mb-2">{vehicle.model?.name || vehicle.name || 'Unknown Vehicle'}</h4>
-                    <p className="text-gray-400 text-sm">Model: {vehicle.model?.name || vehicle.model || 'N/A'}</p>
-                    <p className="text-gray-400 text-sm">Year: {vehicle.year || 'N/A'}</p>
+                    <h4 className={`font-medium mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{vehicle.model?.name || vehicle.name || 'Unknown Vehicle'}</h4>
+                    <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Model: {vehicle.model?.name || vehicle.model || 'N/A'}</p>
+                    <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Year: {vehicle.year || 'N/A'}</p>
                   </div>
                 ))}
               </div>
@@ -436,9 +440,9 @@ const Profile = ({ setCurrentPage }) => {
         {/* My Addresses Tab */}
         {activeTab === 'addresses' && (
           <div className="space-y-4 sm:space-y-6">
-            <div className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-800">
+            <div className={`${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900 border-gray-800'} rounded-lg p-4 sm:p-6 border`}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
-                <h3 className="text-lg font-semibold text-white">My Addresses</h3>
+                <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>My Addresses</h3>
                 <button 
                   onClick={() => setIsAddAddressModalOpen(true)}
                   className="flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto"
@@ -450,7 +454,7 @@ const Profile = ({ setCurrentPage }) => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {addresses.map(address => (
-                  <div key={address.id} className="bg-gray-800 rounded-lg p-4 border border-gray-700 relative group">
+                  <div key={address.id} className={`${theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-gray-800 border-gray-700'} rounded-lg p-4 border relative group`}>
                     <button
                       onClick={() => handleDeleteAddress(address.id)}
                       className="absolute top-2 right-2 text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -461,11 +465,11 @@ const Profile = ({ setCurrentPage }) => {
                     <div className="flex items-start space-x-3">
                       <HomeIcon className="w-6 h-6 text-red-500 mt-1" />
                       <div className="flex-1">
-                        <h4 className="text-white font-medium mb-2">
+                        <h4 className={`font-medium mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                           {cities.find(city => city.id === address.city_id)?.name || address.city || 'Unknown City'}
                         </h4>
-                        <p className="text-gray-400 text-sm mb-1">Pincode: {address.pincode}</p>
-                        <p className="text-gray-300 text-sm">{address.address}</p>
+                        <p className={`text-sm mb-1 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Pincode: {address.pincode}</p>
+                        <p className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>{address.address}</p>
                       </div>
                     </div>
                   </div>

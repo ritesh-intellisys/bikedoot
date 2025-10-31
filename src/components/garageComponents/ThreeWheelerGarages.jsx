@@ -6,8 +6,10 @@ import VehicleTypeSelector from '../VehicleTypeSelector';
 import { getGaragesByServiceCategory } from '../../services/garageService';
 import { getStoredLocationData, hasLocationData } from '../../utils/geolocation';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useTheme } from '../context/ThemeContext';
 
 const ThreeWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackToMain, onVehicleTypeChange, onShowLoginPopup }) => {
+  const { theme } = useTheme();
   const [garages, setGarages] = useState([]);
   const [filteredGarages, setFilteredGarages] = useState([]);
   const [filters, setFilters] = useState(null);
@@ -170,11 +172,11 @@ const ThreeWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackTo
 
   if (loading) {
     return (
-      <div className="py-12 px-4 bg-black">
+      <div className={`py-12 px-4 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" style={{ borderColor: '#ff3864', borderTopColor: '#cc1e3a' }}></div>
-            <p className="text-gray-400 mt-4">Loading three-wheeler garages...</p>
+            <p className={`mt-4 ${theme === 'light' ? 'text-gray-700' : 'text-gray-400'}`}>Loading three-wheeler garages...</p>
           </div>
         </div>
       </div>
@@ -182,16 +184,16 @@ const ThreeWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackTo
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-white text-gray-900' : 'bg-black text-white'}`}>
 
       {/* Three Wheeler Garages Section */}
-      <section className="py-8 px-4 bg-black">
+      <section className={`py-8 px-4 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+            <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
               Three Wheeler Garages Near You
             </h2>
-            <p className="text-lg text-gray-400">Find specialized garages for auto-rickshaws and three-wheelers</p>
+            <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Find specialized garages for auto-rickshaws and three-wheelers</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -212,13 +214,13 @@ const ThreeWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackTo
                 {/* Left Group: Garage Type Toggle + Brand Dropdown */}
                 <div className="flex items-center gap-4">
                   {/* Garage Type Toggle */}
-                  <div className="flex bg-gray-800 rounded-lg p-1">
+                  <div className={`flex ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'} rounded-lg p-1`}>
                     <button
                       onClick={() => handleGarageTypeChange('all')}
                       className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                         garageType === 'all'
                           ? 'bg-red-600 text-white shadow-lg'
-                          : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                          : theme === 'light' ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-200' : 'text-gray-300 hover:text-white hover:bg-gray-700'
                       }`}
                     >
                       All
@@ -228,7 +230,7 @@ const ThreeWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackTo
                       className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                         garageType === 'authorized'
                           ? 'bg-red-600 text-white shadow-lg'
-                          : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                          : theme === 'light' ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-200' : 'text-gray-300 hover:text-white hover:bg-gray-700'
                       }`}
                     >
                       Authorized
@@ -240,23 +242,27 @@ const ThreeWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackTo
                     <div className="relative" ref={brandDropdownRef}>
                       <button
                         onClick={() => setIsBrandDropdownOpen(!isBrandDropdownOpen)}
-                        className="flex items-center space-x-2 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                        className={`flex items-center space-x-2 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors ${theme === 'light' ? 'bg-gray-100 border-gray-300 text-gray-900 hover:bg-gray-200' : 'bg-gray-800 border-gray-600 text-white hover:bg-gray-700'}`}
                       >
                         <span className="text-sm font-medium">
                           {selectedBrand || 'Select Brand'}
                         </span>
-                        <ChevronDownIcon className={`w-4 h-4 text-gray-400 transition-transform ${isBrandDropdownOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDownIcon className={`w-4 h-4 transition-transform ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'} ${isBrandDropdownOpen ? 'rotate-180' : ''}`} />
                       </button>
 
                       {isBrandDropdownOpen && (
-                        <div className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
+                        <div className={`absolute z-50 right-0 mt-2 w-48 border rounded-lg shadow-lg ${theme === 'light' ? 'bg-white border-gray-300' : 'bg-gray-800 border-gray-600'}`}>
                           <div className="py-2 pt-3">
                             {threeWheelerBrands.map((brand) => (
                               <button
                                 key={brand}
                                 onClick={() => handleBrandSelect(brand)}
-                                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                                  selectedBrand === brand ? 'text-red-400 bg-gray-700' : 'text-gray-300'
+                                className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                                  selectedBrand === brand 
+                                    ? 'text-red-400 bg-gray-700' 
+                                    : theme === 'light' 
+                                      ? 'text-gray-700 hover:bg-gray-100' 
+                                      : 'text-gray-300 hover:bg-gray-700'
                                 }`}
                               >
                                 {brand}
@@ -284,7 +290,7 @@ const ThreeWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackTo
 
               {filteredGarages.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-gray-400 text-lg">No three-wheeler garages found matching your criteria.</p>
+                  <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>No three-wheeler garages found matching your criteria.</p>
                   <button
                     onClick={handleClearFilters}
                     className="mt-4 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
@@ -296,12 +302,12 @@ const ThreeWheelerGarages = ({ selectedCity, filterData, onGarageClick, onBackTo
                 <>
                   {noResultsMessage ? (
                     <div className="text-center py-12">
-                      <div className="bg-gray-800 rounded-lg p-8 max-w-md mx-auto">
+                      <div className={`rounded-lg p-8 max-w-md mx-auto ${theme === 'light' ? 'bg-gray-50 border border-gray-200' : 'bg-gray-800'}`}>
                         <div className="text-6xl mb-4" style={{ background: 'linear-gradient(135deg, #ff3864, #cc1e3a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                           🔧
                         </div>
-                        <h3 className="text-xl font-semibold text-white mb-2">No Garages Found</h3>
-                        <p className="text-gray-400 mb-4">{noResultsMessage}</p>
+                        <h3 className={`text-xl font-semibold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>No Garages Found</h3>
+                        <p className={`mb-4 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{noResultsMessage}</p>
                         <button
                           onClick={handleClearFilters}
                           className="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"

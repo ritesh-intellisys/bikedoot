@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { sendSMS, verifyOtp } from '../../services/smsService';
+// OTP temporarily disabled; login via mobile only
 import { setAuthData } from '../../services/authService';
 
 const LoginPopup = ({ isOpen, onClose, onLoginSuccess }) => {
@@ -65,78 +65,31 @@ const LoginPopup = ({ isOpen, onClose, onLoginSuccess }) => {
     setSuccessMessage('');
 
     try {
+      // Directly authenticate using mobile only (temporary)
+      const token = `mobile_${trimmedNumber}_${Date.now()}`;
+      const subscriberId = '0';
       const businessId = 3;
-      const response = await sendSMS(businessId, trimmedNumber);
 
-      if (response.status) {
-        setSuccessMessage('OTP sent successfully!');
-        setShowOtpField(true);
-        setResendTimer(30);
-        setError('');
-      } else {
-        setError(response.message || 'Failed to send OTP');
-      }
+      setAuthData(token, subscriberId, businessId);
+      localStorage.setItem('mobileNumber', trimmedNumber);
+      setSuccessMessage('Login successful!');
+
+      setTimeout(() => {
+        onLoginSuccess();
+        onClose();
+      }, 600);
     } catch (error) {
-      console.error('Error:', error);
-      setError('Something went wrong while sending OTP.');
+      console.error('Login error:', error);
+      setError('Something went wrong while logging in.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSubmitOtp = async () => {
-    const otpString = otp.join('');
-    if (otpString.length < 4) {
-      setError('Please enter a valid 4-digit OTP.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError('');
-    setSuccessMessage('');
-
-    try {
-      const businessId = 3;
-      const response = await verifyOtp({ businessid: businessId, mobile, otp: otpString });
-
-      if (response.status) {
-        const { token, subscriber_id, business_id } = response.data;
-
-        // Save authentication data
-        setAuthData(token, subscriber_id, business_id);
-        
-        // Store mobile number for profile reference
-        localStorage.setItem('mobileNumber', mobile);
-        
-        setSuccessMessage('Login successful!');
-
-        // Call success callback and close popup
-        setTimeout(() => {
-          onLoginSuccess();
-          onClose();
-        }, 1000);
-      } else {
-        setError(response.message || 'OTP verification failed.');
-      }
-    } catch (error) {
-      console.error('OTP submit error:', error);
-      setError('Something went wrong while verifying OTP.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleResendOtp = () => {
-    setResendTimer(30);
-    handleLoginSubmit();
-  };
-
-  const handleBackToMobile = () => {
-    setShowOtpField(false);
-    setOtp(['', '', '', '']);
-    setError('');
-    setSuccessMessage('');
-  };
+  // OTP flow disabled
+  const handleSubmitOtp = async () => {};
+  const handleResendOtp = () => {};
+  const handleBackToMobile = () => {};
 
   if (!isOpen) return null;
 
@@ -179,69 +132,10 @@ const LoginPopup = ({ isOpen, onClose, onLoginSuccess }) => {
                 disabled={isLoading || mobile.length !== 10}
                 className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors"
               >
-                {isLoading ? 'Sending OTP...' : 'Continue'}
+                {isLoading ? 'Logging in...' : 'Continue'}
               </button>
             </>
-          ) : (
-            <>
-              {/* OTP Input */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Enter OTP
-                </label>
-                <div className="flex space-x-2 justify-center">
-                  {otp.map((digit, index) => (
-                    <input
-                      key={index}
-                      id={`otp-${index}`}
-                      type="text"
-                      value={digit}
-                      onChange={(e) => handleOtpChange(index, e.target.value)}
-                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      className="w-12 h-12 text-center text-lg font-semibold bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      maxLength={1}
-                    />
-                  ))}
-                </div>
-                <p className="text-sm text-gray-400 mt-2 text-center">
-                  OTP sent to +91 {mobile}
-                </p>
-              </div>
-
-              {/* Submit OTP Button */}
-              <button
-                onClick={handleSubmitOtp}
-                disabled={isLoading || otp.some(digit => !digit)}
-                className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors mb-4"
-              >
-                {isLoading ? 'Verifying...' : 'Submit OTP'}
-              </button>
-
-              {/* Resend OTP */}
-              <div className="text-center">
-                {resendTimer > 0 ? (
-                  <p className="text-sm text-gray-400">
-                    Resend OTP in {resendTimer}s
-                  </p>
-                ) : (
-                  <button
-                    onClick={handleResendOtp}
-                    className="text-sm text-red-500 hover:text-red-400 transition-colors"
-                  >
-                    Resend OTP
-                  </button>
-                )}
-              </div>
-
-              {/* Back Button */}
-              <button
-                onClick={handleBackToMobile}
-                className="w-full text-sm text-gray-400 hover:text-white transition-colors mt-2"
-              >
-                ←
-              </button>
-            </>
-          )}
+          ) : null}
 
           {/* Error Message */}
           {error && (
