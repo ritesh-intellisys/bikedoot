@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useTheme } from '../../context/ThemeContext';
 
 const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBrand }) => {
+  const { theme } = useTheme();
   const [models, setModels] = useState([]);
   const [filteredModels, setFilteredModels] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -126,13 +128,13 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className={`rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 border-b border-gray-700 gap-4">
+        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 border-b gap-4 ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
           <div>
-            <h2 className="text-xl font-bold text-white">Select Bike Model</h2>
+            <h2 className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Select Bike Model</h2>
             {selectedBrand && (
-              <p className="text-gray-400 text-sm mt-1">
+              <p className={`text-sm mt-1 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                 {selectedBrand.name} Models
               </p>
             )}
@@ -140,18 +142,22 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
           <div className="flex items-center gap-4">
             {/* Search Input */}
             <div className="relative flex-1 sm:flex-none">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <MagnifyingGlassIcon className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'light' ? 'text-gray-400' : 'text-gray-400'}`} />
               <input
                 type="text"
                 placeholder="Search model"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 w-full sm:w-64"
+                className={`pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-500 w-full sm:w-64 ${
+                  theme === 'light'
+                    ? 'bg-white text-gray-900 border-gray-300'
+                    : 'bg-gray-700 text-white border-gray-600'
+                }`}
               />
             </div>
             <button
               onClick={handleClose}
-              className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
+              className={`transition-colors flex-shrink-0 ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}
             >
               <XMarkIcon className="w-6 h-6" />
             </button>
@@ -163,7 +169,7 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
           {loading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mb-4"></div>
-              <p className="text-gray-400">Loading models...</p>
+              <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>Loading models...</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -171,10 +177,12 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
                 <div
                   key={model.id}
                   onClick={() => !saving && handleModelClick(model)}
-                  className={`bg-gray-700 rounded-xl p-4 transition-all duration-200 flex flex-col items-center justify-center min-h-[160px] ${
+                  className={`rounded-xl p-4 transition-all duration-200 border flex flex-col items-center justify-center min-h-[160px] ${
                     saving 
                       ? 'cursor-not-allowed opacity-50' 
-                      : 'cursor-pointer hover:bg-gray-600 hover:scale-105 hover:shadow-lg'
+                      : theme === 'light'
+                      ? 'bg-white border-gray-200 cursor-pointer hover:bg-gray-50 hover:border-gray-300 hover:scale-105 hover:shadow-lg'
+                      : 'bg-gray-700 border-gray-600 cursor-pointer hover:bg-gray-600 hover:scale-105 hover:shadow-lg'
                   }`}
                 >
                   {/* Model Image */}
@@ -190,12 +198,12 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
                   </div>
                   
                   {/* Model Name */}
-                  <p className="text-white text-sm font-medium text-center mb-1">
+                  <p className={`text-sm font-medium text-center mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                     {model.name}
                   </p>
                   
                   {/* CC Info */}
-                  <p className="text-gray-400 text-xs text-center">
+                  <p className={`text-xs text-center ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                     {model.cc}
                   </p>
                   
@@ -212,13 +220,13 @@ const WashingModelSelectionPopup = ({ isOpen, onClose, onModelSelect, selectedBr
 
           {!loading && filteredModels.length === 0 && searchQuery && (
             <div className="text-center py-12">
-              <p className="text-gray-400">No models found matching "{searchQuery}"</p>
+              <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>No models found matching "{searchQuery}"</p>
             </div>
           )}
 
           {!loading && filteredModels.length === 0 && !searchQuery && (
             <div className="text-center py-12">
-              <p className="text-gray-400">No models available for {selectedBrand?.name}</p>
+              <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>No models available for {selectedBrand?.name}</p>
             </div>
           )}
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSprayCan, faCar, faMotorcycle, faTruck, faStar, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { useTheme } from '../../context/ThemeContext';
 
 const WashingSelectServiceStep = ({ 
   washingCenterInfo, 
@@ -9,6 +10,7 @@ const WashingSelectServiceStep = ({
   errors, 
   setErrors 
 }) => {
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
 
   // Mock washing services data
@@ -111,13 +113,13 @@ const WashingSelectServiceStep = ({
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-white mb-2">Select Washing Services</h2>
-        <p className="text-gray-400">Choose the washing and detailing services you need</p>
+        <h2 className={`text-2xl font-bold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Select Washing Services</h2>
+        <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>Choose the washing and detailing services you need</p>
       </div>
 
       {/* Washing Center Info */}
       {washingCenterInfo && (
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <div className={`rounded-xl p-6 border ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800 border-gray-700'}`}>
           <div className="flex items-center space-x-4">
             <img
               src={washingCenterInfo.image}
@@ -125,8 +127,8 @@ const WashingSelectServiceStep = ({
               className="w-16 h-16 rounded-lg object-cover"
             />
             <div>
-              <h3 className="text-lg font-semibold text-white">{washingCenterInfo.name}</h3>
-              <p className="text-gray-400">{washingCenterInfo.location}</p>
+              <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{washingCenterInfo.name}</h3>
+              <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>{washingCenterInfo.location}</p>
               <div className="flex items-center space-x-2 mt-1">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
@@ -136,12 +138,12 @@ const WashingSelectServiceStep = ({
                       className={`w-4 h-4 ${
                         i < Math.floor(washingCenterInfo.rating) 
                           ? 'text-yellow-400' 
-                          : 'text-gray-600'
+                          : theme === 'light' ? 'text-gray-300' : 'text-gray-600'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-sm text-gray-400">({washingCenterInfo.rating})</span>
+                <span className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>({washingCenterInfo.rating})</span>
               </div>
             </div>
           </div>
@@ -157,10 +159,14 @@ const WashingSelectServiceStep = ({
             <div
               key={service.id}
               onClick={() => handleServiceSelect(service)}
-              className={`bg-gray-800 rounded-xl p-6 border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
+              className={`rounded-xl p-6 border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
                 isSelected 
-                  ? 'border-red-500 bg-red-900 bg-opacity-20' 
-                  : 'border-gray-700 hover:border-gray-600'
+                  ? theme === 'light'
+                    ? 'border-red-500 bg-red-50'
+                    : 'border-red-500 bg-red-900 bg-opacity-20'
+                  : theme === 'light'
+                  ? 'bg-white border-gray-200 hover:border-gray-300'
+                  : 'bg-gray-800 border-gray-700 hover:border-gray-600'
               }`}
             >
               {/* Service Image */}
@@ -180,48 +186,52 @@ const WashingSelectServiceStep = ({
               {/* Service Info */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-white">{service.name}</h3>
-                  <span className="text-red-400 font-bold text-lg">₹{service.price}</span>
+                  <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{service.name}</h3>
+                  <span className="text-red-600 font-bold text-lg">₹{service.price}</span>
                 </div>
 
-                <p className="text-gray-400 text-sm">{service.description}</p>
+                <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{service.description}</p>
 
-                <div className="flex items-center justify-between text-sm text-gray-300">
+                <div className={`flex items-center justify-between text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
                   <span className="flex items-center">
                     <FontAwesomeIcon icon={faSprayCan} className="w-4 h-4 mr-1" />
                     {service.duration}
                   </span>
-                  <span className="bg-gray-700 px-2 py-1 rounded text-xs">
+                  <span className={`px-2 py-1 rounded text-xs ${
+                    theme === 'light' ? 'bg-gray-100 text-gray-700' : 'bg-gray-700 text-gray-300'
+                  }`}>
                     {service.category.replace('-', ' ')}
                   </span>
                 </div>
 
                 {/* Vehicle Types */}
                 <div className="flex items-center space-x-2">
-                  <span className="text-xs text-gray-400">For:</span>
+                  <span className={`text-xs ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>For:</span>
                   {service.vehicleTypes.map((type, index) => (
                     <FontAwesomeIcon
                       key={index}
                       icon={getVehicleTypeIcon(type)}
-                      className="w-4 h-4 text-gray-400"
+                      className={`w-4 h-4 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}
                     />
                   ))}
                 </div>
 
                 {/* Features */}
                 <div className="space-y-1">
-                  <p className="text-xs text-gray-400">Includes:</p>
+                  <p className={`text-xs ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Includes:</p>
                   <div className="flex flex-wrap gap-1">
                     {service.features.slice(0, 2).map((feature, index) => (
                       <span
                         key={index}
-                        className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded"
+                        className={`text-xs px-2 py-1 rounded ${
+                          theme === 'light' ? 'bg-gray-100 text-gray-700' : 'bg-gray-700 text-gray-300'
+                        }`}
                       >
                         {feature}
                       </span>
                     ))}
                     {service.features.length > 2 && (
-                      <span className="text-gray-500 text-xs">
+                      <span className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-500'}`}>
                         +{service.features.length - 2} more
                       </span>
                     )}
@@ -235,27 +245,27 @@ const WashingSelectServiceStep = ({
 
       {/* Selected Services Summary */}
       {selectedService && selectedService.length > 0 && (
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">Selected Services</h3>
+        <div className={`rounded-xl p-6 border ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800 border-gray-700'}`}>
+          <h3 className={`text-lg font-semibold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Selected Services</h3>
           <div className="space-y-3">
             {selectedService.map((service) => (
               <div key={service.id} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <button
                     onClick={() => handleServiceSelect(service)}
-                    className="text-red-500 hover:text-red-400"
+                    className="text-red-600 hover:text-red-700"
                   >
                     <FontAwesomeIcon icon={faCheck} className="w-4 h-4" />
                   </button>
-                  <span className="text-white">{service.name}</span>
+                  <span className={theme === 'light' ? 'text-gray-900' : 'text-white'}>{service.name}</span>
                 </div>
-                <span className="text-red-400 font-semibold">₹{service.price}</span>
+                <span className="text-red-600 font-semibold">₹{service.price}</span>
               </div>
             ))}
-            <div className="border-t border-gray-700 pt-3">
+            <div className={`border-t pt-3 ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-white">Total</span>
-                <span className="text-xl font-bold text-red-400">₹{calculateTotal()}</span>
+                <span className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Total</span>
+                <span className="text-xl font-bold text-red-600">₹{calculateTotal()}</span>
               </div>
             </div>
           </div>

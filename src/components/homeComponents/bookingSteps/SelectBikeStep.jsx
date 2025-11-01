@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { fetchUserVehicles } from '../../../services/bookingService';
 import AddBikeModal from './AddBikeModal';
+import { useTheme } from '../../context/ThemeContext';
 
 const SelectBikeStep = ({ 
   bikeData, 
@@ -11,6 +12,7 @@ const SelectBikeStep = ({
   errors, 
   setErrors 
 }) => {
+  const { theme } = useTheme();
   const [vehicles, setVehicles] = useState([]);
   const [isAddBikeModalOpen, setIsAddBikeModalOpen] = useState(false);
   const [selectedBikeId, setSelectedBikeId] = useState(null);
@@ -85,7 +87,7 @@ const SelectBikeStep = ({
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading your vehicles...</p>
+          <p className={theme === 'light' ? 'text-gray-700' : 'text-gray-400'}>Loading your vehicles...</p>
         </div>
       </div>
     );
@@ -95,8 +97,8 @@ const SelectBikeStep = ({
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-white mb-2">Select Your Bike</h2>
-        <p className="text-gray-400">Choose the bike you want to service</p>
+        <h2 className={`text-2xl font-bold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Select Your Bike</h2>
+        <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>Choose the bike you want to service</p>
       </div>
       
       {/* Error Display */}
@@ -112,11 +114,15 @@ const SelectBikeStep = ({
           <div
             key={vehicle.id}
             onClick={() => handleBikeSelect(vehicle)}
-            className={`bg-gray-800 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:bg-gray-700 ${
+            className={`rounded-xl p-4 cursor-pointer transition-all duration-200 ${
+              theme === 'light'
+                ? 'bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md'
+                : 'bg-gray-800 hover:bg-gray-700'
+            } ${
               selectedBikeId === vehicle.id
-                ? 'ring-2 ring-red-500 bg-gray-700 scale-105'
+                ? 'ring-2 ring-red-500 scale-105'
                 : 'hover:scale-102'
-            }`}
+            } ${selectedBikeId === vehicle.id && theme === 'dark' ? 'bg-gray-700' : ''}`}
           >
             <div className="text-center">
               <img
@@ -124,7 +130,7 @@ const SelectBikeStep = ({
                 alt={vehicle.brand || vehicle.model?.name || vehicle.name || 'Vehicle'}
                 className="w-16 h-16 mx-auto mb-3 object-cover rounded-lg"
               />
-              <h3 className="text-sm font-semibold text-white mb-1">
+              <h3 className={`text-sm font-semibold mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                 {vehicle.brand || vehicle.model?.name || vehicle.name || 'Unknown Vehicle'}
               </h3>
               {selectedBikeId === vehicle.id && (
@@ -141,11 +147,15 @@ const SelectBikeStep = ({
         {/* Add New Bike Card */}
         <div
           onClick={() => setIsAddBikeModalOpen(true)}
-          className="bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-red-500 hover:bg-gray-700 flex flex-col items-center justify-center min-h-[140px]"
+          className={`border-2 border-dashed rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-red-500 flex flex-col items-center justify-center min-h-[140px] ${
+            theme === 'light'
+              ? 'bg-white border-gray-300 hover:bg-gray-50'
+              : 'bg-gray-800 border-gray-600 hover:bg-gray-700'
+          }`}
         >
-          <PlusIcon className="w-6 h-6 text-gray-400 mb-2" />
-          <h3 className="text-sm font-semibold text-white mb-1">Add New Bike</h3>
-          <p className="text-gray-400 text-xs text-center">
+          <PlusIcon className={`w-6 h-6 mb-2 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`} />
+          <h3 className={`text-sm font-semibold mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Add New Bike</h3>
+          <p className={`text-xs text-center ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
             Don't see your bike? Add it to your profile
           </p>
         </div>
@@ -153,8 +163,10 @@ const SelectBikeStep = ({
       
       {/* Selected Bike Summary */}
       {bikeData && (
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">Selected Bike</h3>
+        <div className={`rounded-xl p-6 border ${
+          theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800 border-gray-700'
+        }`}>
+          <h3 className={`text-lg font-semibold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Selected Bike</h3>
           <div className="flex items-center space-x-4">
             <img
               src={bikeData.image || bikeData.model?.image || 'https://via.placeholder.com/96'}
@@ -162,7 +174,7 @@ const SelectBikeStep = ({
               className="w-16 h-16 object-cover rounded-lg"
             />
             <div>
-              <h4 className="text-white font-medium">
+              <h4 className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                 {bikeData.brand || bikeData.model?.name || 'Unknown Vehicle'}
               </h4>
             </div>

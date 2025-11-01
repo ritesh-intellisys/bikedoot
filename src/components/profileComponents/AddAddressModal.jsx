@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { createAddress, fetchCities } from '../../services/bookingService';
+import { fetchLandingPageData } from '../../services/landingpage';
+import { useTheme } from '../context/ThemeContext';
 
 const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     address: '',
     city: '',
@@ -13,7 +16,7 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Load cities when modal opens
+  // Load cities when modal opens (matching old website implementation)
   useEffect(() => {
     if (isOpen) {
       loadCities();
@@ -23,8 +26,30 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
   const loadCities = async () => {
     setLoading(true);
     try {
-      const citiesData = await fetchCities();
-      setCities(citiesData || []);
+      // Get selected city from sessionStorage (like old website)
+      const selectedCity = sessionStorage.getItem('selectedCity') || 'Pune';
+      
+      // Try landing page API first (like old website)
+      try {
+        const landingPageData = await fetchLandingPageData(selectedCity.toLowerCase());
+        if (landingPageData && Array.isArray(landingPageData.cities) && landingPageData.cities.length > 0) {
+          setCities(landingPageData.cities);
+        } else {
+          // Fallback to active-cities API
+          const citiesData = await fetchCities(selectedCity);
+          setCities(citiesData || []);
+        }
+      } catch (landingError) {
+        console.error('Error loading cities from landing page:', landingError);
+        // Try fallback API
+        try {
+          const citiesData = await fetchCities(selectedCity);
+          setCities(citiesData || []);
+        } catch (fallbackError) {
+          console.error('Fallback cities API also failed:', fallbackError);
+          setError('Failed to load cities');
+        }
+      }
     } catch (error) {
       console.error('Error loading cities:', error);
       setError('Failed to load cities');
@@ -110,13 +135,13 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className={`rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <h2 className="text-xl font-bold text-white">Add New Address</h2>
+        <div className={`flex items-center justify-between p-6 border-b ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
+          <h2 className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Add New Address</h2>
           <button
             onClick={handleClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className={`transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}
           >
             <XMarkIcon className="w-6 h-6" />
           </button>
@@ -126,14 +151,18 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Address */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
               Address *
             </label>
             <textarea
               value={formData.address}
               onChange={(e) => handleInputChange('address', e.target.value)}
               placeholder="Enter your full address"
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                theme === 'light'
+                  ? 'bg-white text-gray-900 border-gray-300 placeholder-gray-400'
+                  : 'bg-gray-700 text-white border-gray-600 placeholder-gray-400'
+              }`}
               rows={3}
               required
             />
@@ -141,13 +170,17 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
 
           {/* City */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
               City *
             </label>
             <select
               value={formData.city}
               onChange={(e) => handleInputChange('city', e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                theme === 'light'
+                  ? 'bg-white text-gray-900 border-gray-300'
+                  : 'bg-gray-700 text-white border-gray-600'
+              }`}
               required
             >
               <option value="">Select City</option>
@@ -161,7 +194,7 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
 
           {/* Pincode */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
               Pincode *
             </label>
             <input
@@ -169,14 +202,18 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
               value={formData.pincode}
               onChange={(e) => handleInputChange('pincode', e.target.value)}
               placeholder="Enter pincode"
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                theme === 'light'
+                  ? 'bg-white text-gray-900 border-gray-300 placeholder-gray-400'
+                  : 'bg-gray-700 text-white border-gray-600 placeholder-gray-400'
+              }`}
               required
             />
           </div>
 
           {/* Landmark */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
               Landmark (Optional)
             </label>
             <input
@@ -184,13 +221,17 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
               value={formData.landmark}
               onChange={(e) => handleInputChange('landmark', e.target.value)}
               placeholder="Enter landmark"
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                theme === 'light'
+                  ? 'bg-white text-gray-900 border-gray-300 placeholder-gray-400'
+                  : 'bg-gray-700 text-white border-gray-600 placeholder-gray-400'
+              }`}
             />
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 bg-red-900 border border-red-700 text-red-300 rounded-lg text-sm">
+            <div className="p-3 bg-red-600 text-white rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -200,7 +241,11 @@ const AddAddressModal = ({ isOpen, onClose, onSuccess }) => {
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 rounded-lg transition-colors"
+              className={`flex-1 px-4 py-3 rounded-lg transition-colors ${
+                theme === 'light'
+                  ? 'bg-gray-200 hover:bg-gray-300 text-gray-900'
+                  : 'bg-gray-600 hover:bg-gray-700 text-white'
+              }`}
             >
               Cancel
             </button>

@@ -4,8 +4,10 @@ import { StarIcon, MapPinIcon, PhoneIcon, ClockIcon } from '@heroicons/react/24/
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { isAuthenticated } from '../../services/authService';
+import { useTheme } from '../context/ThemeContext';
 
 const GarageCard = ({ garage, onClick, isExpanded = false, setCurrentPage, onShowLoginPopup }) => {
+  const { theme } = useTheme();
   const navigate = useNavigate();
   
   const handleBookNow = (e) => {
@@ -31,7 +33,7 @@ const GarageCard = ({ garage, onClick, isExpanded = false, setCurrentPage, onSho
       <StarIcon
         key={i}
         className={`w-4 h-4 ${
-          i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-600'
+          i < Math.floor(rating) ? 'text-yellow-400' : theme === 'light' ? 'text-gray-300' : 'text-gray-600'
         }`}
       />
     ));
@@ -39,7 +41,11 @@ const GarageCard = ({ garage, onClick, isExpanded = false, setCurrentPage, onSho
 
   return (
     <div
-      className={`bg-gray-800 rounded-xl overflow-hidden hover:bg-gray-700 transition-all cursor-pointer ${
+      className={`rounded-xl overflow-hidden transition-all cursor-pointer ${
+        theme === 'light' 
+          ? 'bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md' 
+          : 'bg-gray-800 hover:bg-gray-700'
+      } ${
         isExpanded ? 'ring-2 ring-red-500' : ''
       }`}
       onClick={() => onClick(garage)}
@@ -62,52 +68,52 @@ const GarageCard = ({ garage, onClick, isExpanded = false, setCurrentPage, onSho
       
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold text-white">{garage.name}</h3>
+          <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{garage.name}</h3>
           <div className="flex items-center">
             {renderStars(garage.rating)}
-            <span className="ml-1 text-sm text-gray-400">({garage.rating})</span>
+            <span className={`ml-1 text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>({garage.rating})</span>
           </div>
         </div>
         
-        <div className="flex items-center text-gray-400 text-sm mb-2">
+        <div className={`flex items-center text-sm mb-2 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
           <MapPinIcon className="w-4 h-4 mr-1" />
           <span>{garage.location}</span>
         </div>
         
-        <p className="text-gray-300 text-sm mb-3">{garage.address}</p>
+        <p className={`text-sm mb-3 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>{garage.address}</p>
         
         {isExpanded && (
-          <div className="border-t border-gray-700 pt-3 mt-3">
-            <div className="flex items-center text-gray-400 text-sm mb-2">
+          <div className={`border-t pt-3 mt-3 ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
+            <div className={`flex items-center text-sm mb-2 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
               <PhoneIcon className="w-4 h-4 mr-1" />
               <span>{garage.phone}</span>
             </div>
             
-            <div className="flex items-center text-gray-400 text-sm mb-3">
+            <div className={`flex items-center text-sm mb-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
               <ClockIcon className="w-4 h-4 mr-1" />
               <span>{garage.operatingHours}</span>
             </div>
             
             <div className="mb-3">
-              <h4 className="text-sm font-semibold text-white mb-2">Services:</h4>
+              <h4 className={`text-sm font-semibold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Services:</h4>
               <div className="flex flex-wrap gap-2">
                 {garage.services.slice(0, 3).map((service) => (
                   <span
                     key={service.id}
-                    className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded"
+                    className={`text-xs px-2 py-1 rounded ${theme === 'light' ? 'bg-gray-100 text-gray-700' : 'bg-gray-700 text-gray-300'}`}
                   >
                     {service.name} - {service.price}
                   </span>
                 ))}
                 {garage.services.length > 3 && (
-                  <span className="text-gray-500 text-xs">
+                  <span className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-500'}`}>
                     +{garage.services.length - 3} more
                   </span>
                 )}
               </div>
             </div>
             
-            <p className="text-gray-400 text-sm">{garage.description}</p>
+            <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{garage.description}</p>
           </div>
         )}
         

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { fetchBikeBrands, fetchBikeModels, createUserVehicle } from '../../services/bookingService';
+import { useTheme } from '../context/ThemeContext';
 
 const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
+  const { theme } = useTheme();
   const [currentStep, setCurrentStep] = useState('brand'); // 'brand', 'model'
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [brands, setBrands] = useState([]);
@@ -116,22 +118,22 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className={`rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className={`flex items-center justify-between p-6 border-b ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
           <div>
-            <h2 className="text-xl font-bold text-white">
+            <h2 className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
               {currentStep === 'brand' ? 'Select Bike Brand' : 'Select Bike Model'}
             </h2>
             {selectedBrand && (
-              <p className="text-gray-400 text-sm mt-1">
+              <p className={`text-sm mt-1 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                 {selectedBrand.name} Models
               </p>
             )}
           </div>
           <button
             onClick={handleClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className={`transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}
           >
             <XMarkIcon className="w-6 h-6" />
           </button>
@@ -142,7 +144,7 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mb-4"></div>
-              <p className="text-gray-400">
+              <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
                 {currentStep === 'brand' ? 'Loading brands...' : 'Loading models...'}
               </p>
             </div>
@@ -154,7 +156,11 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
                     <div
                       key={brand.id}
                       onClick={() => handleBrandSelect(brand)}
-                      className="bg-gray-700 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:bg-gray-600 hover:scale-105 hover:shadow-lg flex flex-col items-center justify-center min-h-[120px]"
+                      className={`rounded-xl p-4 cursor-pointer transition-all duration-200 border hover:scale-105 hover:shadow-lg flex flex-col items-center justify-center min-h-[120px] ${
+                        theme === 'light'
+                          ? 'bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                          : 'bg-gray-700 border-gray-600 hover:bg-gray-600'
+                      }`}
                     >
                       <div className="w-16 h-16 mb-3 flex items-center justify-center">
                         <img
@@ -166,7 +172,7 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
                           }}
                         />
                       </div>
-                      <p className="text-white text-sm font-medium text-center">
+                      <p className={`text-sm font-medium text-center ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                         {brand.name}
                       </p>
                     </div>
@@ -178,7 +184,11 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
                     <div
                       key={model.id}
                       onClick={() => handleModelSelect(model)}
-                      className="bg-gray-700 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:bg-gray-600 hover:scale-105 hover:shadow-lg flex flex-col items-center justify-center min-h-[160px]"
+                      className={`rounded-xl p-4 cursor-pointer transition-all duration-200 border hover:scale-105 hover:shadow-lg flex flex-col items-center justify-center min-h-[160px] ${
+                        theme === 'light'
+                          ? 'bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                          : 'bg-gray-700 border-gray-600 hover:bg-gray-600'
+                      }`}
                     >
                       <div className="w-20 h-20 mb-3 flex items-center justify-center">
                         <img
@@ -190,10 +200,10 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
                           }}
                         />
                       </div>
-                      <p className="text-white text-sm font-medium text-center mb-1">
+                      <p className={`text-sm font-medium text-center mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                         {model.name}
                       </p>
-                      <p className="text-gray-400 text-xs text-center">
+                      <p className={`text-xs text-center ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                         {model.cc}
                       </p>
                     </div>
@@ -204,7 +214,7 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
           )}
 
           {error && (
-            <div className="mt-4 p-3 bg-red-900 border border-red-700 text-red-300 rounded-lg text-sm">
+            <div className="mt-4 p-3 bg-red-600 text-white rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -213,7 +223,7 @@ const AddVehicleModal = ({ isOpen, onClose, onSuccess }) => {
             <div className="mt-6 text-center">
               <button
                 onClick={handleBackToBrands}
-                className="text-gray-400 hover:text-white transition-colors"
+                className={`transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}
               >
                 ←
               </button>

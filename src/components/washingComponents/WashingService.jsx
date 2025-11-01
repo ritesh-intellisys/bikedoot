@@ -4,10 +4,12 @@ import { ChevronDownIcon, MapPinIcon, StarIcon, ClockIcon, PhoneIcon } from '@he
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSprayCan, faCar, faMotorcycle, faTruck, faStar } from '@fortawesome/free-solid-svg-icons';
 import WashingCenterDetail from './WashingCenterDetail';
+import { useTheme } from '../context/ThemeContext';
 
 // Independent Washing & Detailing Service Component
 // Uses only mock data - no API calls or redirects to garage sections
 const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onShowLoginPopup }) => {
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [washingCenters, setWashingCenters] = useState([]);
   const [filteredCenters, setFilteredCenters] = useState([]);
@@ -259,7 +261,7 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
       <StarIcon
         key={i}
         className={`w-4 h-4 ${
-          i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-600'
+          i < Math.floor(rating) ? 'text-yellow-400' : theme === 'light' ? 'text-gray-300' : 'text-gray-600'
         }`}
       />
     ));
@@ -267,11 +269,11 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
 
   if (loading) {
     return (
-      <div className="py-12 px-4 bg-black">
+      <div className={`py-12 px-4 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" style={{ borderColor: '#ff3864', borderTopColor: '#cc1e3a' }}></div>
-            <p className="text-gray-400 mt-4">Loading washing centers...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto border-red-600"></div>
+            <p className={`mt-4 ${theme === 'light' ? 'text-gray-700' : 'text-gray-400'}`}>Loading washing centers...</p>
           </div>
         </div>
       </div>
@@ -290,19 +292,19 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-white text-gray-900' : 'bg-black text-white'}`}>
       {/* Header with Back Button */}
-      <div className="bg-gray-900 border-b border-gray-800 py-4 px-4">
+      <div className={`${theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-gray-900 border-gray-800'} border-b py-4 px-4`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
             onClick={onBackToMain}
-            className="flex items-center text-white hover:text-red-500 transition-colors"
+            className={`flex items-center transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-red-600' : 'text-white hover:text-red-500'}`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-xl font-bold text-white">
+          <h1 className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
             <FontAwesomeIcon icon={faSprayCan} className="mr-2" />
             Washing & Detailing
           </h1>
@@ -310,20 +312,24 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
       </div>
 
       {/* Washing Centers Section */}
-      <section className="py-8 px-4 bg-black">
+      <section className={`py-8 px-4 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+            <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
               Washing & Detailing Centers Near You
             </h2>
-            <p className="text-lg text-gray-400">Find professional car wash and detailing services</p>
+            <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Find professional car wash and detailing services</p>
           </div>
 
           {/* Mobile Filter and Sort Buttons - Outside of sidebar */}
           <div className="lg:hidden mb-6 flex justify-between">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="inline-flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 border border-gray-600 hover:border-gray-500"
+              className={`inline-flex items-center justify-center font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 border ${
+                theme === 'light'
+                  ? 'bg-white hover:bg-gray-50 text-gray-900 border-gray-300 hover:border-gray-400'
+                  : 'bg-gray-800 hover:bg-gray-700 text-white border-gray-600 hover:border-gray-500'
+              }`}
             >
               <span className="mr-2">Filters</span>
               <ChevronDownIcon className={`w-4 h-4 transform transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
@@ -333,7 +339,11 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
             <div className="relative sort-dropdown">
               <button
                 onClick={() => setIsSortOpen(!isSortOpen)}
-                className="inline-flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 border border-gray-600 hover:border-gray-500"
+                className={`inline-flex items-center justify-center font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 border ${
+                  theme === 'light'
+                    ? 'bg-white hover:bg-gray-50 text-gray-900 border-gray-300 hover:border-gray-400'
+                    : 'bg-gray-800 hover:bg-gray-700 text-white border-gray-600 hover:border-gray-500'
+                }`}
               >
                 <span className="mr-2">
                   {sortBy === 'distance' ? 'Distance' : sortBy === 'rating' ? 'Rating' : 'Name'}
@@ -343,16 +353,22 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
               
               {/* Sort Dropdown Menu */}
               {isSortOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-50">
+                <div className={`absolute right-0 top-full mt-2 w-48 border rounded-lg shadow-lg z-50 ${
+                  theme === 'light' ? 'bg-white border-gray-300' : 'bg-gray-800 border-gray-600'
+                }`}>
                   <div className="py-2">
                     <button
                       onClick={() => {
                         setSortBy('distance');
                         setIsSortOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                        sortBy === 'distance' ? 'text-red-400 bg-gray-700' : 'text-white'
-                      }`}
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                        sortBy === 'distance'
+                          ? 'text-red-600 bg-gray-100'
+                          : theme === 'light'
+                          ? 'text-gray-700 hover:bg-gray-50'
+                          : 'text-white hover:bg-gray-700'
+                      } ${theme === 'light' && sortBy === 'distance' ? 'bg-gray-100' : ''} ${theme === 'dark' && sortBy === 'distance' ? 'bg-gray-700' : ''}`}
                     >
                       Distance
                     </button>
@@ -361,8 +377,12 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
                         setSortBy('rating');
                         setIsSortOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                        sortBy === 'rating' ? 'text-red-400 bg-gray-700' : 'text-white'
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                        sortBy === 'rating'
+                          ? theme === 'light' ? 'text-red-600 bg-gray-100' : 'text-red-400 bg-gray-700'
+                          : theme === 'light'
+                          ? 'text-gray-700 hover:bg-gray-50'
+                          : 'text-white hover:bg-gray-700'
                       }`}
                     >
                       Rating
@@ -372,8 +392,12 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
                         setSortBy('name');
                         setIsSortOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                        sortBy === 'name' ? 'text-red-400 bg-gray-700' : 'text-white'
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                        sortBy === 'name'
+                          ? theme === 'light' ? 'text-red-600 bg-gray-100' : 'text-red-400 bg-gray-700'
+                          : theme === 'light'
+                          ? 'text-gray-700 hover:bg-gray-50'
+                          : 'text-white hover:bg-gray-700'
                       }`}
                     >
                       Name
@@ -387,24 +411,28 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
             <div className={`lg:col-span-1 ${isFilterOpen ? 'block' : 'hidden lg:block'}`}>
-              <div className="bg-gray-800 rounded-xl p-6">
+              <div className={`rounded-xl p-6 border ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800 border-gray-700'}`}>
                 <div className="hidden lg:flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-white">Filters</h3>
+                  <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Filters</h3>
                 </div>
                 
                 {/* Mobile Filter Header - Only show when filters are open */}
                 <div className={`lg:hidden flex items-center justify-between mb-6 ${isFilterOpen ? 'block' : 'hidden'}`}>
-                  <h3 className="text-lg font-semibold text-white">Filters</h3>
+                  <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Filters</h3>
                 </div>
 
                 <div className={`space-y-6 ${isFilterOpen ? 'block' : 'hidden lg:block'}`}>
                   {/* Service Type Filter */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-3">Service Type</label>
+                    <label className={`block text-sm font-medium mb-3 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>Service Type</label>
                     <select
                       value={serviceType}
                       onChange={(e) => setServiceType(e.target.value)}
-                      className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                        theme === 'light'
+                          ? 'bg-gray-50 text-gray-900 border-gray-300'
+                          : 'bg-gray-700 text-white border-gray-600'
+                      }`}
                     >
                       <option value="all">All Services</option>
                       <option value="basic-wash">Basic Wash</option>
@@ -417,11 +445,15 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
 
                   {/* Price Range Filter */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-3">Price Range</label>
+                    <label className={`block text-sm font-medium mb-3 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>Price Range</label>
                     <select
                       value={priceRange}
                       onChange={(e) => setPriceRange(e.target.value)}
-                      className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                        theme === 'light'
+                          ? 'bg-gray-50 text-gray-900 border-gray-300'
+                          : 'bg-gray-700 text-white border-gray-600'
+                      }`}
                     >
                       <option value="all">All Prices</option>
                       <option value="budget">Budget (₹99-₹299)</option>
@@ -432,11 +464,15 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
 
                   {/* Rating Filter */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-3">Minimum Rating</label>
+                    <label className={`block text-sm font-medium mb-3 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>Minimum Rating</label>
                     <select
                       value={rating}
                       onChange={(e) => setRating(e.target.value)}
-                      className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                        theme === 'light'
+                          ? 'bg-gray-50 text-gray-900 border-gray-300'
+                          : 'bg-gray-700 text-white border-gray-600'
+                      }`}
                     >
                       <option value="all">All Ratings</option>
                       <option value="4.5">4.5+ Stars</option>
@@ -447,11 +483,15 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
 
                   {/* Sort By */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-3">Sort By</label>
+                    <label className={`block text-sm font-medium mb-3 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>Sort By</label>
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                        theme === 'light'
+                          ? 'bg-gray-50 text-gray-900 border-gray-300'
+                          : 'bg-gray-700 text-white border-gray-600'
+                      }`}
                     >
                       <option value="distance">Distance</option>
                       <option value="rating">Rating</option>
@@ -466,8 +506,8 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
             <div className={`${isFilterOpen ? 'lg:col-span-3' : 'col-span-1 lg:col-span-3'}`}>
               {filteredCenters.length === 0 ? (
                 <div className="text-center py-12">
-                  <FontAwesomeIcon icon={faSprayCan} className="text-6xl text-gray-600 mb-4" />
-                  <p className="text-gray-400 text-lg">No washing centers found matching your criteria.</p>
+                  <FontAwesomeIcon icon={faSprayCan} className={`text-6xl mb-4 ${theme === 'light' ? 'text-gray-400' : 'text-gray-600'}`} />
+                  <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>No washing centers found matching your criteria.</p>
                   <button
                     onClick={() => {
                       setServiceType('all');
@@ -485,7 +525,11 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
                     <div
                       key={center.id}
                       onClick={() => handleWashingCenterClick(center)}
-                      className="bg-gray-800 rounded-xl overflow-hidden hover:bg-gray-700 transition-all cursor-pointer transform hover:scale-105"
+                      className={`rounded-xl overflow-hidden transition-all cursor-pointer transform hover:scale-105 border ${
+                        theme === 'light'
+                          ? 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-md'
+                          : 'bg-gray-800 border-gray-700 hover:bg-gray-700'
+                      }`}
                     >
                       {/* Center Image */}
                       <div className="relative h-48 w-full overflow-hidden">
@@ -507,50 +551,52 @@ const WashingService = ({ selectedCity, onBackToMain, onWashingCenterClick, onSh
                       
                       <div className="p-4">
                         <div className="flex items-start justify-between mb-2">
-                          <h3 className="text-lg font-semibold text-white">{center.name}</h3>
+                          <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{center.name}</h3>
                           <div className="flex items-center">
                             {renderStars(center.rating)}
-                            <span className="ml-1 text-sm text-gray-400">({center.rating})</span>
+                            <span className={`ml-1 text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>({center.rating})</span>
                           </div>
                         </div>
                         
-                        <div className="flex items-center text-gray-400 text-sm mb-2">
+                        <div className={`flex items-center text-sm mb-2 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                           <MapPinIcon className="w-4 h-4 mr-1" />
                           <span>{center.location}</span>
                         </div>
                         
-                        <p className="text-gray-300 text-sm mb-3">{center.address}</p>
+                        <p className={`text-sm mb-3 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>{center.address}</p>
                         
-                        <div className="flex items-center text-gray-400 text-sm mb-2">
+                        <div className={`flex items-center text-sm mb-2 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                           <ClockIcon className="w-4 h-4 mr-1" />
                           <span>{center.operatingHours}</span>
                         </div>
                         
-                        <div className="flex items-center text-gray-400 text-sm mb-3">
+                        <div className={`flex items-center text-sm mb-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                           <PhoneIcon className="w-4 h-4 mr-1" />
                           <span>{center.phone}</span>
                         </div>
                         
                         <div className="mb-3">
-                          <h4 className="text-sm font-semibold text-white mb-2">Services:</h4>
+                          <h4 className={`text-sm font-semibold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Services:</h4>
                           <div className="flex flex-wrap gap-2">
                             {center.services.slice(0, 2).map((service, index) => (
                               <span
                                 key={index}
-                                className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded"
+                                className={`text-xs px-2 py-1 rounded ${
+                                  theme === 'light' ? 'bg-gray-100 text-gray-700' : 'bg-gray-700 text-gray-300'
+                                }`}
                               >
                                 {service.name} - {service.price}
                               </span>
                             ))}
                             {center.services.length > 2 && (
-                              <span className="text-gray-500 text-xs">
+                              <span className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-500'}`}>
                                 +{center.services.length - 2} more
                               </span>
                             )}
                           </div>
                         </div>
                         
-                        <p className="text-gray-400 text-sm mb-4">{center.description}</p>
+                        <p className={`text-sm mb-4 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{center.description}</p>
                         
                         <div className="flex items-center justify-end">
                           <button 

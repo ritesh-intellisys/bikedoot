@@ -6,8 +6,10 @@ import WashingSelectBikeStep from './bookingSteps/WashingSelectBikeStep';
 import WashingSelectServiceStep from './bookingSteps/WashingSelectServiceStep';
 import WashingSlotAndAddressStep from './bookingSteps/WashingSlotAndAddressStep';
 import WashingSummaryStep from './bookingSteps/WashingSummaryStep';
+import { useTheme } from '../context/ThemeContext';
 
 const WashingBookingFlow = () => {
+  const { theme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   
@@ -292,10 +294,10 @@ const WashingBookingFlow = () => {
   
   if (!washingCenterId) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-center">
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
+        <div className={`text-center ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
           <h2 className="text-2xl font-bold mb-4">Invalid Booking Request</h2>
-          <p className="text-gray-400 mb-6">Please select a washing center first to start booking.</p>
+          <p className={`mb-6 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Please select a washing center first to start booking.</p>
           <button
             onClick={() => {
               if (returnTo === 'washing-list') {
@@ -316,10 +318,10 @@ const WashingBookingFlow = () => {
   // Show initialization error if any
   if (initializationError) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-center max-w-md mx-auto px-4">
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
+        <div className={`text-center max-w-md mx-auto px-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
           <h2 className="text-2xl font-bold mb-4 text-red-500">Booking Error</h2>
-          <p className="text-gray-400 mb-6">{initializationError}</p>
+          <p className={`mb-6 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{initializationError}</p>
           <button
             onClick={() => {
               if (returnTo === 'washing-list') {
@@ -340,10 +342,10 @@ const WashingBookingFlow = () => {
   // Show loading state while washing center info is being fetched
   if (!washingCenterInfo) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading washing center information...</p>
+          <p className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>Loading washing center information...</p>
         </div>
       </div>
     );
@@ -356,14 +358,14 @@ const WashingBookingFlow = () => {
     }
 
     return (
-      <div className="min-h-screen bg-black">
+      <div className={`min-h-screen ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800">
+      <div className={`border-b ${theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-gray-900 border-gray-800'}`}>
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-white">Book Washing Service</h1>
-              <p className="text-gray-400 mt-1">Complete your washing booking in 4 simple steps</p>
+              <h1 className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Book Washing Service</h1>
+              <p className={`mt-1 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Complete your washing booking in 4 simple steps</p>
             </div>
             <button
               onClick={() => {
@@ -375,7 +377,7 @@ const WashingBookingFlow = () => {
                   navigate("/");
                 }
               }}
-              className="text-gray-400 hover:text-white transition-colors"
+              className={`transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -407,7 +409,11 @@ const WashingBookingFlow = () => {
             disabled={activeStep === 0}
             className={`px-6 py-3 rounded-lg font-medium transition-colors ${
               activeStep === 0
-                ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                ? theme === 'light'
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                : theme === 'light'
+                ? 'bg-gray-200 text-gray-900 hover:bg-gray-300'
                 : 'bg-gray-700 text-white hover:bg-gray-600'
             }`}
           >
@@ -450,10 +456,10 @@ const WashingBookingFlow = () => {
   } catch (error) {
     console.error("Error rendering WashingBookingFlow:", error);
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
+        <div className={`text-center ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
           <h1 className="text-2xl font-bold text-red-500 mb-4">Error Loading Booking</h1>
-          <p className="text-gray-400 mb-4">Something went wrong. Please try again.</p>
+          <p className={`mb-4 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Something went wrong. Please try again.</p>
           <button 
             onClick={() => {
               if (returnTo === 'washing-list') {

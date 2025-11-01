@@ -16,6 +16,7 @@ import {
   PlusIcon
 } from '@heroicons/react/24/outline';
 import { fetchUserVehicles, fetchUserAddresses, createAddress, deleteUserVehicle, fetchCities } from '../services/bookingService';
+import { fetchLandingPageData } from '../services/landingpage';
 import AddVehicleModal from '../components/profileComponents/AddVehicleModal';
 import AddAddressModal from '../components/profileComponents/AddAddressModal';
 import { useTheme } from '../components/context/ThemeContext';
@@ -49,7 +50,7 @@ const Profile = ({ setCurrentPage }) => {
     }
   }, [isEditing, userData]);
 
-  // Load user data from APIs
+  // Load user data from APIs (matching old website implementation)
   useEffect(() => {
     const loadUserData = async () => {
       setLoading(true);
@@ -62,26 +63,49 @@ const Profile = ({ setCurrentPage }) => {
           return;
         }
 
-        // Load user vehicles, addresses, and cities in parallel
-        const [vehiclesData, addressesData, citiesData] = await Promise.all([
+        // Get selected city from sessionStorage (like old website)
+        const selectedCity = sessionStorage.getItem('selectedCity') || 'Pune';
+
+        // Load user vehicles and addresses in parallel
+        const [vehiclesData, addressesData] = await Promise.all([
           fetchUserVehicles(subscriberId),
-          fetchUserAddresses(subscriberId),
-          fetchCities()
+          fetchUserAddresses(subscriberId)
         ]);
 
-        // Set user profile data with basic info
+        // Load cities from landing page API (like old website)
+        try {
+          const landingPageData = await fetchLandingPageData(selectedCity.toLowerCase());
+          if (landingPageData && Array.isArray(landingPageData.cities) && landingPageData.cities.length > 0) {
+            setCities(landingPageData.cities);
+          } else {
+            // Fallback to active-cities API if landing page doesn't have cities
+            const citiesData = await fetchCities(selectedCity);
+            setCities(citiesData || []);
+          }
+        } catch (cityError) {
+          console.error('Error loading cities:', cityError);
+          // Try fallback API
+          try {
+            const citiesData = await fetchCities(selectedCity);
+            setCities(citiesData || []);
+          } catch (fallbackError) {
+            console.error('Fallback cities API also failed:', fallbackError);
+            setCities([]);
+          }
+        }
+
+        // Set user profile data with basic info from localStorage (like old website)
         const mobileNumber = localStorage.getItem('mobileNumber') || '';
         setUserData({
           name: 'User',
           email: '',
           phone: mobileNumber,
-          city: 'Pune',
+          city: selectedCity,
           joinDate: 'Recently'
         });
 
         setVehicles(vehiclesData || []);
         setAddresses(addressesData || []);
-        setCities(citiesData || []);
       } catch (err) {
         console.error('Error loading user data:', err);
         setError('Failed to load user data');
@@ -165,7 +189,15 @@ const Profile = ({ setCurrentPage }) => {
       const response = await deleteUserVehicle(payload);
       
       if (response.success !== false) {
-        setVehicles(prev => prev.filter(v => v.id !== vehicleId));
+        // Refresh vehicles list from API (like old website)
+        try {
+          const vehiclesData = await fetchUserVehicles(subscriberId);
+          setVehicles(vehiclesData || []);
+        } catch (refreshError) {
+          console.error('Error refreshing vehicles after delete:', refreshError);
+          // Fallback to local update
+          setVehicles(prev => prev.filter(v => v.id !== vehicleId));
+        }
         setError('');
       } else {
         setError(response.message || 'Failed to delete vehicle');
@@ -203,14 +235,42 @@ const Profile = ({ setCurrentPage }) => {
     }
   };
 
-  const handleAddVehicleSuccess = (newVehicle) => {
-    setVehicles(prev => [...prev, newVehicle]);
+  const handleAddVehicleSuccess = async (newVehicle) => {
+    // Refresh vehicles list from API (like old website)
+    try {
+      const subscriberId = localStorage.getItem('subscriberId');
+      if (subscriberId) {
+        const vehiclesData = await fetchUserVehicles(subscriberId);
+        setVehicles(vehiclesData || []);
+      } else {
+        // Fallback to local update if API fails
+        setVehicles(prev => [...prev, newVehicle]);
+      }
+    } catch (error) {
+      console.error('Error refreshing vehicles:', error);
+      // Fallback to local update
+      setVehicles(prev => [...prev, newVehicle]);
+    }
     setIsAddVehicleModalOpen(false);
     setError('');
   };
 
-  const handleAddAddressSuccess = (newAddress) => {
-    setAddresses(prev => [...prev, newAddress]);
+  const handleAddAddressSuccess = async (newAddress) => {
+    // Refresh addresses list from API (like old website)
+    try {
+      const subscriberId = localStorage.getItem('subscriberId');
+      if (subscriberId) {
+        const addressesData = await fetchUserAddresses(subscriberId);
+        setAddresses(addressesData || []);
+      } else {
+        // Fallback to local update if API fails
+        setAddresses(prev => [...prev, newAddress]);
+      }
+    } catch (error) {
+      console.error('Error refreshing addresses:', error);
+      // Fallback to local update
+      setAddresses(prev => [...prev, newAddress]);
+    }
     setIsAddAddressModalOpen(false);
     setError('');
   };

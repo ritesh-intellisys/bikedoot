@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { PlusIcon, MapPinIcon, ClockIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { fetchUserAddresses, createAddress, fetchCities } from '../../../services/bookingService';
 import AddAddressModal from './AddAddressModal';
+import { useTheme } from '../../context/ThemeContext';
 
 const SlotAndAddressStep = ({ 
   slotAndAddress, 
@@ -11,6 +12,7 @@ const SlotAndAddressStep = ({
   errors, 
   setErrors 
 }) => {
+  const { theme } = useTheme();
   const [addresses, setAddresses] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedDateLabel, setSelectedDateLabel] = useState('');
@@ -217,7 +219,7 @@ const SlotAndAddressStep = ({
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading addresses...</p>
+          <p className={theme === 'light' ? 'text-gray-700' : 'text-gray-400'}>Loading addresses...</p>
         </div>
       </div>
     );
@@ -227,8 +229,8 @@ const SlotAndAddressStep = ({
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-white mb-2">Select Date, Time & Address</h2>
-        <p className="text-gray-400">Choose when and where you want the service</p>
+        <h2 className={`text-2xl font-bold mb-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Select Date, Time & Address</h2>
+        <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>Choose when and where you want the service</p>
       </div>
       
       {/* Error Display */}
@@ -246,7 +248,7 @@ const SlotAndAddressStep = ({
       
       {/* Date Selection */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-white flex items-center">
+        <h3 className={`text-xl font-semibold flex items-center ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
           <CalendarDaysIcon className="w-5 h-5 mr-2" />
           Select Date
         </h3>
@@ -258,6 +260,8 @@ const SlotAndAddressStep = ({
               className={`flex-shrink-0 px-4 py-3 rounded-lg font-medium transition-colors ${
                 selectedDateLabel === slotData.dateLabel
                   ? 'bg-red-600 text-white'
+                  : theme === 'light'
+                  ? 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                   : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
               }`}
             >
@@ -270,7 +274,7 @@ const SlotAndAddressStep = ({
       {/* Time Slot Selection */}
       {selectedDateLabel && (
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-white flex items-center">
+          <h3 className={`text-xl font-semibold flex items-center ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
             <ClockIcon className="w-5 h-5 mr-2" />
             Select Time Slot
           </h3>
@@ -288,6 +292,8 @@ const SlotAndAddressStep = ({
                   className={`px-4 py-3 rounded-lg font-medium transition-colors ${
                     selectedSlot === slot.label
                       ? 'bg-red-600 text-white'
+                      : theme === 'light'
+                      ? 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                       : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                   }`}
                 >
@@ -302,7 +308,7 @@ const SlotAndAddressStep = ({
       {/* Address Selection */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-white flex items-center">
+          <h3 className={`text-xl font-semibold flex items-center ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
             <MapPinIcon className="w-5 h-5 mr-2" />
             Select Address
           </h3>
@@ -320,11 +326,15 @@ const SlotAndAddressStep = ({
             <div
               key={address.id}
               onClick={() => setSelectedAddress(address)}
-              className={`bg-gray-800 rounded-xl p-4 cursor-pointer transition-all duration-200 border ${
+              className={`rounded-xl p-4 cursor-pointer transition-all duration-200 border ${
+                theme === 'light'
+                  ? 'bg-white border-gray-200 hover:border-gray-300'
+                  : 'bg-gray-800 border-gray-700 hover:border-gray-600'
+              } ${
                 selectedAddress?.id === address.id
-                  ? 'border-red-500 bg-gray-700'
-                  : 'border-gray-700 hover:border-gray-600'
-              }`}
+                  ? 'border-red-500'
+                  : ''
+              } ${selectedAddress?.id === address.id && theme === 'dark' ? 'bg-gray-700' : ''}`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3 flex-1">
@@ -335,22 +345,24 @@ const SlotAndAddressStep = ({
                     value={address.id}
                     checked={selectedAddress?.id === address.id}
                     onChange={() => setSelectedAddress(address)}
-                    className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 focus:ring-red-500 focus:ring-2 mt-1"
+                    className={`w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 mt-1 ${
+                      theme === 'light' ? 'bg-white border-gray-400' : 'bg-gray-700 border-gray-600'
+                    }`}
                   />
                   
                   {/* Address Details */}
                   <div className="flex-1">
-                    <p className="text-white text-sm mb-1">
+                    <p className={`text-sm mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                       <strong>🏙️ City:</strong> {address.city}
                     </p>
-                    <p className="text-white text-sm mb-1">
+                    <p className={`text-sm mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                       <strong>📌 Pincode:</strong> {address.pincode}
                     </p>
-                    <p className="text-white text-sm">
+                    <p className={`text-sm ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                       <strong>📍 Address:</strong> {address.address}
                     </p>
                     {address.landmark && (
-                      <p className="text-gray-400 text-xs mt-1">
+                      <p className={`text-xs mt-1 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                         <strong>Landmark:</strong> {address.landmark}
                       </p>
                     )}
@@ -372,10 +384,10 @@ const SlotAndAddressStep = ({
       
       {/* Estimate Option */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-white">Additional Options</h3>
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+        <h3 className={`text-xl font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Additional Options</h3>
+        <div className={`rounded-xl p-4 border ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800 border-gray-700'}`}>
           <div className="flex items-center justify-between">
-            <span className="text-white font-medium">Do you want a detailed estimate?</span>
+            <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Do you want a detailed estimate?</span>
             <div className="flex items-center space-x-4">
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
@@ -384,9 +396,9 @@ const SlotAndAddressStep = ({
                   value="yes"
                   checked={selectedEstimateOption === "yes"}
                   onChange={(e) => handleEstimateSelection(e.target.value)}
-                  className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 focus:ring-red-500 focus:ring-2"
+                  className={`w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 ${theme === 'light' ? 'bg-white border-gray-400' : 'bg-gray-700 border-gray-600'}`}
                 />
-                <span className="text-white">Yes</span>
+                <span className={theme === 'light' ? 'text-gray-900' : 'text-white'}>Yes</span>
               </label>
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
@@ -395,9 +407,9 @@ const SlotAndAddressStep = ({
                   value="no"
                   checked={selectedEstimateOption === "no"}
                   onChange={(e) => handleEstimateSelection(e.target.value)}
-                  className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 focus:ring-red-500 focus:ring-2"
+                  className={`w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 ${theme === 'light' ? 'bg-white border-gray-400' : 'bg-gray-700 border-gray-600'}`}
                 />
-                <span className="text-white">No</span>
+                <span className={theme === 'light' ? 'text-gray-900' : 'text-white'}>No</span>
               </label>
             </div>
           </div>
@@ -406,8 +418,8 @@ const SlotAndAddressStep = ({
 
       {/* Suggestion Field */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-white">Add Suggestion</h3>
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+        <h3 className={`text-xl font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Add Suggestion</h3>
+        <div className={`rounded-xl p-4 border ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800 border-gray-700'}`}>
           <textarea
             placeholder="Enter your suggestions or special requirements..."
             value={slotAndAddress?.suggestion || ''}
@@ -415,7 +427,11 @@ const SlotAndAddressStep = ({
               ...prev,
               suggestion: e.target.value
             }))}
-            className="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+            className={`w-full border rounded-lg p-3 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none ${
+              theme === 'light'
+                ? 'bg-gray-50 text-gray-900 placeholder-gray-500 border-gray-300'
+                : 'bg-gray-700 text-white placeholder-gray-400 border-gray-600'
+            }`}
             rows={4}
           />
         </div>
